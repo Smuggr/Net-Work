@@ -1,9 +1,12 @@
-package v1
+package apiv1
 
 import (
-    "net/http"
-    "log"
-    "github.com/gorilla/mux"
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
+    scraper "overseer/services/scraper/common"
 )
 
 func YourHandler(w http.ResponseWriter, r *http.Request) {
@@ -11,6 +14,10 @@ func YourHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func Initialize() {
+    fmt.Println("Initializing api/v1")
+    
+    scraper.Initialize()
+
     r := mux.NewRouter()
     // Routes consist of a path and a handler function.
     r.HandleFunc("/", YourHandler)

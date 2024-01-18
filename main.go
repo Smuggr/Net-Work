@@ -1,7 +1,7 @@
 package main
 
 import (
-	api "overseer/services/api/v1"
+	api "overseer/services/apiv1"
 )
 
 func main()  {
