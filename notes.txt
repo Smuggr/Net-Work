@@ -1,0 +1,1 @@
+Sync system and RTC time from NTP, if not available, use the time from the RTC

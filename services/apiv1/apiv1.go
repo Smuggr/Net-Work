@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-    scraper "overseer/services/scraper/common"
+    "overseer/services/scraper/common"
 )
 
 func YourHandler(w http.ResponseWriter, r *http.Request) {

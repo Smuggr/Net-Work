@@ -1,0 +1,3 @@
+[time]
+ntp_server = "time.google.com"
+

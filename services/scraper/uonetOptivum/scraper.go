@@ -3,10 +3,10 @@ package uonetoptivum
 import (
 	"fmt"
 
-	common "overseer/services/scraper/common"
+	// common "overseer/services/scraper/common"
 )
 
 func Scrape(baseUrl string) {
-	fmt.Sprintf("Scraping %s", baseUrl)
-	
+	fmt.Printf("Scraping %s", baseUrl)
+
 }
