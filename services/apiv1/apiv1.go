@@ -4,16 +4,18 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+
+	scraper "overseer/services/scraper/common"
 
 	"github.com/gorilla/mux"
-    "overseer/services/scraper/common"
 )
 
 func YourHandler(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte("Gorilla!\n"))
 }
 
-func Initialize() {
+func Initialize(port int) {
     fmt.Println("Initializing api/v1")
     
     scraper.Initialize()
@@ -23,5 +25,5 @@ func Initialize() {
     r.HandleFunc("/", YourHandler)
 
     // Bind to a port and pass our router in
-    log.Fatal(http.ListenAndServe(":8000", r))
+    log.Fatal(http.ListenAndServe(":" + strconv.Itoa(port), r))
 }

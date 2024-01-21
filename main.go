@@ -9,9 +9,30 @@ import (
 )
 
 
+type TimeConfig struct {
+	NTPServer string `mapstructure:"ntp_server"`
+}
+
+type WebServerConfig struct {
+	Port int `mapstructure:"port"`
+}
+
 type Config struct {
-	Time struct {
-		NtpServer string `mapstructure:"ntp_server"`
+	Time      TimeConfig      `mapstructure:"time"`
+	WebServer WebServerConfig `mapstructure:"web_server"`
+}
+
+
+func loadConfig(config *Config) (error) {
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	err := viper.Unmarshal(config)
+	if err != nil {
+		fmt.Println(err)
+		return err
 	}
 }
 
@@ -20,20 +41,12 @@ func main()  {
 	viper.SetConfigFile("config.toml")
 	viper.SetConfigType("toml")
 
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("Error reading config file:", err)
-		return
-	}
 
 	var config Config
-	err := viper.Unmarshal(&config)
-	if err != nil {
-		fmt.Println("Unable to decode config into struct:", err)
-		return
-	}
+	loadConfig(&config)
 
-	fmt.Println(config.Time.NtpServer)
+	fmt.Println(config)
 
-	apiv1.Initialize()
+	apiv1.Initialize(config.WebServer.Port)
 
 }
