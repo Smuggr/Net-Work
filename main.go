@@ -23,7 +23,7 @@ type Config struct {
 }
 
 
-func loadConfig(config *Config) (error) {
+func loadConfig(config *Config) error {
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println(err)
 		return err
@@ -34,7 +34,10 @@ func loadConfig(config *Config) (error) {
 		fmt.Println(err)
 		return err
 	}
+
+	return nil
 }
+
 
 
 func main()  {
