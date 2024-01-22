@@ -7,6 +7,11 @@ import (
 type Website int
 type DayOfWeek int
 
+type WebsiteData struct {
+	Website Website
+	Data interface{}
+}
+
 
 const (
 	UonetOptivum Website = iota

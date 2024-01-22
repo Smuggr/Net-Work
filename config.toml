@@ -2,4 +2,4 @@
 ntp_server = "time.google.com"
 
 [web_server]
-port = 8000
+port = 8080
