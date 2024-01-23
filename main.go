@@ -5,7 +5,8 @@ import (
 
 	"github.com/spf13/viper"
 
-	"overseer/services/apiv1"
+	"overseer/services/api"
+	"overseer/services/database"
 )
 
 
@@ -17,13 +18,21 @@ type WebServerConfig struct {
 	Port int `mapstructure:"port"`
 }
 
+type DatabaseConfig struct {
+	DatabasePath string `mapstructure:"path"`
+}
+
 type Config struct {
 	Time      TimeConfig      `mapstructure:"time"`
 	WebServer WebServerConfig `mapstructure:"web_server"`
+	Database  DatabaseConfig  `mapstructure:"database"`
 }
 
 
 func loadConfig(config *Config) error {
+	viper.SetConfigFile("config.toml")
+	viper.SetConfigType("toml")
+
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println(err)
 		return err
@@ -41,15 +50,11 @@ func loadConfig(config *Config) error {
 
 
 func main()  {
-	viper.SetConfigFile("config.toml")
-	viper.SetConfigType("toml")
-
-
 	var config Config
 	loadConfig(&config)
 
 	fmt.Println(config)
 
-	apiv1.Initialize(config.WebServer.Port)
-
+	database.Initialize(config.Database.DatabasePath)
+	api.Initialize(config.WebServer.Port)
 }
