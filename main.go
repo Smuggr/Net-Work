@@ -50,6 +50,6 @@ func main()  {
 
 	fmt.Println(config)
 
-	database.Initialize(config.Database.DatabasePath)
+	database.Initialize()
 	api.Initialize(config.WebServer.Port)
 }
