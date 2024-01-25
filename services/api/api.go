@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 
 func Initialize(port int) {
     log.Println("Initializing api/v1")
     
-    r := mux.NewRouter()
+	r := gin.Default()
     SetupRoutes(r)
 
     log.Fatal(http.ListenAndServe(":" + strconv.Itoa(port), r))

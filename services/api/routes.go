@@ -1,39 +1,32 @@
 package api
 
 import (
-	"fmt"
-	"log"
+	// "fmt"
+	// "log"
 	"net/http"
-	"strconv"
+	// "strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 
-func GetDivisionSchedule(w http.ResponseWriter, r *http.Request) {
-	log.Println("Getting division schedule")
-
-	queryParams := r.URL.Query()
-	divisionStr := queryParams.Get("division")
-
-	division, err := strconv.ParseUint(divisionStr, 10, 64)
-	if err != nil {
-		http.Error(w, "Invalid division parameter", http.StatusBadRequest)
-		return
-	}
-
-	log.Println(division)
-
-	response := fmt.Sprintf("Getting schedule for division=%d", division)
-	w.Header().Set("Content-Type", "application/json")
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(response))
-}
 
 
-func SetupRoutes(r *mux.Router) {
-	r.HandleFunc("/schedule", GetDivisionSchedule).Queries("division", "{division}").Methods("GET")
+func SetupRoutes(r *gin.Engine) {
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Hello, World!",
+		})
+	})
+
+	r.POST("/auth")
+
+	apiV1Group := r.Group("/api/v1")
+	apiV1Group.Use(AuthMiddleware())
+
+	apiV1Group.GET("/devices", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"message": "Resource 1"})
+	})
 
 	http.Handle("/", r)
 }

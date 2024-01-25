@@ -18,14 +18,9 @@ type WebServerConfig struct {
 	Port int `mapstructure:"port"`
 }
 
-type DatabaseConfig struct {
-	DatabasePath string `mapstructure:"path"`
-}
-
 type Config struct {
 	Time      TimeConfig      `mapstructure:"time"`
 	WebServer WebServerConfig `mapstructure:"web_server"`
-	Database  DatabaseConfig  `mapstructure:"database"`
 }
 
 
