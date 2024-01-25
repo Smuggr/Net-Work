@@ -6,7 +6,9 @@ import (
 
 
 type User struct {
-	gorm.Model
-	Username string `json:"username"`
-	Password string `json:"-"`
+    gorm.Model
+    Username        string `json:"username" gorm:"unique;not null"`
+    Password        string `json:"-" gorm:"not null"`
+    Identifier      uint   `json:"identifier" gorm:"uniqueIndex;autoIncrement"`
+    PermissionLevel int    `json:"permission_level" gorm:"not null;default:1"`
 }
