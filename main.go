@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 
-	"github.com/spf13/viper"
-
 	"overseer/services/api"
 	"overseer/services/database"
+
+	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
 )
 
 
@@ -42,11 +43,19 @@ func loadConfig(config *Config) error {
 	return nil
 }
 
+func loadEnv() {
+	err := godotenv.Load()
+    if err != nil {
+        panic("Error loading .env file")
+    }
+}
+
 
 
 func main()  {
 	var config Config
 	loadConfig(&config)
+	loadEnv()
 
 	fmt.Println(config)
 

@@ -21,7 +21,3 @@ func SetupRoutes(r *gin.Engine) {
 
 	http.Handle("/", r)
 }
-
-func Protected(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "You are authorized!"})
-}
