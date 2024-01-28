@@ -23,6 +23,23 @@ func getDSN() string {
 }
 
 
+func createDefaultUser(db *gorm.DB) {
+    defaultUser := models.User{
+        Username:        os.Getenv("ADMIN_USERNAME"),
+        Password:        os.Getenv("ADMIN_PASSWORD"),
+        Identifier:      1,
+        PermissionLevel: 1,
+    }
+
+    result := db.Create(&defaultUser)
+
+    if result.Error == nil {
+        log.Println("Default user created successfully")
+    } else {
+        panic(result.Error)
+    }
+}
+
 func Initialize() {
 	log.Println("Initializing database")
 
@@ -34,4 +51,6 @@ func Initialize() {
 
     DB = db
     DB.AutoMigrate(&models.User{})
+
+    createDefaultUser(DB)
 }
