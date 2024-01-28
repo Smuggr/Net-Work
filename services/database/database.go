@@ -22,9 +22,21 @@ func getDSN() string {
         " sslmode=disable TimeZone=UTC"
 }
 
+func getDefaultUser(db *gorm.DB) (models.User, error) {
+    var defaultUser models.User
+    result := db.First(&defaultUser, "username = ?", os.Getenv("ADMIN_USERNAME"))
 
-func createDefaultUser(db *gorm.DB) {
-    defaultUser := models.User{
+    return defaultUser, result.Error
+}
+
+func createDefaultUser(db *gorm.DB) {    
+    defaultUser, err := getDefaultUser(db)
+    if err == nil {
+        log.Println("Default user already exists.")
+        return
+    }
+
+    defaultUser = models.User{
         Username:        os.Getenv("ADMIN_USERNAME"),
         Password:        os.Getenv("ADMIN_PASSWORD"),
         Identifier:      1,
@@ -32,11 +44,10 @@ func createDefaultUser(db *gorm.DB) {
     }
 
     result := db.Create(&defaultUser)
-
     if result.Error == nil {
-        log.Println("Default user created successfully")
+        log.Println("Default user created successfully.")
     } else {
-        panic(result.Error)
+        log.Fatalf("Error creating default user: %v", result.Error)
     }
 }
 
