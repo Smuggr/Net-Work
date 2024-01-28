@@ -51,7 +51,6 @@ func loadEnv() {
 }
 
 
-
 func main()  {
 	var config Config
 	loadConfig(&config)
