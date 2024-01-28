@@ -3,3 +3,6 @@ ntp_server = "time.google.com"
 
 [web_server]
 port = 8000
+
+[api]
+jwt_lifespan_minutes = 60

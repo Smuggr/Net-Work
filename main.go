@@ -6,8 +6,8 @@ import (
 	"overseer/services/api"
 	"overseer/services/database"
 
-	"github.com/spf13/viper"
 	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
 )
 
 
@@ -19,9 +19,14 @@ type WebServerConfig struct {
 	Port int `mapstructure:"port"`
 }
 
+type APIConfig struct {
+	JWTLifespanMinutes int `mapstructure:"jwt_lifespan_minutes"`
+}
+
 type Config struct {
 	Time      TimeConfig      `mapstructure:"time"`
 	WebServer WebServerConfig `mapstructure:"web_server"`
+	API APIConfig             `mapstructure:"api"`
 }
 
 

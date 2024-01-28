@@ -1,10 +1,11 @@
 package api
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"strings"
+	"time"
+	"strconv"
 
 	"overseer/services/database"
 	"overseer/services/models"
@@ -15,8 +16,14 @@ import (
 
 
 func createToken(username string) (string, error) {
+	jwt_token_lifespan, err := strconv.Atoi(os.Getenv("API_JWT_TOKEN_LIFESPAN_MINUTES"))
+	if err != nil {
+		return "", err
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
+		"exp":      time.Now().Add(time.Duration(jwt_token_lifespan) * time.Minute).Unix(),
 	})
 
 	return token.SignedString([]byte(os.Getenv("SECRET_TOKEN")))
@@ -35,8 +42,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("SECRET_TOKEN")), nil
 		})
-
-		log.Println(tokenString, token, header)
 
 		if err != nil || !token.Valid {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
