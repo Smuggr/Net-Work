@@ -18,7 +18,7 @@ func Initialize(port int) {
 	l := tollbooth.NewLimiter(1, nil)
 
     r.POST("/authenticate", Authenticate)
-	r.POST("/register", Register)
+	//r.POST("/register", database.RegisterUser())
 
 	apiV1Group := r.Group("/api/v1")
 	apiV1Group.Use(AuthMiddleware(), tollbooth_gin.LimitHandler(l))
