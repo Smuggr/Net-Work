@@ -23,7 +23,6 @@ func getDSN() string {
 }
 
 
-
 func Initialize() {
 	log.Println("Initializing database")
 
