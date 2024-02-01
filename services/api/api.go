@@ -17,14 +17,14 @@ func Initialize(port int) {
 	r := gin.Default()
 	l := tollbooth.NewLimiter(1, nil)
 
-    r.POST("/authenticate", Authenticate)
-	//r.POST("/register", database.RegisterUser())
+    r.POST("/authenticateUser", AuthenticateUser)
+	r.POST("/registerUser", RegisterUser)
 
 	apiV1Group := r.Group("/api/v1")
-	apiV1Group.Use(AuthMiddleware(), tollbooth_gin.LimitHandler(l))
+	apiV1Group.Use(UserAuthMiddleware(), tollbooth_gin.LimitHandler(l))
 
-	apiV1Group.GET("/authenticated", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"authenticated": true})
+	apiV1Group.GET("/userAuthenticated", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"user_authenticated": true})
 	})
 
 	http.Handle("/", r)

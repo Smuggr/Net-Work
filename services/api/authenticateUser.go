@@ -32,7 +32,7 @@ func createToken(login string) (string, error) {
 	return token.SignedString([]byte(os.Getenv("SECRET_TOKEN")))
 }
 
-func AuthMiddleware() gin.HandlerFunc {
+func UserAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")
 		if header == "" {
@@ -57,7 +57,7 @@ func AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-func Authenticate(c *gin.Context) {
+func AuthenticateUser(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})

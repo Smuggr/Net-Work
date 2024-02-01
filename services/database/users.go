@@ -11,10 +11,14 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	AdminLogin string = "admin"
+)
+
 
 func getDefaultUser(db *gorm.DB) (models.User, error) {
     var defaultUser models.User
-    result := db.First(&defaultUser, "id = ?", 1)
+    result := db.First(&defaultUser, "login = ?", AdminLogin)
 
 	if result.Error != nil {
 		return models.User{}, result.Error
@@ -36,7 +40,7 @@ func createDefaultUser(db *gorm.DB) {
 		if result.Error == nil {
 			log.Fatalf("Error updating default user, user of this login already exists: %v", result.Error)
 		}
-
+		
 		newHashedPassword, err := bcrypt.GenerateFromPassword([]byte(os.Getenv("ADMIN_PASSWORD")), bcrypt.DefaultCost)
 		if err != nil {
 			log.Fatalf("Error hashing password: %v", err)
@@ -54,9 +58,9 @@ func createDefaultUser(db *gorm.DB) {
 		}
 
 		return
-	} else {
-		log.Fatalf("Error checking default user existence: %v", err)
 	}
+
+	log.Printf("Error checking default user existence: %v", err)
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(os.Getenv("ADMIN_PASSWORD")), bcrypt.DefaultCost)
 	if err != nil {
@@ -78,10 +82,43 @@ func createDefaultUser(db *gorm.DB) {
 	}
 }
 
+func UpdateUser(db *gorm.DB, userID uint, updatedUser *models.User) error {
+	var existingUser models.User
+
+	if result := db.First(&existingUser, userID); result.Error != nil {
+		log.Println("User not found")
+		return result.Error
+	}
+
+	if updatedUser.ID != existingUser.ID {
+		log.Println("User ID mismatch")
+		return gorm.ErrRecordNotFound
+	}
+
+	existingUser.Username = updatedUser.Username
+
+	if updatedUser.Password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(updatedUser.Password), bcrypt.DefaultCost)
+		if err != nil {
+			log.Fatalf("Error hashing password: %v", err)
+		}
+		existingUser.Password = string(hashedPassword)
+	}
+
+	if result := db.Save(&existingUser); result.Error != nil {
+		return result.Error
+	}
+
+	log.Printf("User '%s' updated successfully with ID: %d\n", existingUser.Username, existingUser.ID)
+	return nil
+}
+
 func RegisterUser(db *gorm.DB, newUser *models.User) error {
 	var existingUser models.User
+
 	if result := db.Where("login = ", newUser.Login).First(&existingUser); result.Error != nil {
 		log.Println("User of this login already exists")
+		print(existingUser.Login)
 		return result.Error
 	}
 
