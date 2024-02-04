@@ -12,13 +12,14 @@ import (
 
 
 func Initialize(port int) {
-    log.Println("Initializing api/v1")
+    log.Println("initializing api/v1")
     
 	r := gin.Default()
 	l := tollbooth.NewLimiter(1, nil)
 
     r.POST("/authenticateUser", AuthenticateUser)
 	r.POST("/registerUser", RegisterUser)
+	r.POST("/updateUser", UpdateUser)
 
 	apiV1Group := r.Group("/api/v1")
 	apiV1Group.Use(UserAuthMiddleware(), tollbooth_gin.LimitHandler(l))

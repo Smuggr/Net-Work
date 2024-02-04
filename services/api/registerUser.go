@@ -4,9 +4,8 @@ import (
 	"net/http"
 
 	"overseer/services/database"
+	"overseer/services/errors"
 	"overseer/services/models"
-
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,31 +14,18 @@ import (
 func RegisterUser(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
-		return
-	}
-
-	if err := database.DB.Where("login = ?", user.Login).First(&user).Error; err == nil {
-		c.JSON(http.StatusConflict, gin.H{"error": "User of this login already exists"})
-		return
-	}
-
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error hashing password"})
-		return
-	}
-
-	user.Password = string(hashedPassword)
-
-	tokenString, err := createToken(user.Login)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating token"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Error()})
 		return
 	}
 
 	if err := database.RegisterUser(database.DB, &user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error registering user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	tokenString, err := createToken(user.Login)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

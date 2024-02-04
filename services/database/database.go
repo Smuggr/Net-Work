@@ -22,14 +22,13 @@ func getDSN() string {
         " sslmode=disable TimeZone=UTC"
 }
 
-
 func Initialize() {
-	log.Println("Initializing database")
+	log.Println("initializing database")
 
     dsn := getDSN()
     db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
     if err != nil {
-        panic("Failed to connect to database")
+        panic("failed to connect to database")
     }
 
     DB = db
