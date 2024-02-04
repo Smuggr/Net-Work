@@ -1,13 +1,13 @@
 package database
 
 import (
-	"os"
 	"log"
+	"os"
 
-    "overseer/services/models"
+	"overseer/data/models"
 
 	"gorm.io/driver/postgres"
-    "gorm.io/gorm"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB

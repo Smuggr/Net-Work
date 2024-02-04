@@ -1,0 +1,42 @@
+package errors
+
+import (
+	"errors"
+)
+
+type ErrorWrapper struct {
+	Key     string `json:"key"`
+	Message string `json:"message"`
+	Err     error  `json:"-"`
+}
+
+func NewErrorWrapper(key string, err error) *ErrorWrapper {
+	return &ErrorWrapper{
+		Key:     key,
+		Message: err.Error(),
+		Err:     err,
+	}
+}
+
+func (e *ErrorWrapper) Error() string {
+	return e.Message
+}
+
+var (
+	ErrInsufficientLength    = NewErrorWrapper("ErrInsufficientLength", errors.New("insufficient uppercase letters"))
+	ErrInsufficientUppercase = NewErrorWrapper("ErrInsufficientUppercase", errors.New("insufficient uppercase letters"))
+	ErrInsufficientLowercase = NewErrorWrapper("ErrInsufficientLowercase", errors.New("insufficient lowercase letters"))
+	ErrInsufficientDigits    = NewErrorWrapper("ErrInsufficientDigits", errors.New("insufficient digits"))
+	ErrInsufficientSpecial   = NewErrorWrapper("ErrInsufficientSpecial", errors.New("insufficient special characters"))
+
+	ErrHashingPassword       = NewErrorWrapper("ErrHashingPassword", errors.New("error hashing password"))
+	ErrInvalidRequestPayload = NewErrorWrapper("ErrInvalidRequestPayload", errors.New("invalid request payload"))
+	ErrInvalidCredentials    = NewErrorWrapper("ErrInvalidCredentials", errors.New("invalid credentials"))
+	ErrCreatingToken         = NewErrorWrapper("ErrCreatingToken", errors.New("error creating token"))
+	ErrInvalidToken          = NewErrorWrapper("ErrInvalidToken", errors.New("invalid token"))
+	ErrUnauthorized          = NewErrorWrapper("ErrUnauthorized", errors.New("unauthorized"))
+
+	ErrDefaultAdminNotFound  = NewErrorWrapper("ErrDefaultAdminNotFound", errors.New("default admin not found"))
+	ErrUserAlreadyExists     = NewErrorWrapper("ErrUserAlreadyExists", errors.New("user already exists"))
+	ErrUserNotFound          = NewErrorWrapper("ErrUserNotFound", errors.New("user not found"))
+)

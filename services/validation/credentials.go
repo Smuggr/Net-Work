@@ -4,7 +4,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"overseer/services/errors"
+	"overseer/data/errors"
 )
 
 

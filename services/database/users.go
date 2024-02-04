@@ -3,8 +3,8 @@ package database
 import (
 	"log"
 
-	"overseer/services/errors"
-	"overseer/services/models"
+	"overseer/data/errors"
+	"overseer/data/models"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -32,14 +32,13 @@ func createDefaultUser(db *gorm.DB) {
 
 func UpdateUser(db *gorm.DB, login string, updatedUser *models.User) error {
 	var existingUser models.User
-
 	if result := db.Where("login = ?", login).First(&existingUser); result.Error != nil {
 		return errors.ErrUserNotFound
 	}
 
-	if updatedUser.ID != existingUser.ID {
-		return gorm.ErrRecordNotFound
-	}
+	// if updatedUser.ID != existingUser.ID {
+	// 	return gorm.ErrRecordNotFound
+	// }
 
 	existingUser.Username = updatedUser.Username
 

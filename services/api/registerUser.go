@@ -3,9 +3,10 @@ package api
 import (
 	"net/http"
 
+	"overseer/data/errors"
+	"overseer/data/messages"
+	"overseer/data/models"
 	"overseer/services/database"
-	"overseer/services/errors"
-	"overseer/services/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,5 +30,5 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "User registered successfully", "token": tokenString})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRegisterSuccess.Msg(), "token": tokenString})
 }

@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
+	"overseer/data/errors"
+	"overseer/data/models"
 	"overseer/services/database"
-	"overseer/services/models"
-	"overseer/services/errors"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -36,7 +36,7 @@ func UserAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")
 		if header == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUnauthorized.Error()})
 			c.Abort()
 			return
 		}
@@ -48,7 +48,7 @@ func UserAuthMiddleware() gin.HandlerFunc {
 		})
 
 		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidToken.Error()})
 			c.Abort()
 			return
 		}
