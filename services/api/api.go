@@ -23,7 +23,7 @@ func Initialize(port int) {
 	apiV1Group.Use(tollbooth_gin.LimitHandler(l))
 	{
 		userGroup := apiV1Group.Group("/user")
-		userGroup.Use(routes.UserAuthMiddleware())
+		userGroup.Use(UserAuthMiddleware())
 		{
 			userGroup.POST("/register", routes.RegisterUser)
 			userGroup.POST("/update", routes.UpdateUser)

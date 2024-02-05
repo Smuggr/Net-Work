@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	"overseer/data/errors"
 	"overseer/data/models"
+	"overseer/data/messages"
 	"overseer/services/database"
 
 	"golang.org/x/crypto/bcrypt"
@@ -37,41 +37,6 @@ func createToken(login string) (string, *errors.ErrorWrapper) {
 	return tokenString, nil
 }
 
-
-func UserAuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		header := c.GetHeader("Authorization")
-		if header == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUnauthorized.Key})
-			c.Abort()
-			return
-		}
-
-		// "Bearer <token>"
-		tokenString := strings.Split(header, " ")[1]
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv("SECRET_TOKEN")), nil
-		})
-
-		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidToken.Key})
-			c.Abort()
-			return
-		}
-
-		claims := token.Claims.(jwt.MapClaims)
-		login, ok := claims["login"].(string)
-		if !ok {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidTokenFormat.Key})
-			c.Abort()
-			return
-		}
-		
-		c.Set("login", login)
-		c.Next()
-	}
-}
-
 func AuthenticateUser(c *gin.Context) {
     var user models.User
     if err := c.BindJSON(&user); err != nil {
@@ -79,7 +44,6 @@ func AuthenticateUser(c *gin.Context) {
         return
     }
 
-	// User not found? Or just invalid credentials?
     var existingUser models.User
     if database.DB.Where("login = ?", user.Login).First(&existingUser).Error != nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Key})
@@ -98,4 +62,40 @@ func AuthenticateUser(c *gin.Context) {
     }
 
     c.JSON(http.StatusOK, gin.H{"token": tokenString})
+}
+
+func RegisterUser(c *gin.Context) {
+	var user models.User
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
+		return
+	}
+
+	if err := database.RegisterUser(database.DB, &user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
+		return
+	}
+
+	tokenString, err := createToken(user.Login)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRegisterSuccess.Key, "token": tokenString})
+}
+
+func UpdateUser(c *gin.Context) {
+	var user models.User
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
+		return
+	}
+
+	if err := database.UpdateUser(database.DB, &user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserUpdateSuccess.Key})
 }

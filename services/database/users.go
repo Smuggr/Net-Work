@@ -5,6 +5,7 @@ import (
 
 	"overseer/data/errors"
 	"overseer/data/models"
+	"overseer/services/validation"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -12,23 +13,10 @@ import (
 )
 
 const (
-	DefaultAdminLogin string = "admin"
-	DefaultAdminPassword string = "admin"
-	DefaultAdminUsername string = "admin"
+	DefaultAdminLogin string = "administrator"
+	DefaultAdminPassword string = "Password123$"
+	DefaultAdminUsername string = "Administrator"
 )
-
-func createDefaultUser(db *gorm.DB) {
-	err := RegisterUser(db, &models.User{
-		Login:           DefaultAdminLogin,
-		Username:        DefaultAdminUsername,
-		Password:        DefaultAdminPassword,
-		PermissionLevel: 1,
-	})
-
-	if err != nil {
-		log.Println(err)
-	}
-}
 
 func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 	var existingUser models.User
@@ -36,13 +24,19 @@ func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 		return errors.ErrUserNotFound
 	}
 
-	// if updatedUser.ID != existingUser.ID {
-	// 	return gorm.ErrRecordNotFound
-	// }
+	if updatedUser.Username != "" {
+		if err := validation.ValidateUsername(updatedUser.Username); err != nil {
+			return err
+		}
 
-	existingUser.Username = updatedUser.Username
+		existingUser.Username = updatedUser.Username
+	}
 
 	if updatedUser.Password != "" {
+		if err := validation.ValidatePassword(updatedUser.Password); err != nil {
+			return err
+		}
+
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(updatedUser.Password), bcrypt.DefaultCost)
 		if err != nil {
 			return errors.ErrHashingPassword
@@ -55,7 +49,7 @@ func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 		return errors.ErrUpdatingUserInDB
 	}
 
-	log.Printf("User '%s' updated successfully", existingUser.Login)
+	log.Printf("user '%s' updated successfully", existingUser.Login)
 	return nil
 }
 
@@ -63,6 +57,18 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 	var existingUser models.User
 	if result := db.Where("login = ?", newUser.Login).First(&existingUser); result.Error == nil {
 		return errors.ErrUserAlreadyExists
+	}
+
+	if err := validation.ValidateLogin(newUser.Login); err != nil {
+		return err
+	}
+
+	if err := validation.ValidateUsername(newUser.Username); err != nil {
+		return err
+	}
+
+	if err := validation.ValidatePassword(newUser.Password); err != nil {
+		return err
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
@@ -75,6 +81,6 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 		return errors.ErrRegisteringUserInDB
 	}
 
-	log.Printf("User '%s' registered successfully", newUser.Login)
+	log.Printf("user '%s' registered successfully", newUser.Login)
 	return nil
 }

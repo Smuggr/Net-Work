@@ -22,6 +22,20 @@ func getDSN() string {
         " sslmode=disable TimeZone=UTC"
 }
 
+func createDefaultUser(db *gorm.DB) {
+	err := RegisterUser(db, &models.User{
+		Login:           DefaultAdminLogin,
+		Username:        DefaultAdminUsername,
+		Password:        DefaultAdminPassword,
+		PermissionLevel: 1,
+	})
+
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+
 func Initialize() {
 	log.Println("initializing database")
 
