@@ -35,6 +35,7 @@ var (
 	ErrCreatingToken         = NewErrorWrapper("ErrCreatingToken", errors.New("error creating token"))
 	ErrSigningToken          = NewErrorWrapper("ErrSigningToken", errors.New("error signing token"))
 	ErrInvalidToken          = NewErrorWrapper("ErrInvalidToken", errors.New("invalid token"))
+	ErrInvalidTokenFormat    = NewErrorWrapper("ErrInvalidTokenFormat", errors.New("invalid token format"))
 	ErrUnauthorized          = NewErrorWrapper("ErrUnauthorized", errors.New("unauthorized"))
 
 	ErrRegisteringUserInDB   = NewErrorWrapper("ErrRegisteringUserInDB", errors.New("error registering user in database"))

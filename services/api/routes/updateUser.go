@@ -1,4 +1,4 @@
-package api
+package routes
 
 import (
 	"net/http"
@@ -18,8 +18,8 @@ func UpdateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
 		return
 	}
-	
-	if err := database.UpdateUser(database.DB, user.Login, &user); err != nil {
+
+	if err := database.UpdateUser(database.DB, &user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
 		return
 	}

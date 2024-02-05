@@ -30,9 +30,9 @@ func createDefaultUser(db *gorm.DB) {
 	}
 }
 
-func UpdateUser(db *gorm.DB, login string, updatedUser *models.User) *errors.ErrorWrapper {
+func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 	var existingUser models.User
-	if result := db.Where("login = ?", login).First(&existingUser); result.Error != nil {
+	if result := db.Where("login = ?", updatedUser.Login).First(&existingUser); result.Error != nil {
 		return errors.ErrUserNotFound
 	}
 

@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"overseer/services/api/routes"
+
 	"github.com/didip/tollbooth"
 	"github.com/didip/tollbooth_gin"
 	"github.com/gin-gonic/gin"
@@ -21,15 +23,15 @@ func Initialize(port int) {
 	apiV1Group.Use(tollbooth_gin.LimitHandler(l))
 	{
 		userGroup := apiV1Group.Group("/user")
-		userGroup.Use(UserAuthMiddleware())
+		userGroup.Use(routes.UserAuthMiddleware())
 		{
-			userGroup.POST("/register", RegisterUser)
-			userGroup.POST("/update", UpdateUser)
+			userGroup.POST("/register", routes.RegisterUser)
+			userGroup.POST("/update", routes.UpdateUser)
 		}
 
 		noAuthUserGroup := apiV1Group.Group("/user")
 		{
-			noAuthUserGroup.POST("/authenticate", AuthenticateUser)
+			noAuthUserGroup.POST("/authenticate", routes.AuthenticateUser)
 		}
 	}
 
