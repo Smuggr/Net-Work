@@ -18,7 +18,7 @@ import (
 )
 
 
-func createToken(login string) (string, error) {
+func createToken(login string) (string, *errors.ErrorWrapper) {
 	jwt_token_lifespan, err := strconv.Atoi(os.Getenv("API_JWT_TOKEN_LIFESPAN_MINUTES"))
 	if err != nil {
 		return "", errors.ErrCreatingToken
@@ -29,14 +29,20 @@ func createToken(login string) (string, error) {
 		"exp":   time.Now().Add(time.Duration(jwt_token_lifespan) * time.Minute).Unix(),
 	})
 
-	return token.SignedString([]byte(os.Getenv("SECRET_TOKEN")))
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_TOKEN")))
+	if err != nil {
+		return "", errors.ErrSigningToken
+	}
+
+	return tokenString, nil
 }
+
 
 func UserAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")
 		if header == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUnauthorized.Error()})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUnauthorized.Key})
 			c.Abort()
 			return
 		}
@@ -48,7 +54,7 @@ func UserAuthMiddleware() gin.HandlerFunc {
 		})
 
 		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidToken.Error()})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidToken.Key})
 			c.Abort()
 			return
 		}
@@ -60,25 +66,25 @@ func UserAuthMiddleware() gin.HandlerFunc {
 func AuthenticateUser(c *gin.Context) {
     var user models.User
     if err := c.BindJSON(&user); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Error()})
+        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
         return
     }
 
 	// User not found? Or just invalid credentials?
     var existingUser models.User
     if database.DB.Where("login = ?", user.Login).First(&existingUser).Error != nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidCredentials.Error()})
+        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Key})
         return
     }
 
     if err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(user.Password)); err != nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidCredentials.Error()})
+        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidCredentials.Key})
         return
     }
 
     tokenString, err := createToken(user.Login)
     if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
         return
     }
 

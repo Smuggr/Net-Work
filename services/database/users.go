@@ -30,7 +30,7 @@ func createDefaultUser(db *gorm.DB) {
 	}
 }
 
-func UpdateUser(db *gorm.DB, login string, updatedUser *models.User) error {
+func UpdateUser(db *gorm.DB, login string, updatedUser *models.User) *errors.ErrorWrapper {
 	var existingUser models.User
 	if result := db.Where("login = ?", login).First(&existingUser); result.Error != nil {
 		return errors.ErrUserNotFound
@@ -52,14 +52,14 @@ func UpdateUser(db *gorm.DB, login string, updatedUser *models.User) error {
 	}
 
 	if result := db.Save(&existingUser); result.Error != nil {
-		return result.Error
+		return errors.ErrUpdatingUserInDB
 	}
 
 	log.Printf("User '%s' updated successfully", existingUser.Login)
 	return nil
 }
 
-func RegisterUser(db *gorm.DB, newUser *models.User) error {
+func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 	var existingUser models.User
 	if result := db.Where("login = ?", newUser.Login).First(&existingUser); result.Error == nil {
 		return errors.ErrUserAlreadyExists
@@ -72,7 +72,7 @@ func RegisterUser(db *gorm.DB, newUser *models.User) error {
 
 	newUser.Password = string(hashedPassword)
 	if result := db.Create(&newUser); result.Error != nil {
-		return result.Error
+		return errors.ErrRegisteringUserInDB
 	}
 
 	log.Printf("User '%s' registered successfully", newUser.Login)

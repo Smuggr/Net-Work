@@ -34,7 +34,7 @@ func containsSpecial(s string, n int) bool {
 	return false
 }
 
-func ValidateLogin(login string) error {
+func ValidateLogin(login string) *errors.ErrorWrapper {
 	const (
 		maxLength  = 32
 		minLength  = 8
@@ -47,7 +47,7 @@ func ValidateLogin(login string) error {
 	return nil
 }
 
-func ValidatePassword(password string) error {
+func ValidatePassword(password string) *errors.ErrorWrapper {
 	const (
 		maxLength  = 32
 		minLength  = 8
@@ -80,7 +80,7 @@ func ValidatePassword(password string) error {
 	return nil
 }
 
-func ValidateUsername(username string) error {
+func ValidateUsername(username string) *errors.ErrorWrapper {
 	const (
 		maxLength  = 32
 		minLength  = 8

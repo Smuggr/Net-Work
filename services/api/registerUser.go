@@ -15,20 +15,20 @@ import (
 func RegisterUser(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
 		return
 	}
 
 	if err := database.RegisterUser(database.DB, &user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
 		return
 	}
 
 	tokenString, err := createToken(user.Login)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRegisterSuccess.Msg(), "token": tokenString})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRegisterSuccess.Key, "token": tokenString})
 }

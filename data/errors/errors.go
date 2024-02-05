@@ -33,9 +33,12 @@ var (
 	ErrInvalidRequestPayload = NewErrorWrapper("ErrInvalidRequestPayload", errors.New("invalid request payload"))
 	ErrInvalidCredentials    = NewErrorWrapper("ErrInvalidCredentials", errors.New("invalid credentials"))
 	ErrCreatingToken         = NewErrorWrapper("ErrCreatingToken", errors.New("error creating token"))
+	ErrSigningToken          = NewErrorWrapper("ErrSigningToken", errors.New("error signing token"))
 	ErrInvalidToken          = NewErrorWrapper("ErrInvalidToken", errors.New("invalid token"))
 	ErrUnauthorized          = NewErrorWrapper("ErrUnauthorized", errors.New("unauthorized"))
 
+	ErrRegisteringUserInDB   = NewErrorWrapper("ErrRegisteringUserInDB", errors.New("error registering user in database"))
+	ErrUpdatingUserInDB      = NewErrorWrapper("ErrUpdatingUserInDB", errors.New("error updating user in database"))
 	ErrDefaultAdminNotFound  = NewErrorWrapper("ErrDefaultAdminNotFound", errors.New("default admin not found"))
 	ErrUserAlreadyExists     = NewErrorWrapper("ErrUserAlreadyExists", errors.New("user already exists"))
 	ErrUserNotFound          = NewErrorWrapper("ErrUserNotFound", errors.New("user not found"))
