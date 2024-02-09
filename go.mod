@@ -4,9 +4,13 @@ go 1.21.6
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/didip/tollbooth v4.0.2+incompatible
+	github.com/didip/tollbooth_gin v0.0.0-20170928041415-5752492be505
 	github.com/gin-gonic/gin v1.9.1
+	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/viper v1.18.2
+	golang.org/x/crypto v0.18.0
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/gorm v1.25.5
 )
@@ -15,14 +19,9 @@ require (
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
-	github.com/didip/tollbooth v4.0.2+incompatible // indirect
-	github.com/didip/tollbooth/v6 v6.1.2 // indirect
-	github.com/didip/tollbooth/v7 v7.0.1 // indirect
-	github.com/didip/tollbooth_gin v0.0.0-20170928041415-5752492be505 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/go-pkgz/expirable-cache v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.17.0 // indirect
@@ -43,7 +42,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
@@ -55,7 +53,6 @@ require (
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.7.0 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a // indirect
 	golang.org/x/net v0.20.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
