@@ -3,8 +3,10 @@ package api
 import (
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
+	"overseer/data/configuration"
 	"overseer/services/api/routes"
 
 	"github.com/didip/tollbooth"
@@ -13,12 +15,14 @@ import (
 )
 
 
-func Initialize(port int) {
+func Initialize(config *configuration.APIConfig) {
     log.Println("initializing api/v1")
-    
+
+	gin.SetMode(os.Getenv("GIN_MODE"))
+
 	r := gin.Default()
 	l := tollbooth.NewLimiter(1, nil)
-    
+
 	apiV1Group := r.Group("/api/v1")
 	apiV1Group.Use(tollbooth_gin.LimitHandler(l))
 	{
@@ -33,8 +37,13 @@ func Initialize(port int) {
 		{
 			noAuthUserGroup.POST("/authenticate", routes.AuthenticateUser)
 		}
+
+		// deviceGroup := apiV1Group.Group("/device")
+		// {
+		// 	deviceGroup.POST("/register", routes.RegisterDevice)
+		// }
 	}
 
 	http.Handle("/", r)
-    log.Fatal(http.ListenAndServe(":" + strconv.Itoa(port), r))
+    log.Fatal(http.ListenAndServe(":" + strconv.Itoa(int(config.Port)), r))
 }

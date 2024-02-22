@@ -36,8 +36,8 @@ func containsSpecial(s string, n int) bool {
 
 func ValidateLogin(login string) *errors.ErrorWrapper {
 	const (
-		maxLength  = 32
-		minLength  = 8
+		maxLength = 32
+		minLength = 8
 	)
 
 	if length := utf8.RuneCountInString(login); length < minLength || length > maxLength {
@@ -82,8 +82,8 @@ func ValidatePassword(password string) *errors.ErrorWrapper {
 
 func ValidateUsername(username string) *errors.ErrorWrapper {
 	const (
-		maxLength  = 32
-		minLength  = 8
+		maxLength = 32
+		minLength = 8
 	)
 
 	if length := utf8.RuneCountInString(username); length < minLength || length > maxLength {

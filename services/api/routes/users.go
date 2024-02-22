@@ -19,14 +19,14 @@ import (
 
 
 func createToken(login string) (string, *errors.ErrorWrapper) {
-	jwt_token_lifespan, err := strconv.Atoi(os.Getenv("API_JWT_TOKEN_LIFESPAN_MINUTES"))
+	jwt_token_lifespan_minutes, err := strconv.Atoi(os.Getenv("API_JWT_TOKEN_LIFESPAN"))
 	if err != nil {
 		return "", errors.ErrCreatingToken
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"login": login,
-		"exp":   time.Now().Add(time.Duration(jwt_token_lifespan) * time.Minute).Unix(),
+		"exp":   time.Now().Add(time.Duration(jwt_token_lifespan_minutes) * time.Minute).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_TOKEN")))

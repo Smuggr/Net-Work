@@ -3,7 +3,9 @@ package database
 import (
 	"log"
 	"os"
+	"strconv"
 
+	"overseer/data/configuration"
 	"overseer/data/models"
 
 	"gorm.io/driver/postgres"
@@ -13,9 +15,9 @@ import (
 var DB *gorm.DB
 
 
-func getDSN() string {
-    return "host=" + os.Getenv("DB_HOST") +
-        " port=" + os.Getenv("DB_PORT") +
+func getDSN(config *configuration.DatabaseConfig) string {
+    return "host=" + config.Host +
+        " port=" + strconv.Itoa(int(config.Port)) +
         " user=" + os.Getenv("DB_USER") +
         " password=" + os.Getenv("DB_PASSWORD") +
         " dbname=" + os.Getenv("DB_NAME") +
@@ -36,10 +38,10 @@ func createDefaultUser(db *gorm.DB) {
 }
 
 
-func Initialize() {
+func Initialize(config *configuration.DatabaseConfig) {
 	log.Println("initializing database")
 
-    dsn := getDSN()
+    dsn := getDSN(config)
     db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
     if err != nil {
         panic("failed to connect to database")

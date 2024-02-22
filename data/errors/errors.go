@@ -43,4 +43,8 @@ var (
 	ErrDefaultAdminNotFound  = NewErrorWrapper("ErrDefaultAdminNotFound", errors.New("default admin not found"))
 	ErrUserAlreadyExists     = NewErrorWrapper("ErrUserAlreadyExists", errors.New("user already exists"))
 	ErrUserNotFound          = NewErrorWrapper("ErrUserNotFound", errors.New("user not found"))
+
+	ErrReadingConfigFile     = NewErrorWrapper("ErrReadingConfigFile", errors.New("error reading config file"))
+	ErrFormattingConfigFile  = NewErrorWrapper("ErrFormattingConfigFile", errors.New("error formatting config file"))
+	ErrReadingEnvFile        = NewErrorWrapper("ErrReadingEnvFile", errors.New("error reading env file"))
 )
