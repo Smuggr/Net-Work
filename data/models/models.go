@@ -12,3 +12,9 @@ type User struct {
     Password        string `json:"password" gorm:"not null"`
     PermissionLevel int    `json:"permission_level" gorm:"not null;default:1"`
 }
+
+type Device struct {
+    gorm.Model
+    Name string `json:"name" gorm:"not null"`
+    IP string `json:"ip" gorm:"not null"`
+}

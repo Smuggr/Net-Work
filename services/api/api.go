@@ -6,8 +6,9 @@ import (
 	"os"
 	"strconv"
 
-	"overseer/data/configuration"
-	"overseer/services/api/routes"
+	"network/data/configuration"
+	"network/data/errors"
+	"network/services/api/routes"
 
 	"github.com/didip/tollbooth"
 	"github.com/didip/tollbooth_gin"
@@ -46,4 +47,9 @@ func Initialize(config *configuration.APIConfig) {
 
 	http.Handle("/", r)
     log.Fatal(http.ListenAndServe(":" + strconv.Itoa(int(config.Port)), r))
+}
+
+func Cleanup(config *configuration.APIConfig) *errors.ErrorWrapper {
+	log.Println("cleaning up api/v1")
+	return nil
 }

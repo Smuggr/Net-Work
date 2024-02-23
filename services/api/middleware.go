@@ -5,10 +5,10 @@ import (
 	"os"
 	"strings"
 
-	"overseer/data/errors"
+	"network/data/errors"
 
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 

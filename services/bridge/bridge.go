@@ -4,10 +4,13 @@ import (
 	"log"
 	"time"
 
-	"overseer/data/configuration"
+	"network/data/configuration"
+	"network/data/errors"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
+
+var MainClient mqtt.Client
 
 
 func Initialize(config *configuration.BridgeConfig) {
@@ -20,11 +23,16 @@ func Initialize(config *configuration.BridgeConfig) {
 	options.SetAutoReconnect(true)
 	options.SetCleanSession(false)
 
-	client := mqtt.NewClient(options)
+	MainClient = mqtt.NewClient(options)
 
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
+	if token := MainClient.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
 	}
+}
 
-	client.Disconnect(config.DisconnectMiliseconds)
+func Cleanup(config *configuration.BridgeConfig) *errors.ErrorWrapper {
+	log.Println("cleaning up bridge/v1")
+	MainClient.Disconnect(config.DisconnectMiliseconds)
+	
+	return nil
 }

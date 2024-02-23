@@ -3,9 +3,9 @@ package database
 import (
 	"log"
 
-	"overseer/data/errors"
-	"overseer/data/models"
-	"overseer/services/validation"
+	"network/data/errors"
+	"network/data/models"
+	"network/services/validation"
 
 	"golang.org/x/crypto/bcrypt"
 

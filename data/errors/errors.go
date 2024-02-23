@@ -38,6 +38,8 @@ var (
 	ErrInvalidTokenFormat    = NewErrorWrapper("ErrInvalidTokenFormat", errors.New("invalid token format"))
 	ErrUnauthorized          = NewErrorWrapper("ErrUnauthorized", errors.New("unauthorized"))
 
+	ErrGettingDBConnection   = NewErrorWrapper("ErrGettingDBConnection", errors.New("error getting database connection"))
+	ErrClosingDBConnection   = NewErrorWrapper("ErrClosingDBConnection", errors.New("error closing database connection"))
 	ErrRegisteringUserInDB   = NewErrorWrapper("ErrRegisteringUserInDB", errors.New("error registering user in database"))
 	ErrUpdatingUserInDB      = NewErrorWrapper("ErrUpdatingUserInDB", errors.New("error updating user in database"))
 	ErrDefaultAdminNotFound  = NewErrorWrapper("ErrDefaultAdminNotFound", errors.New("default admin not found"))

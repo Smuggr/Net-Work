@@ -6,17 +6,16 @@ package routes
 // 	"strconv"
 // 	"time"
 
-// 	"overseer/data/errors"
-// 	"overseer/data/models"
-// 	"overseer/data/messages"
-// 	"overseer/services/database"
+// 	"network/data/errors"
+// 	"network/data/models"
+// 	"network/data/messages"
+// 	"network/services/database"
 
 // 	"golang.org/x/crypto/bcrypt"
 
 // 	"github.com/golang-jwt/jwt/v5"
 // 	"github.com/gin-gonic/gin"
 // )
-
 
 // func RegisterDevice(c *gin.Context) {
 

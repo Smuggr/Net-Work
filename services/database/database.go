@@ -5,8 +5,9 @@ import (
 	"os"
 	"strconv"
 
-	"overseer/data/configuration"
-	"overseer/data/models"
+	"network/data/configuration"
+	"network/data/errors"
+	"network/data/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -51,4 +52,21 @@ func Initialize(config *configuration.DatabaseConfig) {
     DB.AutoMigrate(&models.User{})
 
     createDefaultUser(DB)
+}
+
+func Cleanup(config *configuration.DatabaseConfig) *errors.ErrorWrapper{
+	log.Println("closing database connection")
+    sqlDB, err := DB.DB()
+	
+    if err != nil {
+        return errors.ErrGettingDBConnection
+    }
+
+    if sqlDB != nil {
+        if err := sqlDB.Close(); err != nil {
+            return errors.ErrClosingDBConnection
+        }
+    }
+
+	return nil
 }
