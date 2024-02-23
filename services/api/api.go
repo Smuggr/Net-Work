@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"network/data/configuration"
-	"network/data/errors"
 	"network/services/api/routes"
 
 	"github.com/didip/tollbooth"
@@ -16,7 +15,7 @@ import (
 )
 
 
-func Initialize(config *configuration.APIConfig) {
+func Initialize(config *configuration.APIConfig) { 
     log.Println("initializing api/v1")
 
 	gin.SetMode(os.Getenv("GIN_MODE"))
@@ -49,7 +48,7 @@ func Initialize(config *configuration.APIConfig) {
     log.Fatal(http.ListenAndServe(":" + strconv.Itoa(int(config.Port)), r))
 }
 
-func Cleanup(config *configuration.APIConfig) *errors.ErrorWrapper {
+func Cleanup(config *configuration.APIConfig) error {
 	log.Println("cleaning up api/v1")
 	return nil
 }

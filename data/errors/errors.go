@@ -38,6 +38,7 @@ var (
 	ErrInvalidTokenFormat    = NewErrorWrapper("ErrInvalidTokenFormat", errors.New("invalid token format"))
 	ErrUnauthorized          = NewErrorWrapper("ErrUnauthorized", errors.New("unauthorized"))
 
+	ErrConnectingToDB        = NewErrorWrapper("ErrConnectingToDB", errors.New("error connecting to database"))
 	ErrGettingDBConnection   = NewErrorWrapper("ErrGettingDBConnection", errors.New("error getting database connection"))
 	ErrClosingDBConnection   = NewErrorWrapper("ErrClosingDBConnection", errors.New("error closing database connection"))
 	ErrRegisteringUserInDB   = NewErrorWrapper("ErrRegisteringUserInDB", errors.New("error registering user in database"))

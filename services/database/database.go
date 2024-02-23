@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"network/data/configuration"
-	"network/data/errors"
 	"network/data/models"
 
 	"gorm.io/driver/postgres"
@@ -25,46 +24,41 @@ func getDSN(config *configuration.DatabaseConfig) string {
         " sslmode=disable TimeZone=UTC"
 }
 
-func createDefaultUser(db *gorm.DB) {
-	err := RegisterUser(db, &models.User{
-		Login:           DefaultAdminLogin,
-		Username:        DefaultAdminUsername,
-		Password:        DefaultAdminPassword,
-		PermissionLevel: 1,
-	})
-
-	if err != nil {
-		log.Println(err)
-	}
-}
-
-
-func Initialize(config *configuration.DatabaseConfig) {
+func Initialize(config *configuration.DatabaseConfig) error {
 	log.Println("initializing database")
 
     dsn := getDSN(config)
     db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
     if err != nil {
-        panic("failed to connect to database")
+        return err
     }
 
     DB = db
     DB.AutoMigrate(&models.User{})
 
-    createDefaultUser(DB)
+    if err := RegisterUser(db, &models.User{
+		Login:           DefaultAdminLogin,
+		Username:        DefaultAdminUsername,
+		Password:        DefaultAdminPassword,
+		PermissionLevel: 1,
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func Cleanup(config *configuration.DatabaseConfig) *errors.ErrorWrapper{
+func Cleanup(config *configuration.DatabaseConfig) error {
 	log.Println("closing database connection")
     sqlDB, err := DB.DB()
 	
     if err != nil {
-        return errors.ErrGettingDBConnection
+        return err
     }
 
     if sqlDB != nil {
         if err := sqlDB.Close(); err != nil {
-            return errors.ErrClosingDBConnection
+            return err
         }
     }
 

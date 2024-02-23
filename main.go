@@ -17,8 +17,8 @@ func main() {
 	var config configuration.Config
 	configuration.Initialize(&config)
 
-	go database.Initialize(&config.Database)
-	go bridge.Initialize(&config.Bridge)
+	database.Initialize(&config.Database)
+	bridge.Initialize(&config.Bridge)
 	go api.Initialize(&config.API)
 
 	defer func() {
