@@ -15,7 +15,7 @@ import (
 )
 
 
-func Initialize(config *configuration.APIConfig) { 
+func Initialize(config *configuration.APIConfig, ch chan error) { 
     log.Println("initializing api/v1")
 
 	gin.SetMode(os.Getenv("GIN_MODE"))
@@ -45,7 +45,10 @@ func Initialize(config *configuration.APIConfig) {
 	}
 
 	http.Handle("/", r)
-    log.Fatal(http.ListenAndServe(":" + strconv.Itoa(int(config.Port)), r))
+
+	if err := http.ListenAndServe(":" + strconv.Itoa(int(config.Port)), r); err != nil {
+		ch <- err
+	}
 }
 
 func Cleanup(config *configuration.APIConfig) error {

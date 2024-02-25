@@ -36,14 +36,9 @@ func Initialize(config *configuration.DatabaseConfig) error {
     DB = db
     DB.AutoMigrate(&models.User{})
 
-    if err := RegisterUser(db, &models.User{
-		Login:           DefaultAdminLogin,
-		Username:        DefaultAdminUsername,
-		Password:        DefaultAdminPassword,
-		PermissionLevel: 1,
-	}); err != nil {
-		return err
-	}
+    if err := RegisterDefaultAdmin(db); err != nil {
+        return err
+    }
 
 	return nil
 }

@@ -18,9 +18,18 @@ const (
 	DefaultAdminUsername string = "Administrator"
 )
 
+func GetUser(db *gorm.DB, login string) (*models.User) {
+	var user models.User
+	if result := db.Where("login = ?", login).First(&user); result.Error != nil {
+		return nil
+	}
+
+	return &user
+}
+
 func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
-	var existingUser models.User
-	if result := db.Where("login = ?", updatedUser.Login).First(&existingUser); result.Error != nil {
+	existingUser := GetUser(db, updatedUser.Login)
+	if existingUser == nil {
 		return errors.ErrUserNotFound
 	}
 
@@ -54,8 +63,7 @@ func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 }
 
 func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
-	var existingUser models.User
-	if result := db.Where("login = ?", newUser.Login).First(&existingUser); result.Error == nil {
+	if existingUser := GetUser(db, newUser.Login); existingUser != nil {
 		return errors.ErrUserAlreadyExists
 	}
 
@@ -82,5 +90,29 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 	}
 
 	log.Printf("user '%s' registered successfully", newUser.Login)
+	return nil
+}
+
+func RegisterDefaultAdmin(db *gorm.DB) error {
+	if existingUser := GetUser(db, DefaultAdminLogin); existingUser != nil {
+		UpdateUser(db, &models.User{
+			Login:           DefaultAdminLogin,
+			Username:        DefaultAdminUsername,
+			Password:        DefaultAdminPassword,
+			PermissionLevel: 1,
+		})
+		
+		return nil
+	}
+
+	if err := RegisterUser(db, &models.User{
+		Login:           DefaultAdminLogin,
+		Username:        DefaultAdminUsername,
+		Password:        DefaultAdminPassword,
+		PermissionLevel: 1,
+	}); err != nil {
+		return err
+	}
+
 	return nil
 }
