@@ -27,6 +27,24 @@ func GetUser(db *gorm.DB, login string) (*models.User) {
 	return &user
 }
 
+func GetLimitedUsers(db *gorm.DB, limit int) ([]models.User, error) {
+	var users []models.User
+	if err := db.Limit(limit).Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func GetPaginatedUsers(db *gorm.DB, page int, pageSize int) ([]models.User, error) {
+	var users []models.User
+	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 	var existingUser *models.User = GetUser(db, updatedUser.Login)
 	if existingUser == nil {

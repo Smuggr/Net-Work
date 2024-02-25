@@ -19,4 +19,6 @@ func (e *MessageWrapper) Msg() string {
 var (
 	MsgUserRegisterSuccess = NewMessageWrapper("MsgRegisterSuccess", "user successfully registered")
 	MsgUserUpdateSuccess   = NewMessageWrapper("MsgUserUpdateSuccess", "user successfully updated")
+	MsgUsersFetchSuccess   = NewMessageWrapper("MsgUsersFetchSuccess", "users successfully fetched")
+	MsgUserFetchSuccess    = NewMessageWrapper("MsgUserFetchSuccess", "user successfully fetched")
 )

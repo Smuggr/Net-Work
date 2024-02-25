@@ -33,13 +33,21 @@ func Initialize(ch chan error) {
 		userGroup := apiV1Group.Group("/user")
 		userGroup.Use(UserAuthMiddleware())
 		{
-			userGroup.POST("/register", routes.RegisterUser)
-			userGroup.POST("/update", routes.UpdateUser)
+			userGroup.POST("/register", routes.RegisterUserHandler)
+			userGroup.POST("/update", routes.UpdateUserHandler)
 		}
 
 		noAuthUserGroup := apiV1Group.Group("/user")
 		{
-			noAuthUserGroup.POST("/authenticate", routes.AuthenticateUser)
+			noAuthUserGroup.POST("/authenticate", routes.AuthenticateUserHandler)
+		}
+
+		usersGroup := apiV1Group.Group("/users")
+		usersGroup.Use(UserAuthMiddleware())
+		{
+			usersGroup.GET("/all", routes.GetAllUsersHandler)
+    		usersGroup.GET("/limited", routes.GetLimitedUsersHandler)
+    		usersGroup.GET("/paginated", routes.GetPaginatedUsersHandler)
 		}
 
 		// deviceGroup := apiV1Group.Group("/device")

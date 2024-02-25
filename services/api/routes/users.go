@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"network/data/configuration"
@@ -32,7 +33,7 @@ func createToken(login string) (string, *errors.ErrorWrapper) {
 	return tokenString, nil
 }
 
-func AuthenticateUser(c *gin.Context) {
+func AuthenticateUserHandler(c *gin.Context) {
     var user models.User
     if err := c.BindJSON(&user); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
@@ -59,7 +60,7 @@ func AuthenticateUser(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
 
-func RegisterUser(c *gin.Context) {
+func RegisterUserHandler(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
@@ -77,10 +78,10 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRegisterSuccess.Key, "token": tokenString})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRegisterSuccess, "token": tokenString})
 }
 
-func UpdateUser(c *gin.Context) {
+func UpdateUserHandler(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
@@ -92,5 +93,69 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserUpdateSuccess.Key})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserUpdateSuccess})
+}
+
+
+func GetAllUsersHandler(c *gin.Context) {
+	users, err := database.GetLimitedUsers(database.DB, -1)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingUsersFromDB})
+		return
+	}
+
+    c.JSON(http.StatusOK, gin.H{
+		"message": messages.MsgUsersFetchSuccess, 
+		"users":   users,
+	})
+}
+
+func GetLimitedUsersHandler(c *gin.Context) {
+	limitStr := c.Query("limit")
+    limit, err := strconv.Atoi(limitStr)
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
+		return
+    }
+
+    users, err := database.GetLimitedUsers(database.DB, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingUsersFromDB})
+		return
+	}
+
+    c.JSON(http.StatusOK, gin.H{
+		"message": messages.MsgUsersFetchSuccess,
+		"limit":   limit,
+		"users":   users,
+	})
+}
+
+func GetPaginatedUsersHandler(c *gin.Context) {
+	pageStr := c.Query("page")
+	pageSizeStr := c.Query("pageSize")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
+		return
+	}
+
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
+		return
+	}
+
+	users, err := database.GetPaginatedUsers(database.DB, page, pageSize)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingUsersFromDB})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"page":     page,
+		"pageSize": pageSize,
+		"users":    users,
+	})
 }

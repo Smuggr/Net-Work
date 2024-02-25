@@ -11,9 +11,7 @@ import (
 	"syscall"
 )
 
-
-
-func main() {
+func Initialize() {
 	if _, err := configuration.Initialize(); err != nil {
 		log.Fatalln(err.Error())
 	}
@@ -34,27 +32,28 @@ func main() {
 			log.Println(err.Error()) 
 		}
 	}()
+}
 
-	defer func() {
-		if err := recover(); err != nil {
-			log.Println("panic occurred:", err)
-		}
+func Cleanup() {
+	if err := recover(); err != nil {
+		log.Println("panic occurred:", err)
+	}
 
-		log.Println("cleaning up...")
-		if err := bridge.Cleanup(); err != nil {
-			log.Println(err.Error())
-		}
+	log.Println("cleaning up...")
+	if err := bridge.Cleanup(); err != nil {
+		log.Println(err.Error())
+	}
 
-		if err := api.Cleanup(); err != nil {
-			log.Println(err.Error())
-		}
+	if err := api.Cleanup(); err != nil {
+		log.Println(err.Error())
+	}
 
-		if err := database.Cleanup(); err != nil {
-			log.Println(err.Error())
-		}
+	if err := database.Cleanup(); err != nil {
+		log.Println(err.Error())
+	}
+}
 
-	}()
-
+func WaitForTermination() {
 	callChan := make(chan os.Signal, 1)
 	signal.Notify(callChan, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	log.Println("waiting for termination signal...")
@@ -62,3 +61,9 @@ func main() {
 	log.Println("termination signal received")
 }
 
+func main() {
+	Initialize()
+	defer Cleanup()
+
+	WaitForTermination()
+}
