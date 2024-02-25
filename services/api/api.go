@@ -46,14 +46,14 @@ func Initialize(ch chan error) {
 		usersGroup.Use(UserAuthMiddleware())
 		{
 			usersGroup.GET("/all", routes.GetAllUsersHandler)
-    		usersGroup.GET("/limited", routes.GetLimitedUsersHandler)
-    		usersGroup.GET("/paginated", routes.GetPaginatedUsersHandler)
+			usersGroup.GET("/limited", routes.GetLimitedUsersHandler)
+			usersGroup.GET("/paginated", routes.GetPaginatedUsersHandler)
 		}
 
-		// deviceGroup := apiV1Group.Group("/device")
-		// {
-		// 	deviceGroup.POST("/register", routes.RegisterDevice)
-		// }
+		deviceGroup := apiV1Group.Group("/device")
+		{
+			deviceGroup.POST("/register", routes.RegisterDevice)
+		}
 	}
 
 	http.Handle("/", r)

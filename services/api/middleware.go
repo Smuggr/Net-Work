@@ -16,7 +16,7 @@ func UserAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")
 		if header == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUnauthorized.Key})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUnauthorized})
 			c.Abort()
 			return
 		}
@@ -28,7 +28,7 @@ func UserAuthMiddleware() gin.HandlerFunc {
 		})
 
 		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidToken.Key})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidToken})
 			c.Abort()
 			return
 		}
@@ -36,7 +36,7 @@ func UserAuthMiddleware() gin.HandlerFunc {
 		claims := token.Claims.(jwt.MapClaims)
 		login, ok := claims["login"].(string)
 		if !ok {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidTokenFormat.Key})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidTokenFormat})
 			c.Abort()
 			return
 		}

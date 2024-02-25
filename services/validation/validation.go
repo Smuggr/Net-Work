@@ -1,94 +1,85 @@
 package validation
 
 import (
+	"strings"
 	"unicode"
 	"unicode/utf8"
 
 	"network/data/errors"
 )
 
+const (
+    maxUsernameLength = 32
+    minUsernameLength = 8
+	minLoginLength    = 8
+	maxLoginLength    = 16
+    maxPasswordLength = 32
+    minPasswordLength = 8
 
-func containsCategory(s string, category func(rune) bool, n int) bool {
-	count := 0
-	for _, char := range s {
-		if category(char) {
-			count++
-			if count >= n {
-				return true
-			}
-		}
-	}
-	return false
+	minUppercase      = 1
+	minLowercase      = 1
+	minDigit          = 1
+	minSpecial        = 1
+)
+
+func lengthInRange(s string, minLength, maxLength int) bool {
+    length := utf8.RuneCountInString(s)
+    return length >= minLength && length <= maxLength
 }
 
-func containsSpecial(s string, n int) bool {
-	count := 0
-	for _, char := range s {
-		if !unicode.IsLetter(char) && !unicode.IsDigit(char) {
-			count++
-			if count >= n {
-				return true
-			}
-		}
-	}
-	return false
+func containsCategory(s string, category func(rune) bool, n int) bool {
+    count := 0
+    for _, char := range s {
+        if category(char) {
+            count++
+            if count >= n {
+                return true
+            }
+        }
+    }
+    return false
 }
 
 func ValidateLogin(login string) *errors.ErrorWrapper {
-	const (
-		maxLength = 32
-		minLength = 8
-	)
+    if !lengthInRange(login, minLoginLength, maxLoginLength) {
+        return errors.ErrLengthNotInRange
+    }
 
-	if length := utf8.RuneCountInString(login); length < minLength || length > maxLength {
-		return errors.ErrInsufficientLength
-	}
+	if strings.ContainsRune(login, ' ') {
+        return errors.ErrForbiddenCharacter
+    }
 
-	return nil
+    return nil
 }
 
 func ValidatePassword(password string) *errors.ErrorWrapper {
-	const (
-		maxLength  = 32
-		minLength  = 8
-		minUpper   = 1
-		minLower   = 1
-		minDigit   = 1
-		minSpecial = 1
-	)
+    if !lengthInRange(password, minPasswordLength, maxPasswordLength) {
+        return errors.ErrLengthNotInRange
+    }
 
-	if length := utf8.RuneCountInString(password); length < minLength || length > maxLength {
-		return errors.ErrInsufficientDigits
-	}
+    minCategories := []struct {
+        category func(rune) bool
+        minCount int
+    }{
+        {unicode.IsUpper, minUppercase},
+        {unicode.IsLower, minLowercase},
+        {unicode.IsDigit, minDigit},
+        {func(r rune) bool { return !unicode.IsLetter(r) && !unicode.IsDigit(r) }, minSpecial},
+    }
 
-	if !containsCategory(password, unicode.IsUpper, minUpper) {
-		return errors.ErrInsufficientUppercase
-	}
+    for _, c := range minCategories {
+        if !containsCategory(password, c.category, c.minCount) {
+            return errors.ErrInsufficientCharacters
+        }
+    }
 
-	if !containsCategory(password, unicode.IsLower, minLower) {
-		return errors.ErrInsufficientLowercase
-	}
-
-	if !containsCategory(password, unicode.IsDigit, minDigit) {
-		return errors.ErrInsufficientDigits
-	}
-
-	if !containsSpecial(password, minSpecial) {
-		return errors.ErrInsufficientSpecial
-	}
-
-	return nil
+    return nil
 }
 
 func ValidateUsername(username string) *errors.ErrorWrapper {
-	const (
-		maxLength = 32
-		minLength = 8
-	)
+    if !lengthInRange(username, minUsernameLength, maxUsernameLength) {
+        return errors.ErrLengthNotInRange
+    }
 
-	if length := utf8.RuneCountInString(username); length < minLength || length > maxLength {
-		return errors.ErrInsufficientLength
-	}
-
-	return nil
+    return nil
 }

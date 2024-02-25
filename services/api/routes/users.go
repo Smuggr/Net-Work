@@ -36,24 +36,24 @@ func createToken(login string) (string, *errors.ErrorWrapper) {
 func AuthenticateUserHandler(c *gin.Context) {
     var user models.User
     if err := c.BindJSON(&user); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
+        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
         return
     }
 
     existingUser := database.GetUser(database.DB, user.Login)
 	if existingUser == nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Key})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound})
         return
 	}
 
     if err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(user.Password)); err != nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidCredentials.Key})
+        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidCredentials})
         return
     }
 
     tokenString, err := createToken(user.Login)
     if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err})
         return
     }
 
@@ -63,18 +63,18 @@ func AuthenticateUserHandler(c *gin.Context) {
 func RegisterUserHandler(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
 		return
 	}
 
 	if err := database.RegisterUser(database.DB, &user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
 	tokenString, err := createToken(user.Login)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
@@ -84,12 +84,12 @@ func RegisterUserHandler(c *gin.Context) {
 func UpdateUserHandler(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
 		return
 	}
 
 	if err := database.UpdateUser(database.DB, &user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Key})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
@@ -114,7 +114,7 @@ func GetLimitedUsersHandler(c *gin.Context) {
 	limitStr := c.Query("limit")
     limit, err := strconv.Atoi(limitStr)
     if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload.Key})
+        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
 		return
     }
 
