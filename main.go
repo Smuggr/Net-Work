@@ -14,21 +14,20 @@ import (
 
 
 func main() {
-	var config configuration.Config
-	if err := configuration.Initialize(&config); err != nil {
+	if _, err := configuration.Initialize(); err != nil {
 		log.Fatalln(err.Error())
 	}
 
-	if err := database.Initialize(&config.Database); err != nil {
+	if err := database.Initialize(); err != nil {
 		log.Fatalln(err.Error())
 	}
 
-	if err := bridge.Initialize(&config.Bridge) ; err != nil {
+	if err := bridge.Initialize() ; err != nil {
 		log.Fatalln(err.Error())
 	}
 	
 	apiChan := make(chan error)
-	go api.Initialize(&config.API, apiChan)
+	go api.Initialize(apiChan)
 
 	go func() {
 		if err := <-apiChan; err != nil {
@@ -42,15 +41,15 @@ func main() {
 		}
 
 		log.Println("cleaning up...")
-		if err := bridge.Cleanup(&config.Bridge); err != nil {
+		if err := bridge.Cleanup(); err != nil {
 			log.Println(err.Error())
 		}
 
-		if err := api.Cleanup(&config.API); err != nil {
+		if err := api.Cleanup(); err != nil {
 			log.Println(err.Error())
 		}
 
-		if err := database.Cleanup(&config.Database); err != nil {
+		if err := database.Cleanup(); err != nil {
 			log.Println(err.Error())
 		}
 

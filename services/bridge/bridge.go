@@ -10,15 +10,17 @@ import (
 )
 
 var MainClient mqtt.Client
+var Config *configuration.BridgeConfig
 
-
-func Initialize(config *configuration.BridgeConfig) error {
+func Initialize() error {
 	log.Println("initializing bridge/v1")
 
+	Config = &configuration.Config.Bridge
+
 	options := mqtt.NewClientOptions()
-	options.AddBroker(config.BrokerUrl)
-	options.SetClientID(config.ClientId)
-	options.SetKeepAlive(time.Duration(config.KeepAliveSeconds) * time.Second)
+	options.AddBroker(Config.BrokerUrl)
+	options.SetClientID(Config.ClientId)
+	options.SetKeepAlive(time.Duration(Config.KeepAliveSeconds) * time.Second)
 	options.SetAutoReconnect(true)
 	options.SetCleanSession(false)
 
@@ -32,9 +34,9 @@ func Initialize(config *configuration.BridgeConfig) error {
 }
 
 
-func Cleanup(config *configuration.BridgeConfig) error {
+func Cleanup() error {
 	log.Println("cleaning up bridge/v1")
-	MainClient.Disconnect(config.DisconnectMiliseconds)
+	MainClient.Disconnect(Config.DisconnectMiliseconds)
 	
 	return nil
 }

@@ -13,21 +13,23 @@ import (
 )
 
 var DB *gorm.DB
+var Config *configuration.DatabaseConfig
 
-
-func getDSN(config *configuration.DatabaseConfig) string {
-    return "host=" + config.Host +
-        " port=" + strconv.Itoa(int(config.Port)) +
+func getDSN() string {
+    return "host=" + Config.Host +
+        " port=" + strconv.Itoa(int(Config.Port)) +
         " user=" + os.Getenv("DB_USER") +
         " password=" + os.Getenv("DB_PASSWORD") +
         " dbname=" + os.Getenv("DB_NAME") +
         " sslmode=disable TimeZone=UTC"
 }
 
-func Initialize(config *configuration.DatabaseConfig) error {
+func Initialize() error {
 	log.Println("initializing database")
 
-    dsn := getDSN(config)
+    Config = &configuration.Config.Database
+
+    dsn := getDSN()
     db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
     if err != nil {
         return err
@@ -43,7 +45,7 @@ func Initialize(config *configuration.DatabaseConfig) error {
 	return nil
 }
 
-func Cleanup(config *configuration.DatabaseConfig) error {
+func Cleanup() error {
 	log.Println("closing database connection")
     sqlDB, err := DB.DB()
 	

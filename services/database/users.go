@@ -28,7 +28,7 @@ func GetUser(db *gorm.DB, login string) (*models.User) {
 }
 
 func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
-	existingUser := GetUser(db, updatedUser.Login)
+	var existingUser *models.User = GetUser(db, updatedUser.Login)
 	if existingUser == nil {
 		return errors.ErrUserNotFound
 	}
@@ -94,23 +94,19 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 }
 
 func RegisterDefaultAdmin(db *gorm.DB) error {
-	if existingUser := GetUser(db, DefaultAdminLogin); existingUser != nil {
-		UpdateUser(db, &models.User{
-			Login:           DefaultAdminLogin,
-			Username:        DefaultAdminUsername,
-			Password:        DefaultAdminPassword,
-			PermissionLevel: 1,
-		})
-		
-		return nil
-	}
-
-	if err := RegisterUser(db, &models.User{
+	userModel := models.User{
 		Login:           DefaultAdminLogin,
 		Username:        DefaultAdminUsername,
 		Password:        DefaultAdminPassword,
 		PermissionLevel: 1,
-	}); err != nil {
+	}
+
+	if existingUser := GetUser(db, DefaultAdminLogin); existingUser != nil {
+		UpdateUser(db, &userModel)
+		return nil
+	}
+
+	if err := RegisterUser(db, &userModel); err != nil {
 		return err
 	}
 
