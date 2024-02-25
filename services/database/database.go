@@ -36,7 +36,10 @@ func Initialize() error {
     }
 
     DB = db
-    DB.AutoMigrate(&models.User{})
+
+    if err := DB.AutoMigrate(&models.User{}, &models.Device{}) ; err != nil {
+        return err
+    }
 
     if err := RegisterDefaultAdmin(db); err != nil {
         return err
@@ -47,8 +50,8 @@ func Initialize() error {
 
 func Cleanup() error {
 	log.Println("closing database connection")
+
     sqlDB, err := DB.DB()
-	
     if err != nil {
         return err
     }
