@@ -12,8 +12,6 @@ import (
 	"network/data/models"
 	"network/services/database"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -46,7 +44,7 @@ func AuthenticateUserHandler(c *gin.Context) {
         return
 	}
 
-    if err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(user.Password)); err != nil {
+    if err := database.AuthenticateUserPassword(existingUser, &user); err != nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidCredentials})
         return
     }

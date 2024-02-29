@@ -31,10 +31,10 @@ func Initialize(ch chan error) {
 	apiV1Group.Use(tollbooth_gin.LimitHandler(l))
 	{
 		userGroup := apiV1Group.Group("/user")
-		userGroup.Use(UserAuthMiddleware())
+		userGroup.Use(UserAuthenticationMiddleware())
 		{
 			userGroup.POST("/register", routes.RegisterUserHandler)
-			userGroup.POST("/update", routes.UpdateUserHandler)
+			userGroup.PUT("/update", routes.UpdateUserHandler)
 		}
 
 		noAuthUserGroup := apiV1Group.Group("/user")
@@ -43,16 +43,26 @@ func Initialize(ch chan error) {
 		}
 
 		usersGroup := apiV1Group.Group("/users")
-		usersGroup.Use(UserAuthMiddleware())
+		usersGroup.Use(UserAuthenticationMiddleware())
 		{
 			usersGroup.GET("/all", routes.GetAllUsersHandler)
 			usersGroup.GET("/limited", routes.GetLimitedUsersHandler)
 			usersGroup.GET("/paginated", routes.GetPaginatedUsersHandler)
 		}
 
+
 		deviceGroup := apiV1Group.Group("/device")
 		{
-			deviceGroup.POST("/register", routes.RegisterDevice)
+			deviceGroup.POST("/register", routes.RegisterDeviceHandler)
+			deviceGroup.PUT("/update", routes.UpdateDeviceHandler)
+		}
+
+		devicesGroup := apiV1Group.Group("/devices")
+		devicesGroup.Use(UserAuthenticationMiddleware())
+		{
+			devicesGroup.GET("/all", routes.GetAllDevicesHandler)
+			devicesGroup.GET("/limited", routes.GetLimitedDevicesHandler)
+			devicesGroup.GET("/paginated", routes.GetPaginatedDevicesHandler)
 		}
 	}
 

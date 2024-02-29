@@ -46,6 +46,11 @@ var (
 	ErrUserNotFound           = NewErrorWrapper("ErrUserNotFound", errors.New("user not found"))
 	ErrFetchingUsersFromDB    = NewErrorWrapper("ErrFetchingUsersFromDB", errors.New("error fetching users from database"))
 
+	ErrDeviceAlreadyExists    = NewErrorWrapper("ErrDeviceAlreadyExists", errors.New("device already exists"))
+	ErrRegisteringDeviceInDB  = NewErrorWrapper("ErrRegisteringDeviceInDB", errors.New("error registering device in database"))
+	ErrFetchingDevicesFromDB  = NewErrorWrapper("ErrFetchingDevicesFromDB", errors.New("error fetching devices from database"))
+	ErrDeviceNotFound         = NewErrorWrapper("ErrDeviceNotFound", errors.New("device not found"))
+
 	ErrReadingConfigFile      = NewErrorWrapper("ErrReadingConfigFile", errors.New("error reading config file"))
 	ErrFormattingConfigFile   = NewErrorWrapper("ErrFormattingConfigFile", errors.New("error formatting config file"))
 	ErrReadingEnvFile         = NewErrorWrapper("ErrReadingEnvFile", errors.New("error reading env file"))

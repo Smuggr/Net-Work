@@ -17,8 +17,13 @@ func (e *MessageWrapper) Msg() string {
 }
 
 var (
-	MsgUserRegisterSuccess = NewMessageWrapper("MsgRegisterSuccess", "user successfully registered")
-	MsgUserUpdateSuccess   = NewMessageWrapper("MsgUserUpdateSuccess", "user successfully updated")
-	MsgUsersFetchSuccess   = NewMessageWrapper("MsgUsersFetchSuccess", "users successfully fetched")
-	MsgUserFetchSuccess    = NewMessageWrapper("MsgUserFetchSuccess", "user successfully fetched")
+	MsgUserRegisterSuccess   = NewMessageWrapper("MsgRegisterSuccess", "user successfully registered")
+	MsgUserUpdateSuccess     = NewMessageWrapper("MsgUserUpdateSuccess", "user successfully updated")
+	MsgUsersFetchSuccess     = NewMessageWrapper("MsgUsersFetchSuccess", "users successfully fetched")
+	MsgUserFetchSuccess      = NewMessageWrapper("MsgUserFetchSuccess", "user successfully fetched")
+
+	MsgDeviceRegisterSuccess = NewMessageWrapper("MsgDeviceRegisterSuccess", "device successfully registered")
+	MsgDeviceUpdateSuccess   = NewMessageWrapper("MsgDeviceUpdateSuccess", "device successfully updated")
+	MsgDevicesFetchSuccess   = NewMessageWrapper("MsgDevicesFetchSuccess", "devices successfully fetched")
+	MsgDeviceFetchSuccess    = NewMessageWrapper("MsgDeviceFetchSuccess", "device successfully fetched")
 )

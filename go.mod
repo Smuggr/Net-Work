@@ -15,6 +15,8 @@ require (
 	gorm.io/gorm v1.25.5
 )
 
+require github.com/rs/xid v1.4.0 // indirect
+
 require (
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
@@ -52,6 +54,7 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
+	github.com/wind-c/comqtt/v2 v2.5.2
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.7.0 // indirect
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a // indirect

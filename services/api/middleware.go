@@ -12,7 +12,7 @@ import (
 )
 
 
-func UserAuthMiddleware() gin.HandlerFunc {
+func UserAuthenticationMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")
 		if header == "" {
