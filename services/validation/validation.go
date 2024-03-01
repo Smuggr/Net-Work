@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"net"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -82,4 +83,12 @@ func ValidateUsername(username string) *errors.ErrorWrapper {
     }
 
     return nil
+}
+
+func ParseIPAddress(ip string) (net.IP, *errors.ErrorWrapper) {
+    if parsedIP := net.ParseIP(ip); parsedIP == nil {
+        return parsedIP, nil
+    }
+
+    return nil, errors.ErrInvalidIPAddress
 }

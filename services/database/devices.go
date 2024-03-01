@@ -10,32 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetDevice(db *gorm.DB, login string) (*models.Device) {
-	var device models.Device
-	if result := db.Where("login = ?", login).First(&device); result.Error != nil {
-		return nil
-	}
-
-	return &device
-}
-
-func GetLimitedDevices(db *gorm.DB, limit int) ([]models.Device, error) {
-	var devices []models.Device
-	if err := db.Limit(limit).Find(&devices).Error; err != nil {
-		return nil, err
-	}
-
-	return devices, nil
-}
-
-func GetPaginatedDevices(db *gorm.DB, page int, pageSize int) ([]models.Device, error) {
-	var devices []models.Device
-	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&devices).Error; err != nil {
-		return nil, err
-	}
-
-	return devices, nil
-}
 
 func UpdateDevice(db *gorm.DB, updatedDevice *models.Device) *errors.ErrorWrapper {
 	var existingDevice *models.Device = GetDevice(db, updatedDevice.Login)
@@ -101,4 +75,41 @@ func RegisterDevice(db *gorm.DB, newDevice *models.Device) *errors.ErrorWrapper 
 
 	log.Printf("device '%s' registered successfully", newDevice.Login)
 	return nil
+}
+
+func RemoveDevice(db *gorm.DB, deviceToRemove *models.Device) *errors.ErrorWrapper {
+	if result := db.Where("login = ?", deviceToRemove.Login).Delete(&models.Device{}); result.Error != nil {
+		return errors.ErrRemovingDeviceFromDB
+	}
+
+	log.Printf("device '%s' removed successfully", deviceToRemove.Login)
+	return nil
+}
+
+
+func GetDevice(db *gorm.DB, login string) (*models.Device) {
+	var device models.Device
+	if result := db.Where("login = ?", login).First(&device); result.Error != nil {
+		return nil
+	}
+
+	return &device
+}
+
+func GetLimitedDevices(db *gorm.DB, limit int) ([]models.Device, error) {
+	var devices []models.Device
+	if err := db.Limit(limit).Find(&devices).Error; err != nil {
+		return nil, err
+	}
+
+	return devices, nil
+}
+
+func GetPaginatedDevices(db *gorm.DB, page int, pageSize int) ([]models.Device, error) {
+	var devices []models.Device
+	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&devices).Error; err != nil {
+		return nil, err
+	}
+
+	return devices, nil
 }

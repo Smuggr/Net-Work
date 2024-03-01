@@ -17,8 +17,8 @@ import (
 
 var Config = &configuration.Config.API
 
-func Initialize(ch chan error) { 
-    log.Println("initializing api/v1")
+func Initialize() chan error {
+	log.Println("initializing api/v1")
 
 	Config = &configuration.Config.API
 
@@ -68,9 +68,14 @@ func Initialize(ch chan error) {
 
 	http.Handle("/", r)
 
-	if err := http.ListenAndServe(":" + strconv.Itoa(int(Config.Port)), r); err != nil {
-		ch <- err
-	}
+	errCh := make(chan error)
+	go func() {
+		if err := http.ListenAndServe(":" + strconv.Itoa(int(Config.Port)), r); err != nil {
+			errCh <- err
+		}
+	}()
+
+	return errCh
 }
 
 func Cleanup() error {

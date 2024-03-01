@@ -8,7 +8,6 @@ import (
 	"github.com/wind-c/comqtt/v2/mqtt/packets"
 )
 
-
 type AuthenticationHook struct {
 	mqtt.HookBase
 }
@@ -32,7 +31,6 @@ func (h *AuthenticationHook) Init(config any) error {
 
 func (h *AuthenticationHook) OnConnect(cl *mqtt.Client, pk packets.Packet) error {
 	log.Println("client", cl.ID, "connected")
-
 	return nil
 }
 
@@ -45,5 +43,7 @@ func (h *AuthenticationHook) OnDisconnect(cl *mqtt.Client, err error, expire boo
 }
 
 func (h *AuthenticationHook) OnConnectAuthenticate(cl *mqtt.Client, pk packets.Packet) bool {
+	log.Println("client", cl.ID, "wanted to authenticate", string(pk.Connect.Username), string(pk.Connect.Password))
+
 	return true
 }

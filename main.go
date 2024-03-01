@@ -20,16 +20,14 @@ func Initialize() {
 		log.Fatalln(err.Error())
 	}
 
-	if err := bridge.Initialize() ; err != nil {
+	if err := bridge.Initialize(); err != nil {
 		log.Fatalln(err.Error())
 	}
-	
-	apiChan := make(chan error)
-	go api.Initialize(apiChan)
 
+	apiChan := api.Initialize()
 	go func() {
 		if err := <-apiChan; err != nil {
-			log.Println(err.Error()) 
+			log.Println(err.Error())
 		}
 	}()
 }
@@ -63,7 +61,7 @@ func WaitForTermination() {
 
 func main() {
 	Initialize()
-	defer Cleanup()
 
-	WaitForTermination()
+	defer Cleanup()
+	defer WaitForTermination()
 }

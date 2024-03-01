@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	DefaultAdminLogin string = "administrator"
+	DefaultAdminLogin    string = "administrator"
 	DefaultAdminPassword string = "Password123$"
 	DefaultAdminUsername string = "Administrator"
 )
@@ -116,6 +116,15 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 	}
 
 	log.Printf("user '%s' registered successfully", newUser.Login)
+	return nil
+}
+
+func RemoveUser(db *gorm.DB, userToRemove *models.User) *errors.ErrorWrapper {
+	if result := db.Where("login = ?", userToRemove.Login).Delete(&models.User{}); result.Error != nil {
+		return errors.ErrRemovingUserFromDB
+	}
+
+	log.Printf("user '%s' removed successfully", userToRemove.Login)
 	return nil
 }
 

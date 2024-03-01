@@ -8,7 +8,6 @@ import (
 	"network/services/bridge/hooks"
 
 	"github.com/wind-c/comqtt/v2/mqtt"
-	"github.com/wind-c/comqtt/v2/mqtt/hooks/auth"
 	"github.com/wind-c/comqtt/v2/mqtt/listeners"
 )
 
@@ -24,8 +23,8 @@ func Initialize() error {
 		InlineClient: true,
 	})
 
-	_ = Server.AddListener(listeners.NewTCP("t1", ":" + fmt.Sprint(Config.BrokerPort), nil))
-	_ = Server.AddHook(new(auth.AllowHook), nil)
+	tcp := listeners.NewTCP("t1", ":" + fmt.Sprint(Config.BrokerPort), nil)
+	_ = Server.AddListener(tcp)
 	_ = Server.AddHook(new(hooks.AuthenticationHook), nil)
 
 	go func() {

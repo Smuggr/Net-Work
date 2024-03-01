@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+
 func RegisterDeviceHandler(c *gin.Context) {
 	var device models.Device
 	if err := c.BindJSON(&device); err != nil {
@@ -48,6 +49,32 @@ func UpdateDeviceHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceUpdateSuccess})
 }
 
+func RemoveDeviceHandler(c *gin.Context) {
+	var device models.Device
+    if err := c.BindJSON(&device); err!= nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
+        return
+    }
+
+    if err := database.RemoveDevice(database.DB, &device); err!= nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+        return
+    }
+
+    c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRemoveSuccess})
+}
+
+
+func GetDeviceHandler(c *gin.Context) { 
+	login := c.Param("login")
+	device := database.GetDevice(database.DB, login)
+	if device == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrDeviceNotFound})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"device": device})
+}
 
 func GetAllDevicesHandler(c *gin.Context) {
 	devices, err := database.GetLimitedDevices(database.DB, -1)

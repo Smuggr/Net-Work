@@ -94,6 +94,21 @@ func UpdateUserHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserUpdateSuccess})
 }
 
+func RemoveUserHandler(c *gin.Context) {
+	var user models.User
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
+		return
+	}
+
+	if err := database.RemoveUser(database.DB, &user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRemoveSuccess})
+}
+
 
 func GetAllUsersHandler(c *gin.Context) {
 	users, err := database.GetLimitedUsers(database.DB, -1)
