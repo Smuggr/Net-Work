@@ -45,8 +45,8 @@ func GetPaginatedUsers(db *gorm.DB, page int, pageSize int) ([]models.User, erro
 	return users, nil
 }
 
-func AuthenticateUserPassword(existingUser *models.User, user *models.User) error {
-	if err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(user.Password)); err != nil {
+func AuthenticateUserPassword(existingUser *models.User, userPassword string) error {
+	if err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(userPassword)); err != nil {
         return err
     }
 

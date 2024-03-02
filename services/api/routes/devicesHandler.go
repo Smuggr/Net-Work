@@ -25,13 +25,13 @@ func RegisterDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	tokenString, err := createToken(device.Login)
+	tokenString, err := createToken(device.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRegisterSuccess, "token": tokenString})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRegisterSuccess.Format(), "token": tokenString})
 }
 
 func UpdateDeviceHandler(c *gin.Context) {
@@ -104,7 +104,7 @@ func GetLimitedDevicesHandler(c *gin.Context) {
 	}
 
     c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgUsersFetchSuccess,
+		"message": messages.MsgDevicesFetchSuccess,
 		"limit":   limit,
 		"devices": devices,
 	})
@@ -133,6 +133,7 @@ func GetPaginatedDevicesHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
+		"message": messages.MsgDevicesFetchSuccess,
 		"page":     page,
 		"pageSize": pageSize,
 		"devices":  devices,

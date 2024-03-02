@@ -44,7 +44,7 @@ func AuthenticateUserHandler(c *gin.Context) {
         return
 	}
 
-    if err := database.AuthenticateUserPassword(existingUser, &user); err != nil {
+    if err := database.AuthenticateUserPassword(existingUser, user.Password); err != nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidCredentials})
         return
     }
@@ -167,6 +167,7 @@ func GetPaginatedUsersHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
+		"message":  messages.MsgUsersFetchSuccess,
 		"page":     page,
 		"pageSize": pageSize,
 		"users":    users,

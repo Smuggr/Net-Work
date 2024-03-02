@@ -3,6 +3,7 @@ package hooks
 import (
 	"bytes"
 	"log"
+	"network/services/database"
 
 	"github.com/wind-c/comqtt/v2/mqtt"
 	"github.com/wind-c/comqtt/v2/mqtt/packets"
@@ -43,7 +44,16 @@ func (h *AuthenticationHook) OnDisconnect(cl *mqtt.Client, err error, expire boo
 }
 
 func (h *AuthenticationHook) OnConnectAuthenticate(cl *mqtt.Client, pk packets.Packet) bool {
-	log.Println("client", cl.ID, "wanted to authenticate", string(pk.Connect.Username), string(pk.Connect.Password))
+	log.Println("client", cl.ID, "wanted to authenticate as", string(pk.Connect.Username))
+
+	device := database.GetDevice(database.DB, string(pk.Connect.Username))
+	if device == nil {
+		return false
+	}
+
+	if err := database.AuthenticateDevicePassword(device, string(pk.Connect.Password)); err != nil {
+		return false
+	}
 
 	return true
 }

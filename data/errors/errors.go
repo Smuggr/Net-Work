@@ -2,6 +2,8 @@ package errors
 
 import (
 	"errors"
+	"fmt"
+	"regexp"
 )
 
 type ErrorWrapper struct {
@@ -18,8 +20,27 @@ func NewErrorWrapper(key string, err error) *ErrorWrapper {
 	}
 }
 
+func (e *ErrorWrapper) RemoveFormattingCharacters() {
+	re := regexp.MustCompile(`%[a-zA-Z]`)
+	e.Message = re.ReplaceAllString(e.Message, "")
+}
+
 func (e *ErrorWrapper) Error() string {
+	e.RemoveFormattingCharacters()
 	return e.Message
+}
+
+func (e *ErrorWrapper) FormatError(vars ...interface{}) string {
+	if vars == nil {
+		return e.Error()
+    }
+
+	return fmt.Sprintf(e.Message, vars...)
+}
+
+func (e *ErrorWrapper) Format(vars ...interface{}) *ErrorWrapper {
+	e.Message = fmt.Sprintf(e.Message, vars...)
+	return e
 }
 
 var (
@@ -68,5 +89,8 @@ var (
 	// General errors
 	ErrHashingPassword        = NewErrorWrapper("ErrHashingPassword", errors.New("error hashing password"))
 	ErrInvalidRequestPayload  = NewErrorWrapper("ErrInvalidRequestPayload", errors.New("invalid request payload"))
+
+	// Uncategorized errors
+	ErrTest                   = NewErrorWrapper("ErrTest", errors.New("error test %s, %d, %f, %t"))
 )
 
