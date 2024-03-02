@@ -20,16 +20,16 @@ func Initialize() {
 		log.Fatalln(err.Error())
 	}
 
-	if err := bridge.Initialize(); err != nil {
-		log.Fatalln(err.Error())
-	}
-
 	apiChan := api.Initialize()
 	go func() {
 		if err := <-apiChan; err != nil {
 			log.Println(err.Error())
 		}
 	}()
+
+	if err := bridge.Initialize(); err != nil {
+		log.Fatalln(err.Error())
+	}
 }
 
 func Cleanup() {

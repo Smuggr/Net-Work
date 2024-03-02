@@ -12,6 +12,11 @@ type ErrorWrapper struct {
 	Err     error  `json:"-"`
 }
 
+func removeFormattingCharacters(message string) string {
+	re := regexp.MustCompile(`%[a-zA-Z]`)
+	return re.ReplaceAllString(message, "")
+}
+
 func NewErrorWrapper(key string, err error) *ErrorWrapper {
 	return &ErrorWrapper{
 		Key:     key,
@@ -20,14 +25,8 @@ func NewErrorWrapper(key string, err error) *ErrorWrapper {
 	}
 }
 
-func (e *ErrorWrapper) RemoveFormattingCharacters() {
-	re := regexp.MustCompile(`%[a-zA-Z]`)
-	e.Message = re.ReplaceAllString(e.Message, "")
-}
-
 func (e *ErrorWrapper) Error() string {
-	e.RemoveFormattingCharacters()
-	return e.Message
+	return removeFormattingCharacters(e.Message)
 }
 
 func (e *ErrorWrapper) FormatError(vars ...interface{}) string {

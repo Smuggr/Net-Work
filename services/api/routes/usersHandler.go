@@ -109,6 +109,20 @@ func RemoveUserHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRemoveSuccess})
 }
 
+func GetUserHandler(c *gin.Context) {
+	login := c.Param("login")
+
+    user := database.GetUser(database.DB, login)
+    if user == nil {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+		"message": messages.MsgUserFetchSuccess, 
+		"user":    user,
+	})
+}
 
 func GetAllUsersHandler(c *gin.Context) {
 	users, err := database.GetLimitedUsers(database.DB, -1)

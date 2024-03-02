@@ -33,6 +33,7 @@ func Initialize() chan error {
 		userGroup := apiV1Group.Group("/user")
 		userGroup.Use(UserAuthenticationMiddleware())
 		{
+			userGroup.GET("/:login", routes.GetUserHandler)
 			userGroup.POST("/register", routes.RegisterUserHandler)
 			userGroup.PUT("/update", routes.UpdateUserHandler)
 		}
@@ -53,6 +54,7 @@ func Initialize() chan error {
 
 		deviceGroup := apiV1Group.Group("/device")
 		{
+			deviceGroup.GET("/:username", routes.GetDeviceHandler)
 			deviceGroup.POST("/register", routes.RegisterDeviceHandler)
 			deviceGroup.PUT("/update", routes.UpdateDeviceHandler)
 		}

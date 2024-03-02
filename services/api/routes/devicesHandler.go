@@ -66,14 +66,17 @@ func RemoveDeviceHandler(c *gin.Context) {
 
 
 func GetDeviceHandler(c *gin.Context) { 
-	login := c.Param("login")
-	device := database.GetDevice(database.DB, login)
+	username := c.Param("username")
+	device := database.GetDevice(database.DB, username)
 	if device == nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrDeviceNotFound})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"device": device})
+	c.JSON(http.StatusOK, gin.H{
+		"message": messages.MsgDeviceFetchSuccess, 
+		"device":  device,
+	})
 }
 
 func GetAllDevicesHandler(c *gin.Context) {

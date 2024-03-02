@@ -1,10 +1,18 @@
 package messages
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+)
 
 type MessageWrapper struct {
 	Key     string `json:"key"`
 	Message string `json:"message"`
+}
+
+func removeFormattingCharacters(message string) string {
+	re := regexp.MustCompile(`%[a-zA-Z]`)
+	return re.ReplaceAllString(message, "")
 }
 
 func NewMessageWrapper(key string, message string) *MessageWrapper {
@@ -15,12 +23,16 @@ func NewMessageWrapper(key string, message string) *MessageWrapper {
 }
 
 func (e *MessageWrapper) String() string {
-	return e.Message
+	return removeFormattingCharacters(e.Message)
+}
+
+func (e *MessageWrapper) Msg() string {
+	return e.String()
 }
 
 func (e *MessageWrapper) FormatMsg(vars ...interface{}) string {
 	if vars == nil {
-		return e.Message
+		return e.Msg()
     }
 
 	return fmt.Sprintf(e.Message, vars...)
@@ -48,4 +60,7 @@ var (
 	// Removal messages
 	MsgDeviceRemoveSuccess   = NewMessageWrapper("MsgDeviceRemoveSuccess", "device %s successfully removed")
 	MsgUserRemoveSuccess     = NewMessageWrapper("MsgUserRemoveSuccess", "user %s successfully removed")
+
+	// Uncategorizated messages
+	MsgTest                  = NewMessageWrapper("MsgTest", "message test %s, %d, %f, %t")
 )
