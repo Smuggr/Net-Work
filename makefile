@@ -2,7 +2,7 @@
 
 BINARY := network
 
-BUILDDIR := ./build
+BUILDDIR ?= ./build
 PLUGINDIR := ./plugins
 
 GO := go

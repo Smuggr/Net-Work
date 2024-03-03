@@ -41,7 +41,7 @@ func Initialize() chan error {
 
 		noAuthUserGroup := apiV1Group.Group("/user")
 		{
-			noAuthUserGroup.POST("/authenticate", routes.AuthenticateUserHandler)
+			noAuthUserGroup.GET("/authenticate", routes.AuthenticateUserHandler)
 		}
 
 		usersGroup := apiV1Group.Group("/users")

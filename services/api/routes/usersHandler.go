@@ -76,7 +76,7 @@ func RegisterUserHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRegisterSuccess, "token": tokenString})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRegisterSuccess.Format(user.Login), "token": tokenString})
 }
 
 func UpdateUserHandler(c *gin.Context) {
@@ -91,7 +91,7 @@ func UpdateUserHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserUpdateSuccess})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserUpdateSuccess.Format(user.Login)})
 }
 
 func RemoveUserHandler(c *gin.Context) {
@@ -113,7 +113,7 @@ func RemoveUserHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRemoveSuccess})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgUserRemoveSuccess.Format(login)})
 }
 
 func GetUserHandler(c *gin.Context) {
@@ -126,7 +126,7 @@ func GetUserHandler(c *gin.Context) {
     }
 
     c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgUserFetchSuccess, 
+		"message": messages.MsgUserFetchSuccess.Format(login), 
 		"user":    user,
 	})
 }
@@ -139,7 +139,7 @@ func GetAllUsersHandler(c *gin.Context) {
 	}
 
     c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgUsersFetchSuccess, 
+		"message": messages.MsgUsersFetchSuccess.Format(len(users)), 
 		"users":   users,
 	})
 }
@@ -159,7 +159,7 @@ func GetLimitedUsersHandler(c *gin.Context) {
 	}
 
     c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgUsersFetchSuccess,
+		"message": messages.MsgUsersFetchSuccess.Format(len(users)), 
 		"limit":   limit,
 		"users":   users,
 	})
@@ -188,7 +188,7 @@ func GetPaginatedUsersHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message":  messages.MsgUsersFetchSuccess,
+		"message":  messages.MsgUsersFetchSuccess.Format(len(users)),
 		"page":     page,
 		"pageSize": pageSize,
 		"users":    users,

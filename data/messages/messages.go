@@ -39,22 +39,23 @@ func (e *MessageWrapper) FormatMsg(vars ...interface{}) string {
 }
 
 func (e *MessageWrapper) Format(vars ...interface{}) *MessageWrapper {
-	e.Message = fmt.Sprintf(e.Message, vars...)
-	return e
+	copy := *e
+	copy.Message = e.FormatMsg(vars...)
+	return &copy
 }
 
 var (
 	// User messages
 	MsgUserRegisterSuccess   = NewMessageWrapper("MsgRegisterSuccess", "user %s successfully registered")
 	MsgUserUpdateSuccess     = NewMessageWrapper("MsgUserUpdateSuccess", "user %s successfully updated")
-	MsgUsersFetchSuccess     = NewMessageWrapper("MsgUsersFetchSuccess", "users successfully fetched")
+	MsgUsersFetchSuccess     = NewMessageWrapper("MsgUsersFetchSuccess", "users (%d) successfully fetched")
 	MsgUserFetchSuccess      = NewMessageWrapper("MsgUserFetchSuccess", "user %s successfully fetched")
 
 	// Device messages
 	MsgDeviceConnectSuccess  = NewMessageWrapper("MsgDeviceConnectSuccess", "device %s successfully connected")
 	MsgDeviceRegisterSuccess = NewMessageWrapper("MsgDeviceRegisterSuccess", "device %s successfully registered")
 	MsgDeviceUpdateSuccess   = NewMessageWrapper("MsgDeviceUpdateSuccess", "device %s successfully updated")
-	MsgDevicesFetchSuccess   = NewMessageWrapper("MsgDevicesFetchSuccess", "devices successfully fetched")
+	MsgDevicesFetchSuccess   = NewMessageWrapper("MsgDevicesFetchSuccess", "devices (%d) successfully fetched")
 	MsgDeviceFetchSuccess    = NewMessageWrapper("MsgDeviceFetchSuccess", "device %s successfully fetched")
 
 	// Removal messages

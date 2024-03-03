@@ -38,8 +38,9 @@ func (e *ErrorWrapper) FormatError(vars ...interface{}) string {
 }
 
 func (e *ErrorWrapper) Format(vars ...interface{}) *ErrorWrapper {
-	e.Message = fmt.Sprintf(e.Message, vars...)
-	return e
+	copy := *e
+	copy.Message = e.FormatError(vars...)
+	return &copy
 }
 
 var (

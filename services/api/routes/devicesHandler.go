@@ -31,7 +31,7 @@ func RegisterDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRegisterSuccess.Format(), "token": tokenString})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRegisterSuccess.Format(device.Username), "token": tokenString})
 }
 
 func UpdateDeviceHandler(c *gin.Context) {
@@ -46,7 +46,7 @@ func UpdateDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceUpdateSuccess})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceUpdateSuccess.Format(device.Username)})
 }
 
 func RemoveDeviceHandler(c *gin.Context) {
@@ -68,7 +68,7 @@ func RemoveDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRemoveSuccess})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRemoveSuccess.Format(device.Username)})
 }
 
 
@@ -81,7 +81,7 @@ func GetDeviceHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgDeviceFetchSuccess, 
+		"message": messages.MsgDeviceFetchSuccess.Format(username), 
 		"device":  device,
 	})
 }
@@ -94,7 +94,7 @@ func GetAllDevicesHandler(c *gin.Context) {
 	}
 
     c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgDevicesFetchSuccess, 
+		"message": messages.MsgDevicesFetchSuccess.Format(len(devices)), 
 		"devices": devices,
 	})
 }
@@ -114,7 +114,7 @@ func GetLimitedDevicesHandler(c *gin.Context) {
 	}
 
     c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgDevicesFetchSuccess,
+		"message": messages.MsgDevicesFetchSuccess.Format(len(devices)),
 		"limit":   limit,
 		"devices": devices,
 	})
@@ -143,7 +143,7 @@ func GetPaginatedDevicesHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgDevicesFetchSuccess,
+		"message":  messages.MsgDevicesFetchSuccess.Format(len(devices)),
 		"page":     page,
 		"pageSize": pageSize,
 		"devices":  devices,
