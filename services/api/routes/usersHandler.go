@@ -95,14 +95,21 @@ func UpdateUserHandler(c *gin.Context) {
 }
 
 func RemoveUserHandler(c *gin.Context) {
-	var user models.User
-	if err := c.BindJSON(&user); err != nil {
+	login := c.Query("login")
+
+	if login == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
 		return
 	}
 
-	if err := database.RemoveUser(database.DB, &user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	user := database.GetUser(database.DB, login)
+    if user == nil {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound})
+        return
+    }
+
+	if err := database.RemoveUser(database.DB, user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingUserFromDB})
 		return
 	}
 

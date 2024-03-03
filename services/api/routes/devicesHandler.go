@@ -50,18 +50,25 @@ func UpdateDeviceHandler(c *gin.Context) {
 }
 
 func RemoveDeviceHandler(c *gin.Context) {
-	var device models.Device
-    if err := c.BindJSON(&device); err!= nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
+	username := c.Query("username")
+
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
+		return
+	}
+
+	device := database.GetDevice(database.DB, username)
+    if device == nil {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound})
         return
     }
 
-    if err := database.RemoveDevice(database.DB, &device); err!= nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-        return
-    }
+	if err := database.RemoveDevice(database.DB, device); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingDeviceFromDB})
+		return
+	}
 
-    c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRemoveSuccess})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRemoveSuccess})
 }
 
 

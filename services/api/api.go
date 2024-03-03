@@ -36,6 +36,7 @@ func Initialize() chan error {
 			userGroup.GET("/:login", routes.GetUserHandler)
 			userGroup.POST("/register", routes.RegisterUserHandler)
 			userGroup.PUT("/update", routes.UpdateUserHandler)
+			userGroup.DELETE("/remove", routes.RemoveUserHandler)
 		}
 
 		noAuthUserGroup := apiV1Group.Group("/user")
@@ -57,6 +58,7 @@ func Initialize() chan error {
 			deviceGroup.GET("/:username", routes.GetDeviceHandler)
 			deviceGroup.POST("/register", routes.RegisterDeviceHandler)
 			deviceGroup.PUT("/update", routes.UpdateDeviceHandler)
+			deviceGroup.DELETE("/remove", routes.RemoveDeviceHandler)
 		}
 
 		devicesGroup := apiV1Group.Group("/devices")
