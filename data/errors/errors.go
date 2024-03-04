@@ -91,6 +91,7 @@ var (
 	ErrInvalidRequestPayload  = NewErrorWrapper("ErrInvalidRequestPayload", errors.New("invalid request payload"))
 
 	// Uncategorized errors
+	ErrInvalidHookConfig      = NewErrorWrapper("ErrInvalidHookConfig", errors.New("invalid hook config"))
 	ErrTest                   = NewErrorWrapper("ErrTest", errors.New("error test %s, %d, %f, %t"))
 )
 

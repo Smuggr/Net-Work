@@ -7,6 +7,9 @@ database = "smuggr"
 [bridge]
 broker_url = "tcp://127.0.0.1"
 broker_port = "1883"
+mdns_service_instance_name = "SmuggrNetworkMQTTBroker"
+mdns_domain = ""
+mdns_host_name = ""
 client_id = "smuggr_network"
 keep_alive_seconds = 10
 disconnect_miliseconds = 250

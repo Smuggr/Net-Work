@@ -7,28 +7,36 @@ import (
 	"network/data/configuration"
 	"network/services/bridge/hooks"
 
+	"github.com/hashicorp/mdns"
 	"github.com/wind-c/comqtt/v2/mqtt"
 	"github.com/wind-c/comqtt/v2/mqtt/listeners"
 )
 
 var Config *configuration.BridgeConfig
-var Server *mqtt.Server
+var MQTTServer *mqtt.Server
+var MDNSServer *mdns.Server
 
 func Initialize() error {
 	log.Println("initializing bridge/v1")
 
 	Config = &configuration.Config.Bridge
 
-	Server = mqtt.New(&mqtt.Options{
+	MQTTServer = mqtt.New(&mqtt.Options{
 		InlineClient: true,
 	})
 
 	tcp := listeners.NewTCP("t1", ":" + fmt.Sprint(Config.BrokerPort), nil)
-	_ = Server.AddListener(tcp)
-	_ = Server.AddHook(new(hooks.AuthenticationHook), nil)
+	_ = MQTTServer.AddListener(tcp)
+	_ = MQTTServer.AddHook(new(hooks.AuthenticationHook), &hooks.AuthenticationHookConfig{
+		Server: MQTTServer,
+	})
+
+	if err := InitializeMDNS(); err != nil {
+		return err
+	}
 
 	go func() {
-		err := Server.Serve()
+		err := MQTTServer.Serve()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -42,7 +50,8 @@ func Initialize() error {
 func Cleanup() error {
 	log.Println("cleaning up bridge/v1")
 
-	Server.Close()
+	MQTTServer.Close()
+	MDNSServer.Shutdown()
 
 	return nil
 }

@@ -13,11 +13,14 @@ type DatabaseConfig struct {
 }
 
 type BridgeConfig struct {
-	BrokerHost            string `mapstructure:"broker_url"`
-	BrokerPort            uint   `mapstructure:"broker_port"`
-	ClientId              string `mapstructure:"client_id"`
-	KeepAliveSeconds      uint   `mapstructure:"keep_alive_seconds"`
-	DisconnectMiliseconds uint   `mapstructure:"disconnect_miliseconds"`
+	BrokerHost              string `mapstructure:"broker_url"`
+	BrokerPort              uint   `mapstructure:"broker_port"`
+	MDNSServiceInstanceName string `mapstructure:"mdns_service_instance_name"`
+	MDNSDomain              string `mapstructure:"mdns_domain"`
+	MDNSHostName            string `mapstructure:"mdns_host_name"`
+	ClientId                string `mapstructure:"client_id"`
+	KeepAliveSeconds        uint   `mapstructure:"keep_alive_seconds"`
+	DisconnectMiliseconds   uint   `mapstructure:"disconnect_miliseconds"`
 }
 
 type APIConfig struct {

@@ -5,9 +5,9 @@ go 1.21.6
 require (
 	github.com/didip/tollbooth v4.0.2+incompatible
 	github.com/didip/tollbooth_gin v0.0.0-20170928041415-5752492be505
-	github.com/eclipse/paho.mqtt.golang v1.4.3
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.2.0
+	github.com/hashicorp/mdns v1.0.5
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/viper v1.18.2
 	golang.org/x/crypto v0.18.0
@@ -15,7 +15,10 @@ require (
 	gorm.io/gorm v1.25.5
 )
 
-require github.com/rs/xid v1.4.0 // indirect
+require (
+	github.com/miekg/dns v1.1.41 // indirect
+	github.com/rs/xid v1.4.0 // indirect
+)
 
 require (
 	github.com/bytedance/sonic v1.10.2 // indirect
@@ -59,7 +62,6 @@ require (
 	golang.org/x/arch v0.7.0 // indirect
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a // indirect
 	golang.org/x/net v0.20.0 // indirect
-	golang.org/x/sync v0.5.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
