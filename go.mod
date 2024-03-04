@@ -16,6 +16,7 @@ require (
 )
 
 require (
+	github.com/gin-contrib/cors v1.5.0 // indirect
 	github.com/miekg/dns v1.1.41 // indirect
 	github.com/rs/xid v1.4.0 // indirect
 )

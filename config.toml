@@ -5,7 +5,7 @@ username = "smuggr"
 database = "smuggr"
 
 [bridge]
-broker_url = "tcp://127.0.0.1"
+broker_host = "tcp://localhost"
 broker_port = "1883"
 mdns_service_instance_name = "SmuggrNetworkMQTTBroker"
 mdns_domain = ""
@@ -17,3 +17,7 @@ disconnect_miliseconds = 250
 [api]
 port = 8000
 jwt_lifespan_minutes = 1440
+trusted_cors = [
+	"http://localhost:3000",
+	"http://localhost:8000"
+]

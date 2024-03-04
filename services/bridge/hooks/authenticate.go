@@ -67,7 +67,7 @@ func (h *AuthenticationHook) OnDisconnect(cl *mqtt.Client, err error, expire boo
 func (h *AuthenticationHook) OnConnectAuthenticate(cl *mqtt.Client, pk packets.Packet) bool {
 	log.Println("client", cl.ID, "wanted to authenticate as", string(pk.Connect.Username))
 
-	device := database.GetDevice(database.DB, cl.ID)
+	device := database.GetDevice(database.DB, string(pk.Connect.Username))
 	if device == nil {
 		return false
 	}

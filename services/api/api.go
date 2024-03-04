@@ -2,7 +2,6 @@ package api
 
 import (
 	"log"
-	"net/http"
 	"os"
 	"strconv"
 
@@ -11,6 +10,7 @@ import (
 
 	"github.com/didip/tollbooth"
 	"github.com/didip/tollbooth_gin"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,6 +26,17 @@ func Initialize() chan error {
 
 	r := gin.Default()
 	l := tollbooth.NewLimiter(1, nil)
+
+	r.Use(cors.New(cors.Config{
+		AllowOriginFunc: func(origin string) bool {
+			return true
+        },
+        AllowCredentials: true,
+        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+        AllowHeaders:     []string{"Origin", "Content-Type"},
+    }))
+
+	r.SetTrustedProxies([]string{})
 
 	apiV1Group := r.Group("/api/v1")
 	apiV1Group.Use(tollbooth_gin.LimitHandler(l))
@@ -70,13 +81,9 @@ func Initialize() chan error {
 		}
 	}
 
-	http.Handle("/", r)
-
 	errCh := make(chan error)
 	go func() {
-		if err := http.ListenAndServe(":" + strconv.Itoa(int(Config.Port)), r); err != nil {
-			errCh <- err
-		}
+		errCh <- r.Run(":" + strconv.Itoa(int(Config.Port)))
 	}()
 
 	return errCh

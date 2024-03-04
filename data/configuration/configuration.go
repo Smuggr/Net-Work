@@ -13,7 +13,7 @@ type DatabaseConfig struct {
 }
 
 type BridgeConfig struct {
-	BrokerHost              string `mapstructure:"broker_url"`
+	BrokerHost              string `mapstructure:"broker_host"`
 	BrokerPort              uint   `mapstructure:"broker_port"`
 	MDNSServiceInstanceName string `mapstructure:"mdns_service_instance_name"`
 	MDNSDomain              string `mapstructure:"mdns_domain"`
