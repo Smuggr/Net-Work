@@ -17,9 +17,9 @@ import (
 )
 
 
-func createToken(login string) (string, *errors.ErrorWrapper) {
+func createToken(uniqueString string) (string, *errors.ErrorWrapper) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"login": login,
+		"login": uniqueString,
 		"exp":   time.Now().Add(time.Duration(configuration.Config.API.JWTLifespanMinutes) * time.Minute).Unix(),
 	})
 
@@ -40,7 +40,7 @@ func AuthenticateUserHandler(c *gin.Context) {
 
     existingUser := database.GetUser(database.DB, user.Login)
 	if existingUser == nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(user.Login)})
         return
 	}
 
@@ -104,12 +104,12 @@ func RemoveUserHandler(c *gin.Context) {
 
 	user := database.GetUser(database.DB, login)
     if user == nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound})
+        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(login)})
         return
     }
 
 	if err := database.RemoveUser(database.DB, user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingUserFromDB})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingUserFromDB.Format(login)})
 		return
 	}
 
@@ -121,7 +121,7 @@ func GetUserHandler(c *gin.Context) {
 
     user := database.GetUser(database.DB, login)
     if user == nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound})
+        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(login)})
         return
     }
 

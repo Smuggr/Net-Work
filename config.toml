@@ -16,4 +16,4 @@ disconnect_miliseconds = 250
 
 [api]
 port = 8000
-jwt_lifespan_minutes = 60
+jwt_lifespan_minutes = 1440

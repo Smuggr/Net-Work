@@ -59,12 +59,12 @@ func RemoveDeviceHandler(c *gin.Context) {
 
 	device := database.GetDevice(database.DB, username)
     if device == nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound})
+        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrDeviceNotFound.Format(username)})
         return
     }
 
 	if err := database.RemoveDevice(database.DB, device); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingDeviceFromDB})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingDeviceFromDB.Format(username)})
 		return
 	}
 
@@ -76,7 +76,7 @@ func GetDeviceHandler(c *gin.Context) {
 	username := c.Param("username")
 	device := database.GetDevice(database.DB, username)
 	if device == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrDeviceNotFound})
+		c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrDeviceNotFound.Format(username)})
 		return
 	}
 

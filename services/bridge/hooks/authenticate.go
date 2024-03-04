@@ -47,7 +47,7 @@ func (h *AuthenticationHook) Init(config any) error {
 
 func (h *AuthenticationHook) OnConnect(cl *mqtt.Client, pk packets.Packet) error {
 	log.Println("client", cl.ID, "connected")
-
+	
 	for clientID, client := range Config.Server.Clients.GetAll() {
 		log.Println("Client ID:", clientID)
 		log.Println("Client:", client.Properties.Username)
@@ -67,7 +67,7 @@ func (h *AuthenticationHook) OnDisconnect(cl *mqtt.Client, err error, expire boo
 func (h *AuthenticationHook) OnConnectAuthenticate(cl *mqtt.Client, pk packets.Packet) bool {
 	log.Println("client", cl.ID, "wanted to authenticate as", string(pk.Connect.Username))
 
-	device := database.GetDevice(database.DB, string(pk.Connect.Username))
+	device := database.GetDevice(database.DB, cl.ID)
 	if device == nil {
 		return false
 	}

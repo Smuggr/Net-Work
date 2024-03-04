@@ -56,30 +56,31 @@ var (
 
 	// User errors
 	ErrDefaultAdminNotFound   = NewErrorWrapper("ErrDefaultAdminNotFound", errors.New("default admin not found"))
-	ErrUserAlreadyExists      = NewErrorWrapper("ErrUserAlreadyExists", errors.New("user already exists"))
-	ErrUserNotFound           = NewErrorWrapper("ErrUserNotFound", errors.New("user not found"))
+	ErrUserAlreadyExists      = NewErrorWrapper("ErrUserAlreadyExists", errors.New("user %s already exists"))
+	ErrUserNotFound           = NewErrorWrapper("ErrUserNotFound", errors.New("user %s not found"))
 	ErrFetchingUsersFromDB    = NewErrorWrapper("ErrFetchingUsersFromDB", errors.New("error fetching users from database"))
 
 	// Device errors
-	ErrDeviceAlreadyExists    = NewErrorWrapper("ErrDeviceAlreadyExists", errors.New("device already exists"))
-	ErrRegisteringDeviceInDB  = NewErrorWrapper("ErrRegisteringDeviceInDB", errors.New("error registering device in database"))
-	ErrRemovingDeviceFromDB   = NewErrorWrapper("ErrRemovingDeviceFromDB", errors.New("error removing device from database"))
+	ErrDeviceAlreadyExists    = NewErrorWrapper("ErrDeviceAlreadyExists", errors.New("device %s already exists"))
+	ErrRegisteringDeviceInDB  = NewErrorWrapper("ErrRegisteringDeviceInDB", errors.New("error registering device %s in database"))
+	ErrUpdatingDeviceInDB     = NewErrorWrapper("ErrUpdatingDeviceInDB", errors.New("error updating device %s in database"))
+	ErrRemovingDeviceFromDB   = NewErrorWrapper("ErrRemovingDeviceFromDB", errors.New("error removing device %s from database"))
 	ErrFetchingDevicesFromDB  = NewErrorWrapper("ErrFetchingDevicesFromDB", errors.New("error fetching devices from database"))
-	ErrDeviceNotFound         = NewErrorWrapper("ErrDeviceNotFound", errors.New("device not found"))
+	ErrDeviceNotFound         = NewErrorWrapper("ErrDeviceNotFound", errors.New("device %s not found"))
 	ErrInvalidIPAddress       = NewErrorWrapper("ErrInvalidIPAddress", errors.New("invalid ip address"))
 
 	// Database errors
 	ErrConnectingToDB         = NewErrorWrapper("ErrConnectingToDB", errors.New("error connecting to database"))
 	ErrGettingDBConnection    = NewErrorWrapper("ErrGettingDBConnection", errors.New("error getting database connection"))
 	ErrClosingDBConnection    = NewErrorWrapper("ErrClosingDBConnection", errors.New("error closing database connection"))
-	ErrRegisteringUserInDB    = NewErrorWrapper("ErrRegisteringUserInDB", errors.New("error registering user in database"))
-	ErrUpdatingUserInDB       = NewErrorWrapper("ErrUpdatingUserInDB", errors.New("error updating user in database"))
-	ErrRemovingUserFromDB     = NewErrorWrapper("ErrRemovingUserFromDB", errors.New("error removing user from database"))
+	ErrRegisteringUserInDB    = NewErrorWrapper("ErrRegisteringUserInDB", errors.New("error registering user %s in database"))
+	ErrUpdatingUserInDB       = NewErrorWrapper("ErrUpdatingUserInDB", errors.New("error updating user %s in database"))
+	ErrRemovingUserFromDB     = NewErrorWrapper("ErrRemovingUserFromDB", errors.New("error removing user %s from database"))
 
 	// Validation errors
 	ErrInsufficientCharacters = NewErrorWrapper("ErrInsufficientCharacters", errors.New("insufficient characters"))
-	ErrLengthNotInRange       = NewErrorWrapper("ErrNotInRange", errors.New("length not in range"))
-	ErrForbiddenCharacter     = NewErrorWrapper("ErrForbiddenCharacter", errors.New("forbidden character"))
+	ErrLengthNotInRange       = NewErrorWrapper("ErrLengthNotInRange", errors.New("length not in range <%d, %d>"))
+	ErrForbiddenCharacter     = NewErrorWrapper("ErrForbiddenCharacter", errors.New("forbidden character(s)"))
 
 	// File errors
 	ErrReadingConfigFile      = NewErrorWrapper("ErrReadingConfigFile", errors.New("error reading config file"))

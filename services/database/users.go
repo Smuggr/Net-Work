@@ -56,7 +56,7 @@ func AuthenticateUserPassword(existingUser *models.User, userPassword string) er
 func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 	var existingUser *models.User = GetUser(db, updatedUser.Login)
 	if existingUser == nil {
-		return errors.ErrUserNotFound
+		return errors.ErrUserNotFound.Format(updatedUser.Login)
 	}
 
 	if updatedUser.Username != "" {
@@ -81,7 +81,7 @@ func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 	}
 
 	if result := db.Save(&existingUser); result.Error != nil {
-		return errors.ErrUpdatingUserInDB
+		return errors.ErrUpdatingUserInDB.Format(existingUser.Login)
 	}
 
 	log.Printf("user '%s' updated successfully", existingUser.Login)
@@ -90,7 +90,7 @@ func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 
 func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 	if existingUser := GetUser(db, newUser.Login); existingUser != nil {
-		return errors.ErrUserAlreadyExists
+		return errors.ErrUserAlreadyExists.Format(newUser.Login)
 	}
 
 	if err := validation.ValidateLogin(newUser.Login); err != nil {
@@ -112,7 +112,7 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 
 	newUser.Password = string(hashedPassword)
 	if result := db.Create(&newUser); result.Error != nil {
-		return errors.ErrRegisteringUserInDB
+		return errors.ErrRegisteringUserInDB.Format(newUser.Login)
 	}
 
 	log.Printf("user '%s' registered successfully", newUser.Login)
@@ -120,8 +120,8 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 }
 
 func RemoveUser(db *gorm.DB, userToRemove *models.User) *errors.ErrorWrapper {
-	if result := db.Where("login = ?", userToRemove.Login).Delete(&models.User{}); result.Error != nil {
-		return errors.ErrRemovingUserFromDB
+	if result := db.Delete(&userToRemove); result.Error != nil {
+		return errors.ErrRemovingUserFromDB.Format(userToRemove.Login)
 	}
 
 	log.Printf("user '%s' removed successfully", userToRemove.Login)

@@ -15,7 +15,7 @@ func GetDevice(db *gorm.DB, username string) (*models.Device) {
 	if result := db.Where("username = ?", username).First(&device); result.Error != nil {
 		return nil
 	}
-
+	
 	return &device
 }
 
@@ -48,7 +48,7 @@ func AuthenticateDevicePassword(existingDevice *models.Device, devicePassword st
 func UpdateDevice(db *gorm.DB, updatedDevice *models.Device) *errors.ErrorWrapper {
 	var existingDevice *models.Device = GetDevice(db, updatedDevice.Username)
 	if existingDevice == nil {
-		return errors.ErrDeviceNotFound
+		return errors.ErrDeviceNotFound.Format(updatedDevice.Username)
 	}
 
 	if updatedDevice.Username != "" {
@@ -73,19 +73,19 @@ func UpdateDevice(db *gorm.DB, updatedDevice *models.Device) *errors.ErrorWrappe
 	}
 
 	if result := db.Save(&existingDevice); result.Error != nil {
-		return errors.ErrUpdatingUserInDB
+		return errors.ErrUpdatingDeviceInDB.Format(existingDevice.Username)
 	}
 
-	log.Printf("device '%s' updated successfully", existingDevice.Username)
+	log.Printf("device %s updated successfully", existingDevice.Username)
 	return nil
 }
 
 func RegisterDevice(db *gorm.DB, newDevice *models.Device) *errors.ErrorWrapper {
 	if existingDevice := GetDevice(db, newDevice.Username); existingDevice != nil {
-		return errors.ErrDeviceAlreadyExists
+		return errors.ErrDeviceAlreadyExists.Format(newDevice.Username)
 	}
 
-	if err := validation.ValidateLogin(newDevice.Username); err != nil {
+	if err := validation.ValidateClientID(newDevice.ClientID); err != nil {
 		return err
 	}
 
@@ -104,18 +104,18 @@ func RegisterDevice(db *gorm.DB, newDevice *models.Device) *errors.ErrorWrapper 
 
 	newDevice.Password = string(hashedPassword)
 	if result := db.Create(&newDevice); result.Error != nil {
-		return errors.ErrRegisteringDeviceInDB
+		return errors.ErrRegisteringDeviceInDB.Format(newDevice.Username)
 	}
 
-	log.Printf("device '%s' registered successfully", newDevice.Username)
+	log.Printf("device %s registered successfully", newDevice.Username)
 	return nil
 }
 
 func RemoveDevice(db *gorm.DB, deviceToRemove *models.Device) *errors.ErrorWrapper {
-	if result := db.Where("username = ?", deviceToRemove.Username).Delete(&models.Device{}); result.Error != nil {
-		return errors.ErrRemovingDeviceFromDB
+	if result := db.Delete(&deviceToRemove); result.Error != nil {
+		return errors.ErrRemovingDeviceFromDB.Format(deviceToRemove.Username)
 	}
 
-	log.Printf("device '%s' removed successfully", deviceToRemove.Username)
+	log.Printf("device %s removed successfully", deviceToRemove.Username)
 	return nil
 }

@@ -2,6 +2,7 @@ package validation
 
 import (
 	"net"
+	"regexp"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -16,6 +17,9 @@ const (
 	maxLoginLength    = 16
     maxPasswordLength = 32
     minPasswordLength = 8
+
+    minClientIDLength = 1
+    maxClientIDLength = 23
 
 	minUppercase      = 1
 	minLowercase      = 1
@@ -41,9 +45,22 @@ func containsCategory(s string, category func(rune) bool, n int) bool {
     return false
 }
 
+func ValidateClientID(clientID string) *errors.ErrorWrapper {
+	if len(clientID) < minClientIDLength || len(clientID) > maxClientIDLength {
+		return errors.ErrLengthNotInRange.Format(minClientIDLength, maxClientIDLength)
+	}
+
+    validID := regexp.MustCompile(`^[A-Za-z0-9\-_\.]+$`).MatchString(clientID)
+    if !validID {
+        return errors.ErrForbiddenCharacter.Format()
+    }
+
+    return nil
+}
+
 func ValidateLogin(login string) *errors.ErrorWrapper {
     if !lengthInRange(login, minLoginLength, maxLoginLength) {
-        return errors.ErrLengthNotInRange
+        return errors.ErrLengthNotInRange.Format(minLoginLength, maxLoginLength)
     }
 
 	if strings.ContainsRune(login, ' ') {
@@ -55,7 +72,7 @@ func ValidateLogin(login string) *errors.ErrorWrapper {
 
 func ValidatePassword(password string) *errors.ErrorWrapper {
     if !lengthInRange(password, minPasswordLength, maxPasswordLength) {
-        return errors.ErrLengthNotInRange
+        return errors.ErrLengthNotInRange.Format(minPasswordLength, maxPasswordLength)
     }
 
     minCategories := []struct {
@@ -79,7 +96,7 @@ func ValidatePassword(password string) *errors.ErrorWrapper {
 
 func ValidateUsername(username string) *errors.ErrorWrapper {
     if !lengthInRange(username, minUsernameLength, maxUsernameLength) {
-        return errors.ErrLengthNotInRange
+        return errors.ErrLengthNotInRange.Format(minUsernameLength, maxUsernameLength)
     }
 
     return nil
