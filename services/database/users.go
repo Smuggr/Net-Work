@@ -16,10 +16,10 @@ const (
 	DefaultAdminLogin           string = "administrator"
 	DefaultAdminPassword        string = "Password123$"
 	DefaultAdminUsername        string = "Administrator"
-	DefaultAdminPermissionLevel int = -1
+	DefaultAdminPermissionLevel int    = -1
 )
 
-func GetUser(db *gorm.DB, login string) (*models.User) {
+func GetUser(db *gorm.DB, login string) *models.User {
 	var user models.User
 	if result := db.Where("login = ?", login).First(&user); result.Error != nil {
 		return nil
@@ -48,8 +48,8 @@ func GetPaginatedUsers(db *gorm.DB, page int, pageSize int) ([]models.User, erro
 
 func AuthenticateUserPassword(existingUser *models.User, userPassword string) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(userPassword)); err != nil {
-        return err
-    }
+		return err
+	}
 
 	return nil
 }
@@ -96,10 +96,6 @@ func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 	if existingUser := GetUser(db, newUser.Login); existingUser != nil {
 		return errors.ErrUserAlreadyExists.Format(newUser.Login)
-	}
-
-	if newUser.PermissionLevel < 0 {
-		return errors.ErrOperationNotPermitted
 	}
 
 	if err := validation.ValidateLogin(newUser.Login); err != nil {

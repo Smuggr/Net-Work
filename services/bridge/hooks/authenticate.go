@@ -18,7 +18,7 @@ type AuthenticationHook struct {
 	mqtt.HookBase
 }
 
-var Config *AuthenticationHookConfig
+var AuthHookConfig *AuthenticationHookConfig
 
 
 func (h *AuthenticationHook) ID() string {
@@ -39,7 +39,7 @@ func (h *AuthenticationHook) Init(config any) error {
 		return errors.ErrInvalidHookConfig
 	}
 
-	Config = authConfig
+	AuthHookConfig = authConfig
 
 	log.Println("initialized hook /v1/authentication")
 	return nil
@@ -48,7 +48,7 @@ func (h *AuthenticationHook) Init(config any) error {
 func (h *AuthenticationHook) OnConnect(cl *mqtt.Client, pk packets.Packet) error {
 	log.Println("client", cl.ID, "connected")
 	
-	for clientID, client := range Config.Server.Clients.GetAll() {
+	for clientID, client := range AuthHookConfig.Server.Clients.GetAll() {
 		log.Println("Client ID:", clientID)
 		log.Println("Client:", client.Properties.Username)
 	}
