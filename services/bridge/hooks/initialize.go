@@ -19,9 +19,8 @@ type InitializeDeviceHook struct {
 
 var InitDeviceHookConfig *InitializeDeviceHookConfig
 
-
 func (h *InitializeDeviceHook) ID() string {
-	return "authentication"
+	return "initialization"
 }
 
 func (h *InitializeDeviceHook) Provides(b byte) bool {
@@ -45,7 +44,7 @@ func (h *InitializeDeviceHook) Init(config any) error {
 
 func (h *InitializeDeviceHook) OnConnect(cl *mqtt.Client, pk packets.Packet) error {
 	log.Println("client", cl.ID, "connected")
-	
+
 	for clientID, client := range InitDeviceHookConfig.Server.Clients.GetAll() {
 		log.Println("Client ID:", clientID)
 		log.Println("Client:", client.Properties.Username)

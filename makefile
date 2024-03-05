@@ -15,7 +15,7 @@ PLUGINBUILD := $(patsubst $(PLUGINDIR)/%,$(BUILDDIR)/plugins/%.so,$(PLUGINPATTER
 
 .PHONY: all clean
 
-all: $(BUILDDIR)/$(BINARY) plugins
+all: clean $(BUILDDIR)/$(BINARY) plugins
 
 $(BUILDDIR)/$(BINARY):
 	$(GO) build $(GOFLAGS) -o $(BUILDDIR)/$(BINARY)
@@ -23,7 +23,8 @@ $(BUILDDIR)/$(BINARY):
 plugins: $(PLUGINBUILD)
 
 $(BUILDDIR)/plugins/%.so: $(PLUGINDIR)/%
-	$(GO) build $(GOFLAGS) -tags $(PLUGINTAG) -buildmode=$(PLUGINMODE) -o $@ $</main.go
+	mkdir -p $(BUILDDIR)/plugins/$*
+	$(GO) build $(GOFLAGS) -tags $(PLUGINTAG) -buildmode=$(PLUGINMODE) -o $(BUILDDIR)/plugins/$*/$*.so $</main.go
 
 clean:
 	$(RM) $(BUILDDIR)/$(BINARY) $(PLUGINBUILD)

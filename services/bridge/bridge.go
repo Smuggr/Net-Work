@@ -46,8 +46,11 @@ func Initialize() error {
 		return err
 	}
 
-
 	if err := InitializeMDNS(); err != nil {
+		return err
+	}
+
+	if err := InitializeLoader(); err != nil {
 		return err
 	}
 

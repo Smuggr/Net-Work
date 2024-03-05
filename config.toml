@@ -1,6 +1,6 @@
 [database]
 host = "127.0.0.1"
-port = 5432
+port = 5433
 username = "smuggr"
 database = "smuggr"
 
@@ -13,6 +13,7 @@ mdns_host_name = ""
 client_id = "smuggr_network"
 keep_alive_seconds = 10
 disconnect_miliseconds = 250
+plugins_directory = "build/plugins"
 
 [api]
 port = 8000

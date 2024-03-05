@@ -21,6 +21,7 @@ type BridgeConfig struct {
 	ClientId                string `mapstructure:"client_id"`
 	KeepAliveSeconds        uint   `mapstructure:"keep_alive_seconds"`
 	DisconnectMiliseconds   uint   `mapstructure:"disconnect_miliseconds"`
+	PluginsDirectory        string `mapstructure:"plugins_directory"`
 }
 
 type APIConfig struct {
