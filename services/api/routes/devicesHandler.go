@@ -31,7 +31,7 @@ func RegisterDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRegisterSuccess.Format(device.Username), "token": tokenString})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRegisterSuccess.Format(device.ClientID), "token": tokenString})
 }
 
 func UpdateDeviceHandler(c *gin.Context) {
@@ -46,42 +46,43 @@ func UpdateDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceUpdateSuccess.Format(device.Username)})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceUpdateSuccess.Format(device.ClientID)})
 }
 
 func RemoveDeviceHandler(c *gin.Context) {
-	username := c.Query("username")
+	clientID := c.Query("client_id")
 
-	if username == "" {
+	if clientID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
 		return
 	}
 
-	device := database.GetDevice(database.DB, username)
+	device := database.GetDevice(database.DB, clientID)
     if device == nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrDeviceNotFound.Format(username)})
+        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrDeviceNotFound.Format(clientID)})
         return
     }
 
 	if err := database.RemoveDevice(database.DB, device); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingDeviceFromDB.Format(username)})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingDeviceFromDB.Format(clientID)})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRemoveSuccess.Format(device.Username)})
+	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRemoveSuccess.Format(device.ClientID)})
 }
 
 
 func GetDeviceHandler(c *gin.Context) { 
-	username := c.Param("username")
-	device := database.GetDevice(database.DB, username)
+	clientID := c.Param("client_id")
+
+	device := database.GetDevice(database.DB, clientID)
 	if device == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrDeviceNotFound.Format(username)})
+		c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrDeviceNotFound.Format(clientID)})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgDeviceFetchSuccess.Format(username), 
+		"message": messages.MsgDeviceFetchSuccess.Format(clientID), 
 		"device":  device,
 	})
 }

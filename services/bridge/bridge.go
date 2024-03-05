@@ -25,11 +25,27 @@ func Initialize() error {
 		InlineClient: true,
 	})
 
-	tcp := listeners.NewTCP("t1", ":" + fmt.Sprint(Config.BrokerPort), nil)
+	tcp := listeners.NewTCP("t1", ":"+fmt.Sprint(Config.BrokerPort), nil)
 	_ = MQTTServer.AddListener(tcp)
-	_ = MQTTServer.AddHook(new(hooks.AuthenticationHook), &hooks.AuthenticationHookConfig{
+
+	if err := MQTTServer.AddHook(new(hooks.AuthenticationHook), &hooks.AuthenticationHookConfig{
 		Server: MQTTServer,
-	})
+	}); err != nil {
+		return err
+	}
+
+	if err := MQTTServer.AddHook(new(hooks.InitializeDeviceHook), &hooks.InitializeDeviceHookConfig{
+		Server: MQTTServer,
+	}); err != nil {
+		return err
+	}
+
+	if err := MQTTServer.AddHook(new(hooks.AuthorizateHook), &hooks.AuthorizateHookConfig{
+		Server: MQTTServer,
+	}); err != nil {
+		return err
+	}
+
 
 	if err := InitializeMDNS(); err != nil {
 		return err
@@ -44,8 +60,6 @@ func Initialize() error {
 
 	return nil
 }
-
-
 
 func Cleanup() error {
 	log.Println("cleaning up bridge/v1")

@@ -66,7 +66,7 @@ func Initialize() chan error {
 
 		deviceGroup := apiV1Group.Group("/device")
 		{
-			deviceGroup.GET("/:username", routes.GetDeviceHandler)
+			deviceGroup.GET("/:client_id", routes.GetDeviceHandler)
 			deviceGroup.POST("/register", routes.RegisterDeviceHandler)
 			deviceGroup.PUT("/update", routes.UpdateDeviceHandler)
 			deviceGroup.DELETE("/remove", routes.RemoveDeviceHandler)
