@@ -7,65 +7,69 @@ import (
 	"plugin"
 
 	"network/common/pluginer"
+	"network/data/errors"
 )
 
-func loadSOFile(file string) error {
+var NewPluginsLoaded map[string]func() pluginer.Plugin
+
+func loadSOFile(file string) (func() pluginer.Plugin, error) {
 	log.Println("loading SO file:", file)
 
 	p, err := plugin.Open(file)
 	if err != nil {
-		log.Println(err)
-		return err
+		return nil, err
 	}
 
 	log.Println("plugin file opened", p)
 
 	newPluginSymbol, err := p.Lookup("NewPlugin")
 	if err != nil {
-		log.Println(err)
-		return err
+		return nil, err
 	}
-	log.Printf("Type of sym: %T\n", newPluginSymbol)
-
-	log.Println("plugin instance found")
 
 	NewPlugin, ok := newPluginSymbol.(func() pluginer.Plugin)
 	if !ok {
-		log.Fatalln("PluginInstance is not of type func() Plugin")
+		return nil, errors.ErrLookingUpPluginSymbol.Format(file)
 	}
 
 	log.Println("executing plugin file")
 
 	plugin := NewPlugin()
 	plugin.Initialize()
+	plugin.Execute()
+	plugin.Cleanup()
 
-	return nil
+	return NewPlugin, nil
 }
 
-func InitializeLoader() error {
+func InitializeLoader() (map[string]error, error) {
 	subdirs, err := os.ReadDir(Config.PluginsDirectory)
 	if err != nil {
-		return err
+		return nil, err
 	}
+
+	NewPluginsLoaded = make(map[string]func() pluginer.Plugin)
+	failedPlugins := make(map[string]error)
 
 	for _, subdir := range subdirs {
 		if subdir.IsDir() {
 			files, err := filepath.Glob(filepath.Join(Config.PluginsDirectory, subdir.Name(), "*.so"))
 			if err != nil {
 				log.Fatal(err)
-				return err
+				return nil, err
 			}
 
 			for _, file := range files {
-				err := loadSOFile(file)
+				NewPlugin, err := loadSOFile(file)
 				if err != nil {
-					log.Printf("Error loading plugin from file %s: %v", file, err)
+					failedPlugins[file] = err
+				} else {
+					NewPluginsLoaded[file] = NewPlugin
 				}
 			}
 		}
 	}
 
 	log.Println("plugins loaded")
-
-	return nil
+	return failedPlugins, nil
 }
