@@ -90,6 +90,7 @@ var (
 	// General errors
 	ErrHashingPassword        = NewErrorWrapper("ErrHashingPassword", errors.New("error hashing password"))
 	ErrInvalidRequestPayload  = NewErrorWrapper("ErrInvalidRequestPayload", errors.New("invalid request payload"))
+	ErrOperationNotPermitted  = NewErrorWrapper("ErrOperationNotPermitted", errors.New("operation not permitted"))
 
 	// Uncategorized errors
 	ErrInvalidHookConfig      = NewErrorWrapper("ErrInvalidHookConfig", errors.New("invalid hook config"))

@@ -13,9 +13,10 @@ import (
 )
 
 const (
-	DefaultAdminLogin    string = "administrator"
-	DefaultAdminPassword string = "Password123$"
-	DefaultAdminUsername string = "Administrator"
+	DefaultAdminLogin           string = "administrator"
+	DefaultAdminPassword        string = "Password123$"
+	DefaultAdminUsername        string = "Administrator"
+	DefaultAdminPermissionLevel int = -1
 )
 
 func GetUser(db *gorm.DB, login string) (*models.User) {
@@ -59,6 +60,10 @@ func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 		return errors.ErrUserNotFound.Format(updatedUser.Login)
 	}
 
+	if updatedUser.PermissionLevel < 0 {
+		return errors.ErrOperationNotPermitted
+	}
+
 	if updatedUser.Username != "" {
 		if err := validation.ValidateUsername(updatedUser.Username); err != nil {
 			return err
@@ -93,6 +98,10 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 		return errors.ErrUserAlreadyExists.Format(newUser.Login)
 	}
 
+	if newUser.PermissionLevel < 0 {
+		return errors.ErrOperationNotPermitted
+	}
+
 	if err := validation.ValidateLogin(newUser.Login); err != nil {
 		return err
 	}
@@ -120,6 +129,10 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 }
 
 func RemoveUser(db *gorm.DB, userToRemove *models.User) *errors.ErrorWrapper {
+	if userToRemove.PermissionLevel < 0 {
+		return errors.ErrOperationNotPermitted
+	}
+
 	if result := db.Delete(&userToRemove); result.Error != nil {
 		return errors.ErrRemovingUserFromDB.Format(userToRemove.Login)
 	}
@@ -133,7 +146,7 @@ func RegisterDefaultAdmin(db *gorm.DB) error {
 		Login:           DefaultAdminLogin,
 		Username:        DefaultAdminUsername,
 		Password:        DefaultAdminPassword,
-		PermissionLevel: 1,
+		PermissionLevel: DefaultAdminPermissionLevel,
 	}
 
 	if existingUser := GetUser(db, DefaultAdminLogin); existingUser != nil {
