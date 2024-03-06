@@ -2,11 +2,11 @@ package bridge
 
 import (
 	"fmt"
-	"log"
 
 	"network/data/configuration"
 	"network/services/bridge/hooks"
 
+	"github.com/charmbracelet/log"
 	"github.com/hashicorp/mdns"
 	"github.com/wind-c/comqtt/v2/mqtt"
 	"github.com/wind-c/comqtt/v2/mqtt/listeners"
@@ -17,7 +17,7 @@ var MQTTServer *mqtt.Server
 var MDNSServer *mdns.Server
 
 func Initialize() error {
-	log.Println("initializing bridge/v1")
+	log.Info("initializing bridge/v1")
 
 	Config = &configuration.Config.Bridge
 
@@ -50,9 +50,12 @@ func Initialize() error {
 		return err
 	}
 
-	if err := InitializeLoader(); err != nil {
+	_, err := InitializeLoader()
+	if err != nil {
 		return err
 	}
+
+	// Handle the cases when one or more plugins failed to load
 
 	go func() {
 		err := MQTTServer.Serve()
@@ -65,7 +68,7 @@ func Initialize() error {
 }
 
 func Cleanup() error {
-	log.Println("cleaning up bridge/v1")
+	log.Info("cleaning up bridge/v1")
 
 	MQTTServer.Close()
 	MDNSServer.Shutdown()

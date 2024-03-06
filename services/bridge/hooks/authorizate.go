@@ -2,10 +2,10 @@ package hooks
 
 import (
 	"bytes"
-	"log"
 	"network/data/errors"
 	"strings"
 
+	"github.com/charmbracelet/log"
 	"github.com/wind-c/comqtt/v2/mqtt"
 )
 
@@ -37,12 +37,12 @@ func (h *AuthorizateHook) Init(config any) error {
 
 	AuthorHookConfig = authorConfig
 
-	log.Println("initialized hook /v1/authorizate")
+	log.Info("initialized hook /v1/authorizate")
 	return nil
 }
 
 func (h *AuthorizateHook) OnACLCheck(cl *mqtt.Client, topic string, write bool) bool {
-	log.Println("client", cl.ID, "wanted to authorizate", topic, "for write", write)
+	log.Debug("client", cl.ID, "wanted to authorizate", topic, "for write", write)
 
 	if strings.Contains(topic, "/v1/device/" + cl.ID + "/") {
 		return true

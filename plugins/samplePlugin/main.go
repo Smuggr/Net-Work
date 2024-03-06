@@ -1,23 +1,23 @@
 package main
 
 import (
-	"log"
-
 	"network/common/pluginer"
+
+	"github.com/charmbracelet/log"
 )
 
 type SamplePlugin struct {}
 
 func (p *SamplePlugin) Initialize() {
-	log.Println("Sample plugin initialized")
+	log.Info("sample plugin initialized")
 }
 
 func (p *SamplePlugin) Execute() {
-	log.Println("Sample plugin executed")
+	log.Info("sample plugin executed")
 }
 
 func (p *SamplePlugin) Cleanup() {
-	log.Println("Sample plugin cleaned up")
+	log.Info("sample plugin cleaned up")
 }
 
 func NewPlugin() pluginer.Plugin {

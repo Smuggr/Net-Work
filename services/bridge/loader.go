@@ -1,26 +1,27 @@
 package bridge
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"plugin"
+
+	"github.com/charmbracelet/log"
 
 	"network/common/pluginer"
 	"network/data/errors"
 )
 
-var NewPluginsLoaded map[string]func() pluginer.Plugin
+var LoadedPluginConstructors map[string]func() pluginer.Plugin
 
 func loadSOFile(file string) (func() pluginer.Plugin, error) {
-	log.Println("loading SO file:", file)
+	log.Debug("loading plugin", "file", file)
 
 	p, err := plugin.Open(file)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Println("plugin file opened", p)
+	log.Debug("opened plugin", "file", file)
 
 	newPluginSymbol, err := p.Lookup("NewPlugin")
 	if err != nil {
@@ -32,7 +33,7 @@ func loadSOFile(file string) (func() pluginer.Plugin, error) {
 		return nil, errors.ErrLookingUpPluginSymbol.Format(file)
 	}
 
-	log.Println("executing plugin file")
+	log.Debug("executing plugin", "file", file)
 
 	plugin := NewPlugin()
 	plugin.Initialize()
@@ -48,7 +49,7 @@ func InitializeLoader() (map[string]error, error) {
 		return nil, err
 	}
 
-	NewPluginsLoaded = make(map[string]func() pluginer.Plugin)
+	LoadedPluginConstructors = make(map[string]func() pluginer.Plugin)
 	failedPlugins := make(map[string]error)
 
 	for _, subdir := range subdirs {
@@ -63,13 +64,15 @@ func InitializeLoader() (map[string]error, error) {
 				NewPlugin, err := loadSOFile(file)
 				if err != nil {
 					failedPlugins[file] = err
+					log.Error("failed to load plugin", "file", file, "error", err)
 				} else {
-					NewPluginsLoaded[file] = NewPlugin
+					LoadedPluginConstructors[file] = NewPlugin
+					log.Debug("successfully loaded plugin", "file", file)
 				}
 			}
 		}
 	}
 
-	log.Println("plugins loaded")
+	log.Info("plugins:", "loaded", len(LoadedPluginConstructors), "failed", len(failedPlugins), "out of", len(subdirs))
 	return failedPlugins, nil
 }

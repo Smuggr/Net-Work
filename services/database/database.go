@@ -1,13 +1,13 @@
 package database
 
 import (
-	"log"
 	"os"
 	"strconv"
 
 	"network/data/configuration"
 	"network/data/models"
 
+    "github.com/charmbracelet/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -25,7 +25,7 @@ func getDSN() string {
 }
 
 func Initialize() error {
-	log.Println("initializing database")
+	log.Info("initializing database")
 
     Config = &configuration.Config.Database
 
@@ -49,7 +49,7 @@ func Initialize() error {
 }
 
 func Cleanup() error {
-	log.Println("closing database connection")
+	log.Info("closing database connection")
 
     sqlDB, err := DB.DB()
     if err != nil {

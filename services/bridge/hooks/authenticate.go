@@ -2,10 +2,10 @@ package hooks
 
 import (
 	"bytes"
-	"log"
 	"network/data/errors"
 	"network/services/database"
 
+	"github.com/charmbracelet/log"
 	"github.com/wind-c/comqtt/v2/mqtt"
 	"github.com/wind-c/comqtt/v2/mqtt/packets"
 )
@@ -41,16 +41,15 @@ func (h *AuthenticationHook) Init(config any) error {
 
 	AuthHookConfig = authConfig
 
-	log.Println("initialized hook /v1/authentication")
+	log.Info("initialized hook /v1/authentication")
 	return nil
 }
 
 func (h *AuthenticationHook) OnConnect(cl *mqtt.Client, pk packets.Packet) error {
-	log.Println("client", cl.ID, "connected")
+	log.Debug("connected", "client", cl.ID)
 	
-	for clientID, client := range AuthHookConfig.Server.Clients.GetAll() {
-		log.Println("Client ID:", clientID)
-		log.Println("Client:", client.Properties.Username)
+	for _, cl := range AuthHookConfig.Server.Clients.GetAll() {
+		log.Debug("already connected", "client", cl.ID)
 	}
 
 	return nil
@@ -58,16 +57,16 @@ func (h *AuthenticationHook) OnConnect(cl *mqtt.Client, pk packets.Packet) error
 
 func (h *AuthenticationHook) OnDisconnect(cl *mqtt.Client, err error, expire bool) {
 	if err != nil {
-		log.Println("client", cl.ID, "disconnected", "expire", expire, "error", err)
+		log.Debug("disconnected", "client", cl.ID, "expire", expire, "error", err)
 	} else {
-		log.Println("client", cl.ID, "disconnected", "expire", expire)
+		log.Debug("disconnected", "client", cl.ID, "expire", expire)
 	}
 }
 
 func (h *AuthenticationHook) OnConnectAuthenticate(cl *mqtt.Client, pk packets.Packet) bool {
-	log.Println("client", cl.ID, "wanted to authenticate as", string(pk.Connect.Username))
+	log.Debug("authenticating", "client", cl.ID, "username", string(pk.Connect.Username))
 
-	device := database.GetDevice(database.DB, string(pk.Connect.Username))
+	device := database.GetDevice(database.DB, cl.ID)
 	if device == nil {
 		return false
 	}

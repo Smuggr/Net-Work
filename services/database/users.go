@@ -1,14 +1,12 @@
 package database
 
 import (
-	"log"
-
 	"network/data/errors"
 	"network/data/models"
 	"network/services/validation"
 
+	"github.com/charmbracelet/log"
 	"golang.org/x/crypto/bcrypt"
-
 	"gorm.io/gorm"
 )
 
@@ -89,7 +87,7 @@ func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 		return errors.ErrUpdatingUserInDB.Format(existingUser.Login)
 	}
 
-	log.Printf("user '%s' updated successfully", existingUser.Login)
+	log.Infof("user %s updated successfully", existingUser.Login)
 	return nil
 }
 
@@ -120,7 +118,7 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 		return errors.ErrRegisteringUserInDB.Format(newUser.Login)
 	}
 
-	log.Printf("user '%s' registered successfully", newUser.Login)
+	log.Infof("user %s registered successfully", newUser.Login)
 	return nil
 }
 
@@ -133,7 +131,7 @@ func RemoveUser(db *gorm.DB, userToRemove *models.User) *errors.ErrorWrapper {
 		return errors.ErrRemovingUserFromDB.Format(userToRemove.Login)
 	}
 
-	log.Printf("user '%s' removed successfully", userToRemove.Login)
+	log.Infof("user %s removed successfully", userToRemove.Login)
 	return nil
 }
 

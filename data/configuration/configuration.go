@@ -3,13 +3,15 @@ package configuration
 import (
 	"network/data/errors"
 
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/log"
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
 type DatabaseConfig struct {
-	Host     string `mapstructure:"host"`
-	Port     uint   `mapstructure:"port"`
+	Host string `mapstructure:"host"`
+	Port uint   `mapstructure:"port"`
 }
 
 type BridgeConfig struct {
@@ -35,14 +37,13 @@ type GlobalConfig struct {
 	API      APIConfig      `mapstructure:"api"`
 }
 
-
 var Config GlobalConfig
 
 func loadEnv() error {
 	err := godotenv.Load()
-    if err != nil {
-        return errors.ErrReadingEnvFile
-    }
+	if err != nil {
+		return errors.ErrReadingEnvFile
+	}
 
 	return nil
 }
@@ -63,11 +64,56 @@ func loadConfig(config *GlobalConfig) error {
 	return nil
 }
 
+func setupLogging() {
+	log.SetLevel(log.DebugLevel)
+
+	styles := log.DefaultStyles()
+
+	styles.Levels[log.DebugLevel] = lipgloss.NewStyle().
+		SetString("DEBUG").
+		Padding(0, 1, 0, 1).
+		Foreground(lipgloss.Color("#1E90FF")).
+		Bold(true)
+
+	styles.Levels[log.InfoLevel] = lipgloss.NewStyle().
+		SetString("INFO").
+		Padding(0, 1, 0, 1).
+		Foreground(lipgloss.Color("#CCCCCC")).
+		Bold(true)
+
+	styles.Levels[log.WarnLevel] = lipgloss.NewStyle().
+		SetString("WARNING").
+		Padding(0, 1, 0, 1).
+		Foreground(lipgloss.Color("#FFA500")).
+		Bold(true)
+
+	styles.Levels[log.ErrorLevel] = lipgloss.NewStyle().
+		SetString("ERROR").
+		Padding(0, 1, 0, 1).
+		Foreground(lipgloss.Color("#FF0000")).
+		Bold(true)
+
+	styles.Levels[log.FatalLevel] = lipgloss.NewStyle().
+		SetString("FATAL").
+		Padding(0, 1, 0, 1).
+		Foreground(lipgloss.Color("#8B0000")).
+		Bold(true).
+		Blink(true).
+		Italic(true)
+
+	styles.Keys["err"] = lipgloss.NewStyle().Foreground(lipgloss.Color("204"))
+	styles.Values["err"] = lipgloss.NewStyle().Bold(true)
+
+	log.SetStyles(styles)
+}
+
 func Initialize() (*GlobalConfig, error) {
+	setupLogging()
+
 	if err := loadConfig(&Config); err != nil {
 		return nil, err
 	}
-	
+
 	if err := loadEnv(); err != nil {
 		return nil, err
 	}

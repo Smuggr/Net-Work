@@ -1,13 +1,13 @@
 package api
 
 import (
-	"log"
 	"os"
 	"strconv"
 
 	"network/data/configuration"
 	"network/services/api/routes"
 
+	"github.com/charmbracelet/log"
 	"github.com/didip/tollbooth"
 	"github.com/didip/tollbooth_gin"
 	"github.com/gin-contrib/cors"
@@ -18,7 +18,7 @@ import (
 var Config = &configuration.Config.API
 
 func Initialize() chan error {
-	log.Println("initializing api/v1")
+	log.Info("initializing api/v1")
 
 	Config = &configuration.Config.API
 
@@ -90,6 +90,6 @@ func Initialize() chan error {
 }
 
 func Cleanup() error {
-	log.Println("cleaning up api/v1")
+	log.Info("cleaning up api/v1")
 	return nil
 }
