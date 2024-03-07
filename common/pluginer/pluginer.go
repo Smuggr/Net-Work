@@ -1,17 +1,5 @@
 package pluginer
 
-import (
-	"encoding/json"
-	"os"
-)
-
-type Plugin interface {
-	Initialize()
-	Execute()
-	Cleanup()
-	NewPlugin() Plugin
-}
-
 type PluginMetadata struct {
 	APIVersion  string `json:"api_version"`
 	Version     string `json:"version"`
@@ -21,24 +9,18 @@ type PluginMetadata struct {
 	Source      string `json:"source"`
 }
 
-type PluginBase struct {
-	Metadata PluginMetadata
+// Error channels instead?
+type Plugin interface {
+	Initialize() error
+	Execute() error
+	Cleanup() error
 }
 
-func NewPlugin() (*PluginBase, error) {
-	metadataFile, err := os.Open("/home/karol/Documents/Repositories/Test/network/common/pluginer/metadata.json")
-	if err != nil {
-		return nil, err
-	}
-	defer metadataFile.Close()
+// func GetMetadataFromFile(file fs.File) (*PluginMetadata, error) {
+// 	metadataFile, err := fs.ReadFile(file)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	var metadata PluginMetadata
-	err = json.NewDecoder(metadataFile).Decode(&metadata)
-	if err != nil {
-		return nil, err
-	}
-
-	return &PluginBase{
-		Metadata: metadata,
-	}, nil
-}
+// 	return &metadata, nil
+// }

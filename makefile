@@ -24,6 +24,7 @@ plugins: $(PLUGINBUILD)
 
 $(BUILDDIR)/plugins/%.so: $(PLUGINDIR)/%
 	mkdir -p $(BUILDDIR)/plugins/$*
+	
 	$(GO) build $(GOFLAGS) -tags $(PLUGINTAG) -buildmode=$(PLUGINMODE) -o $(BUILDDIR)/plugins/$*/$*.so $</main.go
 
 clean:

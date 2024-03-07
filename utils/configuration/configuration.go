@@ -70,13 +70,13 @@ func setupLogging() {
 	styles := log.DefaultStyles()
 
 	styles.Levels[log.DebugLevel] = lipgloss.NewStyle().
-		SetString("[DEBU]").
+		SetString("[DEBUG]").
 		Padding(0, 1, 0, 1).
 		Foreground(lipgloss.Color("#1E90FF")).
 		Bold(true)
 
 	styles.Levels[log.InfoLevel] = lipgloss.NewStyle().
-		SetString("[INFO]").
+		SetString("[INFOR]").
 		Padding(0, 1, 0, 1).
 		Foreground(lipgloss.Color("#CCCCCC")).
 		Bold(true)

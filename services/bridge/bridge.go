@@ -70,8 +70,15 @@ func Initialize() error {
 func Cleanup() error {
 	log.Info("cleaning up bridge/v1")
 
-	MQTTServer.Close()
-	MDNSServer.Shutdown()
+	err := MQTTServer.Close()
+	if err != nil {
+		return err
+	}
+
+	err = MDNSServer.Shutdown()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -11,9 +11,9 @@ import (
 	"network/utils/errors"
 )
 
-var LoadedPluginConstructors map[string]func() pluginer.Plugin
+var LoadedPluginConstructors map[string]func() (pluginer.Plugin, error)
 
-func loadSOFile(file string) (func() pluginer.Plugin, error) {
+func loadSOFile(file string) ((func() (pluginer.Plugin, error)), error) {
 	log.Debug("loading plugin", "file", file)
 
 	p, err := plugin.Open(file)
@@ -28,14 +28,20 @@ func loadSOFile(file string) (func() pluginer.Plugin, error) {
 		return nil, err
 	}
 
-	NewPlugin, ok := newPluginSymbol.(func() pluginer.Plugin)
+	log.Debugf("type %T", newPluginSymbol)
+
+	NewPlugin, ok := newPluginSymbol.(func() (pluginer.Plugin, error))
 	if !ok {
 		return nil, errors.ErrLookingUpPluginSymbol.Format(file)
 	}
 
 	log.Debug("executing plugin", "file", file)
 
-	plugin := NewPlugin()
+	plugin, err := NewPlugin()
+	if err != nil {
+		return nil, err
+	}
+
 	plugin.Initialize()
 	plugin.Execute()
 	plugin.Cleanup()
@@ -49,7 +55,7 @@ func InitializeLoader() (map[string]error, error) {
 		return nil, err
 	}
 
-	LoadedPluginConstructors = make(map[string]func() pluginer.Plugin)
+	LoadedPluginConstructors = make(map[string]func() (pluginer.Plugin, error))
 	failedPlugins := make(map[string]error)
 
 	for _, subdir := range subdirs {
@@ -74,5 +80,9 @@ func InitializeLoader() (map[string]error, error) {
 	}
 
 	log.Info("plugins:", "loaded", len(LoadedPluginConstructors), "failed", len(failedPlugins), "out of", len(subdirs))
+	for key := range LoadedPluginConstructors {
+		log.Debug("Key:", key)
+	}
+
 	return failedPlugins, nil
 }
