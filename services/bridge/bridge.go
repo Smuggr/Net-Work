@@ -3,8 +3,8 @@ package bridge
 import (
 	"fmt"
 
-	"network/data/configuration"
 	"network/services/bridge/hooks"
+	"network/utils/configuration"
 
 	"github.com/charmbracelet/log"
 	"github.com/hashicorp/mdns"

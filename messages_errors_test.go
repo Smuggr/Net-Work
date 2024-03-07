@@ -2,11 +2,11 @@ package main
 
 import (
 	"log"
-	"testing"
 	"reflect"
+	"testing"
 
-	"network/data/messages"
-	"network/data/errors"
+	"network/utils/errors"
+	"network/utils/messages"
 )
 
 func TestErrors(t *testing.T) {

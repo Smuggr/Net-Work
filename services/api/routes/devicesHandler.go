@@ -4,14 +4,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"network/data/errors"
-	"network/data/messages"
-	"network/data/models"
 	"network/services/database"
+	"network/utils/errors"
+	"network/utils/messages"
+	"network/utils/models"
 
 	"github.com/gin-gonic/gin"
 )
-
 
 func RegisterDeviceHandler(c *gin.Context) {
 	var device models.Device
@@ -58,10 +57,10 @@ func RemoveDeviceHandler(c *gin.Context) {
 	}
 
 	device := database.GetDevice(database.DB, clientID)
-    if device == nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrDeviceNotFound.Format(clientID)})
-        return
-    }
+	if device == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrDeviceNotFound.Format(clientID)})
+		return
+	}
 
 	if err := database.RemoveDevice(database.DB, device); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingDeviceFromDB.Format(clientID)})
@@ -71,8 +70,7 @@ func RemoveDeviceHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": messages.MsgDeviceRemoveSuccess.Format(device.ClientID)})
 }
 
-
-func GetDeviceHandler(c *gin.Context) { 
+func GetDeviceHandler(c *gin.Context) {
 	clientID := c.Param("client_id")
 
 	device := database.GetDevice(database.DB, clientID)
@@ -82,7 +80,7 @@ func GetDeviceHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgDeviceFetchSuccess.Format(clientID), 
+		"message": messages.MsgDeviceFetchSuccess.Format(clientID),
 		"device":  device,
 	})
 }
@@ -94,27 +92,27 @@ func GetAllDevicesHandler(c *gin.Context) {
 		return
 	}
 
-    c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgDevicesFetchSuccess.Format(len(devices)), 
+	c.JSON(http.StatusOK, gin.H{
+		"message": messages.MsgDevicesFetchSuccess.Format(len(devices)),
 		"devices": devices,
 	})
 }
 
 func GetLimitedDevicesHandler(c *gin.Context) {
 	limitStr := c.Query("limit")
-    limit, err := strconv.Atoi(limitStr)
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
 		return
-    }
+	}
 
-    devices, err := database.GetLimitedDevices(database.DB, limit)
+	devices, err := database.GetLimitedDevices(database.DB, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingDevicesFromDB})
 		return
 	}
 
-    c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message": messages.MsgDevicesFetchSuccess.Format(len(devices)),
 		"limit":   limit,
 		"devices": devices,

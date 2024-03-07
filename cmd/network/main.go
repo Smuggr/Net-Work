@@ -7,10 +7,10 @@ import (
 
 	"github.com/charmbracelet/log"
 
-	"network/data/configuration"
 	"network/services/api"
 	"network/services/bridge"
 	"network/services/database"
+	"network/utils/configuration"
 )
 
 func Initialize() {

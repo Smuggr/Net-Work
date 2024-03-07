@@ -5,12 +5,11 @@ import (
 	"os"
 	"strings"
 
-	"network/data/errors"
+	"network/utils/errors"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
-
 
 func UserAuthenticationMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {

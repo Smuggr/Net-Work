@@ -6,16 +6,15 @@ import (
 	"strconv"
 	"time"
 
-	"network/data/configuration"
-	"network/data/errors"
-	"network/data/messages"
-	"network/data/models"
 	"network/services/database"
+	"network/utils/configuration"
+	"network/utils/errors"
+	"network/utils/messages"
+	"network/utils/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
-
 
 func createToken(uniqueString string) (string, *errors.ErrorWrapper) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -32,30 +31,30 @@ func createToken(uniqueString string) (string, *errors.ErrorWrapper) {
 }
 
 func AuthenticateUserHandler(c *gin.Context) {
-    var user models.User
-    if err := c.BindJSON(&user); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
-        return
-    }
-
-    existingUser := database.GetUser(database.DB, user.Login)
-	if existingUser == nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(user.Login)})
-        return
+	var user models.User
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
+		return
 	}
 
-    if err := database.AuthenticateUserPassword(existingUser, user.Password); err != nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidCredentials})
-        return
-    }
+	existingUser := database.GetUser(database.DB, user.Login)
+	if existingUser == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(user.Login)})
+		return
+	}
 
-    tokenString, err := createToken(user.Login)
-    if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-        return
-    }
+	if err := database.AuthenticateUserPassword(existingUser, user.Password); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidCredentials})
+		return
+	}
 
-    c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	tokenString, err := createToken(user.Login)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
 
 func RegisterUserHandler(c *gin.Context) {
@@ -103,10 +102,10 @@ func RemoveUserHandler(c *gin.Context) {
 	}
 
 	user := database.GetUser(database.DB, login)
-    if user == nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(login)})
-        return
-    }
+	if user == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(login)})
+		return
+	}
 
 	if err := database.RemoveUser(database.DB, user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingUserFromDB.Format(login)})
@@ -119,14 +118,14 @@ func RemoveUserHandler(c *gin.Context) {
 func GetUserHandler(c *gin.Context) {
 	login := c.Param("login")
 
-    user := database.GetUser(database.DB, login)
-    if user == nil {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(login)})
-        return
-    }
+	user := database.GetUser(database.DB, login)
+	if user == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(login)})
+		return
+	}
 
-    c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgUserFetchSuccess.Format(login), 
+	c.JSON(http.StatusOK, gin.H{
+		"message": messages.MsgUserFetchSuccess.Format(login),
 		"user":    user,
 	})
 }
@@ -138,28 +137,28 @@ func GetAllUsersHandler(c *gin.Context) {
 		return
 	}
 
-    c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgUsersFetchSuccess.Format(len(users)), 
+	c.JSON(http.StatusOK, gin.H{
+		"message": messages.MsgUsersFetchSuccess.Format(len(users)),
 		"users":   users,
 	})
 }
 
 func GetLimitedUsersHandler(c *gin.Context) {
 	limitStr := c.Query("limit")
-    limit, err := strconv.Atoi(limitStr)
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
 		return
-    }
+	}
 
-    users, err := database.GetLimitedUsers(database.DB, limit)
+	users, err := database.GetLimitedUsers(database.DB, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingUsersFromDB})
 		return
 	}
 
-    c.JSON(http.StatusOK, gin.H{
-		"message": messages.MsgUsersFetchSuccess.Format(len(users)), 
+	c.JSON(http.StatusOK, gin.H{
+		"message": messages.MsgUsersFetchSuccess.Format(len(users)),
 		"limit":   limit,
 		"users":   users,
 	})

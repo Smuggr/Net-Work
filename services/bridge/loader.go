@@ -8,7 +8,7 @@ import (
 	"github.com/charmbracelet/log"
 
 	"network/common/pluginer"
-	"network/data/errors"
+	"network/utils/errors"
 )
 
 var LoadedPluginConstructors map[string]func() pluginer.Plugin

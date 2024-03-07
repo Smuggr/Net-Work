@@ -2,8 +2,8 @@ package hooks
 
 import (
 	"bytes"
-	"network/data/errors"
 	"network/services/database"
+	"network/utils/errors"
 
 	"github.com/charmbracelet/log"
 	"github.com/wind-c/comqtt/v2/mqtt"
@@ -19,7 +19,6 @@ type AuthenticationHook struct {
 }
 
 var AuthHookConfig *AuthenticationHookConfig
-
 
 func (h *AuthenticationHook) ID() string {
 	return "authentication"
@@ -47,7 +46,7 @@ func (h *AuthenticationHook) Init(config any) error {
 
 func (h *AuthenticationHook) OnConnect(cl *mqtt.Client, pk packets.Packet) error {
 	log.Debug("connected", "client", cl.ID)
-	
+
 	for _, cl := range AuthHookConfig.Server.Clients.GetAll() {
 		log.Debug("already connected", "client", cl.ID)
 	}

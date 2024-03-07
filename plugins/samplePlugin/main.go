@@ -6,7 +6,9 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-type SamplePlugin struct {}
+type SamplePlugin struct {
+	pluginer.PluginBase
+}
 
 func (p *SamplePlugin) Initialize() {
 	log.Info("sample plugin initialized")
@@ -20,6 +22,6 @@ func (p *SamplePlugin) Cleanup() {
 	log.Info("sample plugin cleaned up")
 }
 
-func NewPlugin() pluginer.Plugin {
+func (p *SamplePlugin) NewPlugin() pluginer.Plugin {
 	return &SamplePlugin{}
 }

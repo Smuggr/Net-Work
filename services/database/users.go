@@ -1,9 +1,9 @@
 package database
 
 import (
-	"network/data/errors"
-	"network/data/models"
-	"network/services/validation"
+	"network/utils/validation"
+	"network/utils/errors"
+	"network/utils/models"
 
 	"github.com/charmbracelet/log"
 	"golang.org/x/crypto/bcrypt"

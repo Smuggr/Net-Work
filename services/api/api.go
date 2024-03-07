@@ -4,8 +4,8 @@ import (
 	"os"
 	"strconv"
 
-	"network/data/configuration"
 	"network/services/api/routes"
+	"network/utils/configuration"
 
 	"github.com/charmbracelet/log"
 	"github.com/didip/tollbooth"
@@ -13,7 +13,6 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
-
 
 var Config = &configuration.Config.API
 
@@ -30,11 +29,11 @@ func Initialize() chan error {
 	r.Use(cors.New(cors.Config{
 		AllowOriginFunc: func(origin string) bool {
 			return true
-        },
-        AllowCredentials: true,
-        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-        AllowHeaders:     []string{"Origin", "Content-Type"},
-    }))
+		},
+		AllowCredentials: true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type"},
+	}))
 
 	r.SetTrustedProxies([]string{})
 
@@ -62,7 +61,6 @@ func Initialize() chan error {
 			usersGroup.GET("/limited", routes.GetLimitedUsersHandler)
 			usersGroup.GET("/paginated", routes.GetPaginatedUsersHandler)
 		}
-
 
 		deviceGroup := apiV1Group.Group("/device")
 		{

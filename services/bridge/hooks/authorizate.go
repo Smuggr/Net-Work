@@ -2,7 +2,7 @@ package hooks
 
 import (
 	"bytes"
-	"network/data/errors"
+	"network/utils/errors"
 	"strings"
 
 	"github.com/charmbracelet/log"
@@ -44,7 +44,7 @@ func (h *AuthorizateHook) Init(config any) error {
 func (h *AuthorizateHook) OnACLCheck(cl *mqtt.Client, topic string, write bool) bool {
 	log.Debug("client", cl.ID, "wanted to authorizate", topic, "for write", write)
 
-	if strings.Contains(topic, "/v1/device/" + cl.ID + "/") {
+	if strings.Contains(topic, "/v1/device/"+cl.ID+"/") {
 		return true
 	}
 

@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	"network/data/errors"
+	"network/utils/errors"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
@@ -69,39 +69,39 @@ func setupLogging() {
 
 	styles := log.DefaultStyles()
 
-			styles.Levels[log.DebugLevel] = lipgloss.NewStyle().
-				SetString("[DEBU]").
-				Padding(0, 1, 0, 1).
-				Foreground(lipgloss.Color("#1E90FF")).
-				Bold(true)
+	styles.Levels[log.DebugLevel] = lipgloss.NewStyle().
+		SetString("[DEBU]").
+		Padding(0, 1, 0, 1).
+		Foreground(lipgloss.Color("#1E90FF")).
+		Bold(true)
 
-			styles.Levels[log.InfoLevel] = lipgloss.NewStyle().
-				SetString("[INFO]").
-				Padding(0, 1, 0, 1).
-				Foreground(lipgloss.Color("#CCCCCC")).
-				Bold(true)
+	styles.Levels[log.InfoLevel] = lipgloss.NewStyle().
+		SetString("[INFO]").
+		Padding(0, 1, 0, 1).
+		Foreground(lipgloss.Color("#CCCCCC")).
+		Bold(true)
 
-			styles.Levels[log.WarnLevel] = lipgloss.NewStyle().
-				SetString("[WARNI]").
-				Padding(0, 1, 0, 1).
-				Foreground(lipgloss.Color("#FFA500")).
-				Bold(true)
+	styles.Levels[log.WarnLevel] = lipgloss.NewStyle().
+		SetString("[WARNI]").
+		Padding(0, 1, 0, 1).
+		Foreground(lipgloss.Color("#FFA500")).
+		Bold(true)
 
-			styles.Levels[log.ErrorLevel] = lipgloss.NewStyle().
-				SetString("[ERROR]").
-				Padding(0, 1, 0, 1).
-				Foreground(lipgloss.Color("#FF0000")).
-				Bold(true)
+	styles.Levels[log.ErrorLevel] = lipgloss.NewStyle().
+		SetString("[ERROR]").
+		Padding(0, 1, 0, 1).
+		Foreground(lipgloss.Color("#FF0000")).
+		Bold(true)
 
-			styles.Levels[log.FatalLevel] = lipgloss.NewStyle().
-				SetString("[FATAL]").
-				Padding(0, 1, 0, 1).
-				Foreground(lipgloss.Color("#8B0000")).
-				Bold(true).
-				Blink(true)
+	styles.Levels[log.FatalLevel] = lipgloss.NewStyle().
+		SetString("[FATAL]").
+		Padding(0, 1, 0, 1).
+		Foreground(lipgloss.Color("#8B0000")).
+		Bold(true).
+		Blink(true)
 
-			log.SetStyles(styles)
-		}
+	log.SetStyles(styles)
+}
 
 func Initialize() (*GlobalConfig, error) {
 	setupLogging()

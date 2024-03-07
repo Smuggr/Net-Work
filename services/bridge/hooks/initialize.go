@@ -2,7 +2,7 @@ package hooks
 
 import (
 	"bytes"
-	"network/data/errors"
+	"network/utils/errors"
 
 	"github.com/charmbracelet/log"
 	"github.com/wind-c/comqtt/v2/mqtt"
