@@ -11,42 +11,68 @@ import (
 	"network/utils/errors"
 )
 
-var LoadedPluginConstructors map[string]func() (pluginer.Plugin, error)
+var LoadedPluginProviders map[string]*pluginer.PluginProvider
 
-func loadSOFile(file string) ((func() (pluginer.Plugin, error)), error) {
+func lookupProviders(p *plugin.Plugin, file string, pluginProvider *pluginer.PluginProvider) error {
+	log.Debug("looking up provider", "file", file)
+
+	newPluginSymbol, err := p.Lookup("NewPlugin")
+	if err != nil {
+		return err
+	}
+
+	log.Debugf("plugin symbol type %T", newPluginSymbol)
+
+	NewPlugin, ok := newPluginSymbol.(func() (pluginer.Plugin, error))
+	if !ok {
+		return errors.ErrLookingUpPluginSymbol.Format(file)
+	}
+
+	getMetadataSymbol, err := p.Lookup("GetMetadata")
+	if err != nil {
+		return err
+	}
+
+	log.Debugf("plugin symbol type %T", getMetadataSymbol)
+
+	GetMetadata, ok := getMetadataSymbol.(func() (*pluginer.PluginMetadata, error))
+	if !ok {
+		return errors.ErrLookingUpPluginSymbol.Format(file)
+	}
+
+	metadata, err := GetMetadata()
+	if err != nil {
+		return err
+	}
+
+	log.Debug("loaded", "metadata", metadata)
+
+	pluginProvider.NewPlugin = NewPlugin
+
+	pluginProvider.Info = &pluginer.PluginInfo{
+		Directory: filepath.Dir(file),
+		Metadata:  metadata,
+	}
+
+	return nil
+}
+
+func loadSOFile(file string, pluginProvider *pluginer.PluginProvider) error {
 	log.Debug("loading plugin", "file", file)
 
 	p, err := plugin.Open(file)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	log.Debug("opened plugin", "file", file)
-
-	newPluginSymbol, err := p.Lookup("NewPlugin")
-	if err != nil {
-		return nil, err
-	}
-
-	log.Debugf("type %T", newPluginSymbol)
-
-	NewPlugin, ok := newPluginSymbol.(func() (pluginer.Plugin, error))
-	if !ok {
-		return nil, errors.ErrLookingUpPluginSymbol.Format(file)
+	if err := lookupProviders(p, file, pluginProvider); err != nil {
+		return err
 	}
 
 	log.Debug("executing plugin", "file", file)
 
-	plugin, err := NewPlugin()
-	if err != nil {
-		return nil, err
-	}
-
-	plugin.Initialize()
-	plugin.Execute()
-	plugin.Cleanup()
-
-	return NewPlugin, nil
+	return nil
 }
 
 func InitializeLoader() (map[string]error, error) {
@@ -55,33 +81,38 @@ func InitializeLoader() (map[string]error, error) {
 		return nil, err
 	}
 
-	LoadedPluginConstructors = make(map[string]func() (pluginer.Plugin, error))
+	LoadedPluginProviders = make(map[string]*pluginer.PluginProvider)
+
 	failedPlugins := make(map[string]error)
 
 	for _, subdir := range subdirs {
 		if subdir.IsDir() {
-			files, err := filepath.Glob(filepath.Join(Config.PluginsDirectory, subdir.Name(), "*.so"))
+			subdirName := subdir.Name()
+
+			files, err := filepath.Glob(filepath.Join(Config.PluginsDirectory, subdirName, "*.so"))
 			if err != nil {
 				log.Fatal(err)
 				return nil, err
 			}
 
+			// Allow max 1 file per plugin?
 			for _, file := range files {
-				NewPlugin, err := loadSOFile(file)
-				if err != nil {
+				var NewPluginProvider pluginer.PluginProvider
+
+				if err := loadSOFile(file, &NewPluginProvider); err != nil {
 					failedPlugins[file] = err
 					log.Error("failed to load plugin", "file", file, "error", err)
 				} else {
-					LoadedPluginConstructors[file] = NewPlugin
-					log.Debug("successfully loaded plugin", "file", file)
+					LoadedPluginProviders[subdirName] = &NewPluginProvider
+					log.Debug("successfully loaded plugin provider", "file", file)
 				}
 			}
 		}
 	}
 
-	log.Info("plugins:", "loaded", len(LoadedPluginConstructors), "failed", len(failedPlugins), "out of", len(subdirs))
-	for key := range LoadedPluginConstructors {
-		log.Debug("Key:", key)
+	log.Info("plugin providers:", "loaded", len(LoadedPluginProviders), "failed", len(failedPlugins), "out of", len(subdirs))
+	for key, value := range LoadedPluginProviders {
+		log.Debug("plugins provider", "key", key, "value", value)
 	}
 
 	return failedPlugins, nil

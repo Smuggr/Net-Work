@@ -4,27 +4,26 @@ import (
 	"gorm.io/gorm"
 )
 
-
 type User struct {
-    gorm.Model
-    Login           string `json:"login" gorm:"unique; not null"`
-    Username        string `json:"username" gorm:"not null"`
-    Password        string `json:"password" gorm:"not null"`
-    PermissionLevel int    `json:"permission_level" gorm:"not null; default:1"`
+	gorm.Model
+	Login           string `json:"login" gorm:"unique; not null"`
+	Username        string `json:"username" gorm:"not null"`
+	Password        string `json:"password" gorm:"not null"`
+	PermissionLevel int    `json:"permission_level" gorm:"not null; default:1"`
 }
 
 func (User) TableName() string {
-    return "users"
+	return "users"
 }
 
-
 type Device struct {
-    gorm.Model
-    Username    string `json:"username" gorm:"unique; not null"`
-    ClientID    string `json:"client_id" gorm:"unique; not null"`
-    Password    string `json:"password" gorm:"not null"`
+	gorm.Model
+	Username        string `json:"username" gorm:"unique; not null"`
+	ClientID        string `json:"client_id" gorm:"unique; not null"`
+	Password        string `json:"password" gorm:"not null"`
+	PluginDirectory string `json:"plugin_info" gorm:"not null"`
 }
 
 func (Device) TableName() string {
-    return "devices"
+	return "devices"
 }

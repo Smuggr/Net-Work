@@ -9,18 +9,19 @@ type PluginMetadata struct {
 	Source      string `json:"source"`
 }
 
+type PluginInfo struct {
+	Directory string          `json:"directory"`
+	Metadata  *PluginMetadata `json:"metadata" gorm:"embedded"`
+}
+
+type PluginProvider struct {
+	Info       *PluginInfo
+	NewPlugin  func() (Plugin, error)
+}
+
 // Error channels instead?
 type Plugin interface {
 	Initialize() error
 	Execute() error
 	Cleanup() error
 }
-
-// func GetMetadataFromFile(file fs.File) (*PluginMetadata, error) {
-// 	metadataFile, err := fs.ReadFile(file)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return &metadata, nil
-// }

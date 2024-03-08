@@ -9,10 +9,10 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-//go:embed resources/*
-var ResourcesDirectory embed.FS
+//go:embed static/*
+var StaticDirectory embed.FS
 
-
+// put into PluginBase struct?
 type SamplePlugin struct {
 	Metadata *pluginer.PluginMetadata
 }
@@ -35,8 +35,8 @@ func (p *SamplePlugin) Cleanup() error {
 	return nil
 }
 
-func NewPlugin() (pluginer.Plugin, error) {
-	metadataFile, err := ResourcesDirectory.Open("resources/metadata.json")
+func GetMetadata() (*pluginer.PluginMetadata, error) {
+	metadataFile, err := StaticDirectory.Open("static/metadata.json")
 	if err != nil {
 		return nil, err
 	}
@@ -48,14 +48,18 @@ func NewPlugin() (pluginer.Plugin, error) {
 		return nil, err
 	}
 
-	// metadata, err := pluginer.GetMetadataFromFile(metadataFile)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	return &metadata, nil
+}
 
-	log.Debug("metadata: ", metadata)
+func NewPlugin() (pluginer.Plugin, error) {
+	metadata, err := GetMetadata()
+	if err != nil {
+		return nil, err
+	}
+
+	log.Debug("loaded", "metadata", metadata)
 
 	return &SamplePlugin{
-		Metadata: &metadata,
+		Metadata: metadata,
 	}, nil
 }

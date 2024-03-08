@@ -46,6 +46,7 @@ func GetPaginatedDevices(db *gorm.DB, page int, pageSize int) ([]models.Device, 
 	return devices, nil
 }
 
+
 func AuthenticateDevicePassword(existingDevice *models.Device, devicePassword string) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(existingDevice.Password), []byte(devicePassword)); err != nil {
 		return err
@@ -53,6 +54,7 @@ func AuthenticateDevicePassword(existingDevice *models.Device, devicePassword st
 
 	return nil
 }
+
 
 func UpdateDevice(db *gorm.DB, updatedDevice *models.Device) *errors.ErrorWrapper {
 	var existingDevice *models.Device = GetDevice(db, updatedDevice.ClientID)
