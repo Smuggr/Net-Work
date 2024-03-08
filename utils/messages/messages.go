@@ -46,22 +46,23 @@ func (e *MessageWrapper) Format(vars ...interface{}) *MessageWrapper {
 
 var (
 	// User messages
-	MsgUserRegisterSuccess   = NewMessageWrapper("MsgRegisterSuccess", "user %s successfully registered")
-	MsgUserUpdateSuccess     = NewMessageWrapper("MsgUserUpdateSuccess", "user %s successfully updated")
-	MsgUsersFetchSuccess     = NewMessageWrapper("MsgUsersFetchSuccess", "users (%d) successfully fetched")
-	MsgUserFetchSuccess      = NewMessageWrapper("MsgUserFetchSuccess", "user %s successfully fetched")
+	MsgUserRegisterSuccess     = NewMessageWrapper("MsgRegisterSuccess", "user %s successfully registered")
+	MsgUserUpdateSuccess       = NewMessageWrapper("MsgUserUpdateSuccess", "user %s successfully updated")
+	MsgUsersFetchSuccess       = NewMessageWrapper("MsgUsersFetchSuccess", "users (%d) successfully fetched")
+	MsgUserFetchSuccess        = NewMessageWrapper("MsgUserFetchSuccess", "user %s successfully fetched")
+	MsgUserAuthenticateSuccess = NewMessageWrapper("MsgUserAuthenticateSuccess", "user %s successfully authenticated")
 
 	// Device messages
-	MsgDeviceConnectSuccess  = NewMessageWrapper("MsgDeviceConnectSuccess", "device %s successfully connected")
-	MsgDeviceRegisterSuccess = NewMessageWrapper("MsgDeviceRegisterSuccess", "device %s successfully registered")
-	MsgDeviceUpdateSuccess   = NewMessageWrapper("MsgDeviceUpdateSuccess", "device %s successfully updated")
-	MsgDevicesFetchSuccess   = NewMessageWrapper("MsgDevicesFetchSuccess", "devices (%d) successfully fetched")
-	MsgDeviceFetchSuccess    = NewMessageWrapper("MsgDeviceFetchSuccess", "device %s successfully fetched")
+	MsgDeviceConnectSuccess    = NewMessageWrapper("MsgDeviceConnectSuccess", "device %s successfully connected")
+	MsgDeviceRegisterSuccess   = NewMessageWrapper("MsgDeviceRegisterSuccess", "device %s successfully registered")
+	MsgDeviceUpdateSuccess     = NewMessageWrapper("MsgDeviceUpdateSuccess", "device %s successfully updated")
+	MsgDevicesFetchSuccess     = NewMessageWrapper("MsgDevicesFetchSuccess", "devices (%d) successfully fetched")
+	MsgDeviceFetchSuccess      = NewMessageWrapper("MsgDeviceFetchSuccess", "device %s successfully fetched")
 
 	// Removal messages
-	MsgDeviceRemoveSuccess   = NewMessageWrapper("MsgDeviceRemoveSuccess", "device %s successfully removed")
-	MsgUserRemoveSuccess     = NewMessageWrapper("MsgUserRemoveSuccess", "user %s successfully removed")
+	MsgDeviceRemoveSuccess     = NewMessageWrapper("MsgDeviceRemoveSuccess", "device %s successfully removed")
+	MsgUserRemoveSuccess       = NewMessageWrapper("MsgUserRemoveSuccess", "user %s successfully removed")
 
 	// Uncategorizated messages
-	MsgTest                  = NewMessageWrapper("MsgTest", "message test %s, %d, %f, %t")
+	MsgTest                    = NewMessageWrapper("MsgTest", "message test %s, %d, %f, %t")
 )

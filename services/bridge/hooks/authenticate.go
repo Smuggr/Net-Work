@@ -70,9 +70,16 @@ func (h *AuthenticationHook) OnConnectAuthenticate(cl *mqtt.Client, pk packets.P
 		return false
 	}
 
+	device = database.GetDeviceByUsername(database.DB, string(pk.Connect.Username))
+	if device == nil {
+		return false
+	}
+
 	if err := database.AuthenticateDevicePassword(device, string(pk.Connect.Password)); err != nil {
 		return false
 	}
+
+	log.Debug("authenticated", "client", cl.ID, "username", string(pk.Connect.Username))
 
 	return true
 }
