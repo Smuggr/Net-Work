@@ -215,11 +215,13 @@ func CreateDevicePlugin(pluginName string, clientID string) (pluginer.Plugin, er
 func RemoveDevicePlugin(clientID string) error {
 	log.Debug("removing plugin", "client", clientID)
 
-	_, ok := DevicesPlugins[clientID]
+	plugin, ok := DevicesPlugins[clientID]
 	if !ok {
 		log.Error("plugin not found", "client", clientID)
 		return errors.ErrRemovingDevicePlugin.Format(clientID)
 	}
+
+	plugin.Cleanup()
 
 	log.Debug("before", "length", len(DevicesPlugins))
 	delete(DevicesPlugins, clientID)
