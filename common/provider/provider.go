@@ -232,7 +232,7 @@ func Initialize() (map[string]error, error) {
 	return failedPlugins, nil
 }
 
-func CleanupLoader() error {
+func Cleanup() error {
 	for _, devicePlugin := range DevicesPlugins {
 		if err := devicePlugin.Cleanup(); err != nil {
 			return err
