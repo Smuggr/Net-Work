@@ -69,8 +69,8 @@ var (
 	ErrDeviceNotFound               = NewErrorWrapper("ErrDeviceNotFound", errors.New("device %s not found"))
 	ErrInvalidIPAddress             = NewErrorWrapper("ErrInvalidIPAddress", errors.New("invalid ip address"))
 	ErrGettingPluginProvider        = NewErrorWrapper("ErrGettingPluginProvider", errors.New("error getting plugin provider for plugin %s"))
-	ErrPluginAlreadyLoaded          = NewErrorWrapper("ErrPluginAlreadyLoaded", errors.New("error plugin %s already loaded"))
-	ErrPluginConflict               = NewErrorWrapper("ErrPluginConflict", errors.New("plugin conflict, %s already exists"))
+	ErrPluginProviderAlreadyLoaded  = NewErrorWrapper("ErrPluginProviderAlreadyLoaded", errors.New("error plugin provider %s already loaded"))
+	ErrPluginProviderConflict       = NewErrorWrapper("ErrPluginProviderConflict", errors.New("plugin provider conflict, %s already exists"))
 	ErrAPIVersionMismatch           = NewErrorWrapper("ErrAPIVersionMismatch", errors.New("api version mismatch, plugin api version %s, expected %s"))
 	ErrRemovingDevicePlugin         = NewErrorWrapper("ErrRemovingDevicePlugin", errors.New("error removing device %s plugin %s"))
 	ErrCreatingDevicePlugin         = NewErrorWrapper("ErrCreatingDevicePlugin", errors.New("error creating device %s plugin %s"))
@@ -95,7 +95,8 @@ var (
 	ErrReadingEnvFile               = NewErrorWrapper("ErrReadingEnvFile", errors.New("error reading env file"))
 	ErrLookingUpPluginSymbol        = NewErrorWrapper("ErrLookingUpPluginSymbol", errors.New("error looking up plugin symbol from file %s"))
 	ErrFetchingPluginProvidersInfo  = NewErrorWrapper("ErrFetchingPluginProvidersInfo", errors.New("error fetching plugin providers info"))
-
+	ErrPluginProviderNotFound       = NewErrorWrapper("ErrPluginProviderNotFound", errors.New("plugin provider %s not found"))
+	
 	// General errors
 	ErrHashingPassword              = NewErrorWrapper("ErrHashingPassword", errors.New("error hashing password"))
 	ErrInvalidRequestPayload        = NewErrorWrapper("ErrInvalidRequestPayload", errors.New("invalid request payload"))

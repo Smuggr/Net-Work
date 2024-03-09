@@ -33,7 +33,7 @@ func findPluginProviderConflicts(pluginProvider *pluginer.PluginProvider) error 
 
 		if metadata.Name == otherMetadata.Name {
 			if metadata.Version == otherMetadata.Version && metadata.Author == otherMetadata.Author {
-				return errors.ErrPluginConflict.Format(metadata.Name)
+				return errors.ErrPluginProviderConflict.Format(metadata.Name)
 			}
 		}
 	}
@@ -167,7 +167,7 @@ func LoadPluginProvider(pluginName string, pluginProvider *pluginer.PluginProvid
 
 	existingPluginProvider, _ := GetPluginProvider(pluginName)
 	if existingPluginProvider != nil {
-		return errors.ErrPluginAlreadyLoaded.Format(pluginName)
+		return errors.ErrPluginProviderAlreadyLoaded.Format(pluginName)
 	}
 
 	if err := loadSOFile(filepath.Join(Config.PluginsDirectory, pluginName, constants.PluginSOFileName), pluginProvider); err != nil {

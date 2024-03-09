@@ -59,7 +59,8 @@ var (
 	MsgDeviceUpdateSuccess             = NewMessageWrapper("MsgDeviceUpdateSuccess", "device %s successfully updated")
 	MsgDevicesFetchSuccess             = NewMessageWrapper("MsgDevicesFetchSuccess", "devices (%d) successfully fetched")
 	MsgDeviceFetchSuccess              = NewMessageWrapper("MsgDeviceFetchSuccess", "device %s successfully fetched")
-	MsgPluginProvidersInfoFetchSuccess = NewMessageWrapper("MsgPluginProvidersInfoFetchSuccess", "plugin providers info successfully fetched")
+	MsgPluginProvidersInfoFetchSuccess = NewMessageWrapper("MsgPluginProvidersInfoFetchSuccess", "plugin providers (%d) info successfully fetched")
+	MsgPluginProviderInfoFetchSuccess  = NewMessageWrapper("MsgPluginProviderInfoFetchSuccess", "plugin provider %s info successfully fetched")
 
 	// Removal messages
 	MsgDeviceRemoveSuccess             = NewMessageWrapper("MsgDeviceRemoveSuccess", "device %s successfully removed")

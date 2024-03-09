@@ -76,9 +76,10 @@ func Initialize() chan error {
 		pluginsGroup := apiV1Group.Group("/plugins")
 		pluginsGroup.Use(UserAuthenticationMiddleware())
 		{
+			pluginsGroup.GET("/:plugin_name", routes.GetPluginProviderInfoHandler)
 			pluginsGroup.GET("/all", routes.GetAllPluginProvidersInfoHandler)
-			// pluginsGroup.GET("/limited", routes.GetLimitedPluginProvidersInfoHandler)
-			// pluginsGroup.GET("/paginated", routes.GetPaginatedPluginProvidersInfoHandler)
+			pluginsGroup.GET("/limited", routes.GetLimitedPluginProvidersInfoHandler)
+			pluginsGroup.GET("/paginated", routes.GetPaginatedPluginProvidersInfoHandler)
 		}
 
 		devicesGroup := apiV1Group.Group("/devices")
