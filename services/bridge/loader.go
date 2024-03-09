@@ -14,6 +14,26 @@ import (
 
 var LoadedPluginProviders map[string]*pluginer.PluginProvider
 
+func findPluginProviderConflicts(pluginProvider *pluginer.PluginProvider) error {
+	metadata := pluginProvider.Info.Metadata
+
+	if metadata.APIVersion != constants.APIVersion {
+		return errors.ErrAPIVersionMismatch.Format(metadata.APIVersion, constants.APIVersion)
+	}
+
+	for _, otherPluginProvider := range LoadedPluginProviders {
+		otherMetadata := otherPluginProvider.Info.Metadata
+
+		if metadata.Name == otherMetadata.Name {
+			if metadata.Version == otherMetadata.Version && metadata.Author == otherMetadata.Author {
+				return errors.ErrPluginConflict.Format(metadata.Name)
+			}
+		}
+	}
+
+	return nil
+}
+
 func lookupProviders(p *plugin.Plugin, file string, pluginProvider *pluginer.PluginProvider) error {
 	log.Debug("looking up provider", "file", file)
 
@@ -55,6 +75,10 @@ func lookupProviders(p *plugin.Plugin, file string, pluginProvider *pluginer.Plu
 		Metadata:  metadata,
 	}
 
+	if err := findPluginProviderConflicts(pluginProvider); err != nil {
+		return err
+    }
+
 	return nil
 }
 
@@ -83,27 +107,6 @@ func GetPluginProvider(pluginName string) (*pluginer.PluginProvider, error) {
 	}
 
 	return provider, nil
-}
-
-func FindPluginProviderConflicts(pluginProvider *pluginer.PluginProvider) error {
-	metadata := pluginProvider.Info.Metadata
-
-	if metadata.APIVersion != constants.APIVersion {
-		return errors.ErrAPIVersionMismatch.Format(metadata.APIVersion, constants.APIVersion)
-	}
-
-	for _, otherPluginProvider := range LoadedPluginProviders {
-		otherMetadata := otherPluginProvider.Info.Metadata
-
-		if metadata.Name == otherMetadata.Name {
-			if metadata.Version == otherMetadata.Version {
-				
-			}
-			return errors.ErrPluginConflict.Format(metadata.Name)
-		}
-	}
-
-	return nil
 }
 
 func LoadPlugin(pluginName string, pluginProvider *pluginer.PluginProvider) error {
