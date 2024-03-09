@@ -196,6 +196,11 @@ func CreateDevicePlugin(pluginName string, clientID string) (pluginer.Plugin, er
 }
 
 func RemoveDevicePlugin(clientID string) error {
+	_, ok := DevicesPlugins[clientID]
+	if !ok {
+		return errors.ErrRemovingDevicePlugin.Format(clientID)
+	}
+
 	delete(DevicesPlugins, clientID)
 
 	return nil

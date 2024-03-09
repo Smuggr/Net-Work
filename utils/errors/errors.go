@@ -74,6 +74,7 @@ var (
 	ErrAPIVersionMismatch    = NewErrorWrapper("ErrAPIVersionMismatch", errors.New("api version mismatch, plugin api version %s, expected %s"))
 	ErrRemovingDevicePlugin  = NewErrorWrapper("ErrRemovingDevicePlugin", errors.New("error removing device %s plugin %s"))
 	ErrCreatingDevicePlugin  = NewErrorWrapper("ErrCreatingDevicePlugin", errors.New("error creating device %s plugin %s"))
+	ErrClientNotFound        = NewErrorWrapper("ErrClientNotFound", errors.New("client %s not found"))
 
 	// Database errors
 	ErrConnectingToDB      = NewErrorWrapper("ErrConnectingToDB", errors.New("error connecting to database"))

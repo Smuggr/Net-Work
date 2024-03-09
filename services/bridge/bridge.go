@@ -3,6 +3,7 @@ package bridge
 import (
 	"fmt"
 
+	"network/common/bridger"
 	"network/services/bridge/hooks"
 	"network/utils/configuration"
 
@@ -50,7 +51,9 @@ func Initialize() error {
 		return err
 	}
 
-	// Handle the cases when one or more plugins failed to load
+	if err := bridger.Initialize(MQTTServer); err != nil {
+		return err
+	}
 
 	go func() {
 		err := MQTTServer.Serve()
