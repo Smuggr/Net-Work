@@ -15,8 +15,8 @@ type PluginInfo struct {
 }
 
 type PluginProvider struct {
-	Info      *PluginInfo
-	NewPlugin func() (Plugin, error)
+	Info      *PluginInfo            `json:"info"`
+	NewPlugin func() (Plugin, error) `json:"-"`
 }
 
 // Error channels instead?

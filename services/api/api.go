@@ -73,6 +73,14 @@ func Initialize() chan error {
 			deviceGroup.DELETE("/remove", routes.RemoveDeviceHandler)
 		}
 
+		pluginsGroup := apiV1Group.Group("/plugins")
+		pluginsGroup.Use(UserAuthenticationMiddleware())
+		{
+			pluginsGroup.GET("/all", routes.GetAllPluginProvidersInfoHandler)
+			// pluginsGroup.GET("/limited", routes.GetLimitedPluginProvidersInfoHandler)
+			// pluginsGroup.GET("/paginated", routes.GetPaginatedPluginProvidersInfoHandler)
+		}
+
 		devicesGroup := apiV1Group.Group("/devices")
 		devicesGroup.Use(UserAuthenticationMiddleware())
 		{
