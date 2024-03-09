@@ -63,7 +63,9 @@ func Initialize() chan error {
 		}
 
 		deviceGroup := apiV1Group.Group("/device")
+		deviceGroup.Use(UserAuthenticationMiddleware())
 		{
+			deviceGroup.GET("/authenticate", routes.AuthenticateDeviceHandler)
 			deviceGroup.GET("/:client_id", routes.GetDeviceHandler)
 			deviceGroup.POST("/register", routes.RegisterDeviceHandler)
 			deviceGroup.PUT("/update", routes.UpdateDeviceHandler)
@@ -77,6 +79,9 @@ func Initialize() chan error {
 			devicesGroup.GET("/limited", routes.GetLimitedDevicesHandler)
 			devicesGroup.GET("/paginated", routes.GetPaginatedDevicesHandler)
 		}
+
+		devicesInteractionsGroup := apiV1Group.Group("/devices/interactions")
+		devicesInteractionsGroup.Use(UserAuthenticationMiddleware())
 	}
 
 	errCh := make(chan error)

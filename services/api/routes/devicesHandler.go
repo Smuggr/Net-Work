@@ -2,15 +2,63 @@ package routes
 
 import (
 	"net/http"
+	"os"
 	"strconv"
+	"time"
 
 	"network/services/database"
+	"network/utils/configuration"
 	"network/utils/errors"
 	"network/utils/messages"
 	"network/utils/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
+
+func createDeviceToken(client_id string) (string, *errors.ErrorWrapper) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"client_id": client_id,
+		"exp":       time.Now().Add(time.Duration(configuration.Config.API.JWTLifespanMinutes) * time.Minute).Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_TOKEN")))
+	if err != nil {
+		return "", errors.ErrSigningToken
+	}
+
+	return tokenString, nil
+}
+
+func AuthenticateDeviceHandler(c *gin.Context) {
+	var device models.Device
+	if err := c.BindJSON(&device); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
+		return
+	}
+
+	existingDevice := database.GetDevice(database.DB, device.ClientID)
+	if existingDevice == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrDeviceNotFound.Format(device.ClientID)})
+		return
+	}
+
+	if err := database.AuthenticateDevicePassword(existingDevice, device.Password); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidCredentials})
+		return
+	}
+
+	tokenString, err := createDeviceToken(device.ClientID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": messages.MsgDeviceAuthenticateSuccess.Format(device.ClientID),
+		"token":   tokenString,
+	})
+}
 
 func RegisterDeviceHandler(c *gin.Context) {
 	var device models.Device
@@ -24,7 +72,7 @@ func RegisterDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	tokenString, err := createToken(device.Username)
+	tokenString, err := createDeviceToken(device.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return

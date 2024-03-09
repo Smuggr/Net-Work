@@ -13,6 +13,7 @@ import (
 )
 
 var LoadedPluginProviders map[string]*pluginer.PluginProvider
+var DevicesPluginProviders map[string]*pluginer.PluginProvider
 
 func findPluginProviderConflicts(pluginProvider *pluginer.PluginProvider) error {
 	metadata := pluginProvider.Info.Metadata
@@ -117,7 +118,7 @@ func LoadPlugin(pluginName string, pluginProvider *pluginer.PluginProvider) erro
 		return errors.ErrPluginAlreadyLoaded.Format(pluginName)
 	}
 
-	if err := loadSOFile(filepath.Join(Config.PluginsDirectory, pluginName, "plugin.so"), pluginProvider); err != nil {
+	if err := loadSOFile(filepath.Join(Config.PluginsDirectory, pluginName, constants.PluginSOFileName), pluginProvider); err != nil {
 		return err
 	}
 
@@ -131,7 +132,6 @@ func InitializeLoader() (map[string]error, error) {
 	}
 
 	LoadedPluginProviders = make(map[string]*pluginer.PluginProvider)
-
 	failedPlugins := make(map[string]error)
 
 	for _, subdir := range subdirs {
@@ -140,7 +140,7 @@ func InitializeLoader() (map[string]error, error) {
 
 			log.Debug("", "subdir", subdirName)
 
-			files, err := filepath.Glob(filepath.Join(Config.PluginsDirectory, subdirName, "plugin.so"))
+			files, err := filepath.Glob(filepath.Join(Config.PluginsDirectory, subdirName, constants.PluginSOFileName))
 			if err != nil {
 				log.Fatal(err)
 				return nil, err
@@ -167,4 +167,14 @@ func InitializeLoader() (map[string]error, error) {
 	}
 
 	return failedPlugins, nil
+}
+
+func CleanupLoader() error {
+	// for _, pluginProvider := range LoadedPluginProviders {
+    //     if err := pluginProvider.Cleanup(); err!= nil {
+    //         return err
+    //     }
+    // }
+
+    return nil
 }

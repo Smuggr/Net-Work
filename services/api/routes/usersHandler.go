@@ -16,9 +16,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func createToken(uniqueString string) (string, *errors.ErrorWrapper) {
+func createUserToken(login string) (string, *errors.ErrorWrapper) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"login": uniqueString,
+		"login": login,
 		"exp":   time.Now().Add(time.Duration(configuration.Config.API.JWTLifespanMinutes) * time.Minute).Unix(),
 	})
 
@@ -48,7 +48,7 @@ func AuthenticateUserHandler(c *gin.Context) {
 		return
 	}
 
-	tokenString, err := createToken(user.Login)
+	tokenString, err := createUserToken(user.Login)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
@@ -72,7 +72,7 @@ func RegisterUserHandler(c *gin.Context) {
 		return
 	}
 
-	tokenString, err := createToken(user.Login)
+	tokenString, err := createUserToken(user.Login)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return

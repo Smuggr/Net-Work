@@ -1,8 +1,0 @@
-{
-	"api_version": "1.0.0",
-	"version": "1.0.0",
-	"name": "Sample Plugin",
-	"author": "Smuggr",
-	"source": "https://github.com/Smuggr/sample-plugin",
-	"description": "Sample plugin for Smuggr Network"
-}
