@@ -23,7 +23,10 @@ type BridgeConfig struct {
 	ClientId                string `mapstructure:"client_id"`
 	KeepAliveSeconds        uint   `mapstructure:"keep_alive_seconds"`
 	DisconnectMiliseconds   uint   `mapstructure:"disconnect_miliseconds"`
-	PluginsDirectory        string `mapstructure:"plugins_directory"`
+}
+
+type ProviderConfig struct {
+	PluginsDirectory string `mapstructure:"plugins_directory"`
 }
 
 type APIConfig struct {
@@ -34,6 +37,7 @@ type APIConfig struct {
 type GlobalConfig struct {
 	Database DatabaseConfig `mapstructure:"database"`
 	Bridge   BridgeConfig   `mapstructure:"bridge"`
+	Provider ProviderConfig `mapstructure:"provider"`
 	API      APIConfig      `mapstructure:"api"`
 }
 

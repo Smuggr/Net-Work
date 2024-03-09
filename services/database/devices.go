@@ -1,51 +1,67 @@
 package database
 
 import (
-	"network/utils/validation"
+	"network/services/bridge"
+	"network/services/provider"
 	"network/utils/errors"
 	"network/utils/models"
+	"network/utils/validation"
 
 	"github.com/charmbracelet/log"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
-func GetDeviceByUsername(db *gorm.DB, username string) *models.Device {
+func GetDeviceByUsername(username string) *models.Device {
 	var device models.Device
-	if result := db.Where("username = ?", username).First(&device); result.Error != nil {
+	if result := DB.Where("username = ?", username).First(&device); result.Error != nil {
 		return nil
 	}
 
 	return &device
 }
 
-func GetDevice(db *gorm.DB, clientID string) *models.Device {
+func GetDevice(clientID string) *models.Device {
 	var device models.Device
-	if result := db.Where("client_id = ?", clientID).First(&device); result.Error != nil {
+	if result := DB.Where("client_id = ?", clientID).First(&device); result.Error != nil {
 		return nil
 	}
 
 	return &device
 }
 
-func GetLimitedDevices(db *gorm.DB, limit int) ([]models.Device, error) {
+func GetLimitedDevices(limit int) ([]models.Device, error) {
 	var devices []models.Device
-	if err := db.Limit(limit).Find(&devices).Error; err != nil {
+	if err := DB.Limit(limit).Find(&devices).Error; err != nil {
 		return nil, err
 	}
 
 	return devices, nil
 }
 
-func GetPaginatedDevices(db *gorm.DB, page int, pageSize int) ([]models.Device, error) {
+func GetPaginatedDevices(page int, pageSize int) ([]models.Device, error) {
 	var devices []models.Device
-	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&devices).Error; err != nil {
+	if err := DB.Offset((page - 1) * pageSize).Limit(pageSize).Find(&devices).Error; err != nil {
 		return nil, err
 	}
 
 	return devices, nil
 }
 
+func InitializeDevices() error {
+	devices, err := GetLimitedDevices(-1)
+	if err != nil {
+		return err
+	}
+
+	for _, device := range devices {
+		log.Debug("creating device plugin", "client_id", device.ClientID, "plugin", device.Plugin)
+		if _, err := provider.CreateDevicePlugin(device.Plugin, device.ClientID); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
 
 func AuthenticateDevicePassword(existingDevice *models.Device, devicePassword string) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(existingDevice.Password), []byte(devicePassword)); err != nil {
@@ -55,9 +71,8 @@ func AuthenticateDevicePassword(existingDevice *models.Device, devicePassword st
 	return nil
 }
 
-
-func UpdateDevice(db *gorm.DB, updatedDevice *models.Device) *errors.ErrorWrapper {
-	var existingDevice *models.Device = GetDevice(db, updatedDevice.ClientID)
+func UpdateDevice(updatedDevice *models.Device) *errors.ErrorWrapper {
+	var existingDevice *models.Device = GetDevice(updatedDevice.ClientID)
 	if existingDevice == nil {
 		return errors.ErrDeviceNotFound.Format(updatedDevice.Username)
 	}
@@ -83,7 +98,7 @@ func UpdateDevice(db *gorm.DB, updatedDevice *models.Device) *errors.ErrorWrappe
 		existingDevice.Password = string(hashedPassword)
 	}
 
-	if result := db.Save(&existingDevice); result.Error != nil {
+	if result := DB.Save(&existingDevice); result.Error != nil {
 		return errors.ErrUpdatingDeviceInDB.Format(existingDevice.ClientID)
 	}
 
@@ -91,14 +106,14 @@ func UpdateDevice(db *gorm.DB, updatedDevice *models.Device) *errors.ErrorWrappe
 	return nil
 }
 
-func RegisterDevice(db *gorm.DB, newDevice *models.Device) *errors.ErrorWrapper {
-	existingDevice := GetDevice(db, newDevice.ClientID)
+func RegisterDevice(newDevice *models.Device) *errors.ErrorWrapper {
+	existingDevice := GetDevice(newDevice.ClientID)
 	if existingDevice != nil {
 		log.Debug(existingDevice.ClientID)
 		return errors.ErrDeviceAlreadyExists.Format(newDevice.ClientID)
 	}
 
-	existingDevice = GetDeviceByUsername(db, newDevice.Username)
+	existingDevice = GetDeviceByUsername(newDevice.Username)
 	if existingDevice != nil {
 		log.Debug(existingDevice.Username)
 		return errors.ErrDeviceAlreadyExists.Format(newDevice.Username)
@@ -122,18 +137,29 @@ func RegisterDevice(db *gorm.DB, newDevice *models.Device) *errors.ErrorWrapper 
 	}
 
 	newDevice.Password = string(hashedPassword)
-	if result := db.Create(&newDevice); result.Error != nil {
+	if result := DB.Create(&newDevice); result.Error != nil {
 		return errors.ErrRegisteringDeviceInDB.Format(newDevice.ClientID)
+	}
+
+	if _, err = provider.CreateDevicePlugin(newDevice.Plugin, newDevice.ClientID); err != nil {
+		return errors.ErrCreatingDevicePlugin.Format(newDevice.ClientID, newDevice.Plugin)
 	}
 
 	log.Infof("device %s registered successfully", newDevice.ClientID)
 	return nil
 }
 
-func RemoveDevice(db *gorm.DB, deviceToRemove *models.Device) *errors.ErrorWrapper {
-	if result := db.Delete(&deviceToRemove); result.Error != nil {
+// Delete config file from disk and remove the plugin instance in loader device plugins, disconnect client from broker
+func RemoveDevice(deviceToRemove *models.Device) *errors.ErrorWrapper {
+	if result := DB.Delete(&deviceToRemove); result.Error != nil {
 		return errors.ErrRemovingDeviceFromDB.Format(deviceToRemove.ClientID)
 	}
+
+	if err := provider.RemoveDevicePlugin(deviceToRemove.ClientID); err != nil {
+		return errors.ErrRemovingDevicePlugin.Format(deviceToRemove.ClientID, deviceToRemove.Plugin)
+	}
+
+	
 
 	log.Infof("device %s removed successfully", deviceToRemove.ClientID)
 	return nil

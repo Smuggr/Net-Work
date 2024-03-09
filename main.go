@@ -9,6 +9,7 @@ import (
 
 	"network/services/api"
 	"network/services/bridge"
+	"network/services/provider"
 	"network/services/database"
 	"network/utils/configuration"
 )
@@ -31,6 +32,15 @@ func Initialize() {
 	}()
 
 	if err := bridge.Initialize(); err != nil {
+		log.Fatal(err.Error())
+	}
+
+	_, err := provider.Initialize()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	if err := database.InitializeDevices(); err != nil {
 		log.Fatal(err.Error())
 	}
 }

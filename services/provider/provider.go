@@ -1,4 +1,4 @@
-package bridge
+package provider
 
 import (
 	"os"
@@ -6,14 +6,20 @@ import (
 	"plugin"
 
 	"network/common/pluginer"
+	"network/utils/configuration"
 	"network/utils/constants"
 	"network/utils/errors"
 
 	"github.com/charmbracelet/log"
 )
 
+var Config *configuration.ProviderConfig
+
+// Indexed by PluginName
 var LoadedPluginProviders map[string]*pluginer.PluginProvider
-var DevicesPluginProviders map[string]*pluginer.PluginProvider
+
+// Indexed by ClientID
+var DevicesPlugins map[string]pluginer.Plugin
 
 func findPluginProviderConflicts(pluginProvider *pluginer.PluginProvider) error {
 	metadata := pluginProvider.Info.Metadata
@@ -78,7 +84,7 @@ func lookupProviders(p *plugin.Plugin, file string, pluginProvider *pluginer.Plu
 
 	if err := findPluginProviderConflicts(pluginProvider); err != nil {
 		return err
-    }
+	}
 
 	return nil
 }
@@ -101,37 +107,15 @@ func loadSOFile(file string, pluginProvider *pluginer.PluginProvider) error {
 	return nil
 }
 
-func GetPluginProvider(pluginName string) (*pluginer.PluginProvider, error) {
-	provider, ok := LoadedPluginProviders[pluginName]
-	if !ok {
-		return nil, errors.ErrGettingPluginProvider.Format(pluginName)
-	}
-
-	return provider, nil
-}
-
-func LoadPlugin(pluginName string, pluginProvider *pluginer.PluginProvider) error {
-	log.Debug("loading plugin", "plugin", pluginName)
-
-	existingPluginProvider, _ := GetPluginProvider(pluginName)
-	if existingPluginProvider != nil {
-		return errors.ErrPluginAlreadyLoaded.Format(pluginName)
-	}
-
-	if err := loadSOFile(filepath.Join(Config.PluginsDirectory, pluginName, constants.PluginSOFileName), pluginProvider); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func InitializeLoader() (map[string]error, error) {
+func loadPluginProviders() (map[string]error, error) {
 	subdirs, err := os.ReadDir(Config.PluginsDirectory)
 	if err != nil {
 		return nil, err
 	}
 
 	LoadedPluginProviders = make(map[string]*pluginer.PluginProvider)
+	DevicesPlugins = make(map[string]pluginer.Plugin)
+
 	failedPlugins := make(map[string]error)
 
 	for _, subdir := range subdirs {
@@ -150,7 +134,7 @@ func InitializeLoader() (map[string]error, error) {
 			for _, file := range files {
 				var NewPluginProvider pluginer.PluginProvider
 
-				if err := LoadPlugin(subdirName, &NewPluginProvider); err != nil {
+				if err := LoadPluginProvider(subdirName, &NewPluginProvider); err != nil {
 					failedPlugins[file] = err
 					log.Error("failed to load plugin", "file", file, "error", err)
 				} else {
@@ -169,12 +153,73 @@ func InitializeLoader() (map[string]error, error) {
 	return failedPlugins, nil
 }
 
-func CleanupLoader() error {
-	// for _, pluginProvider := range LoadedPluginProviders {
-    //     if err := pluginProvider.Cleanup(); err!= nil {
-    //         return err
-    //     }
-    // }
+func GetPluginProvider(pluginName string) (*pluginer.PluginProvider, error) {
+	provider, ok := LoadedPluginProviders[pluginName]
+	if !ok {
+		return nil, errors.ErrGettingPluginProvider.Format(pluginName)
+	}
 
-    return nil
+	return provider, nil
+}
+
+func LoadPluginProvider(pluginName string, pluginProvider *pluginer.PluginProvider) error {
+	log.Debug("loading plugin", "plugin", pluginName)
+
+	existingPluginProvider, _ := GetPluginProvider(pluginName)
+	if existingPluginProvider != nil {
+		return errors.ErrPluginAlreadyLoaded.Format(pluginName)
+	}
+
+	if err := loadSOFile(filepath.Join(Config.PluginsDirectory, pluginName, constants.PluginSOFileName), pluginProvider); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func CreateDevicePlugin(pluginName string, clientID string) (pluginer.Plugin, error) {
+	log.Debug("creating plugin", "plugin", pluginName, "client", clientID)
+
+	pluginProvider, err := GetPluginProvider(pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	plugin, err := pluginProvider.NewPlugin()
+	if err != nil {
+		return nil, err
+	}
+
+	DevicesPlugins[clientID] = plugin
+
+	return plugin, nil
+}
+
+func RemoveDevicePlugin(clientID string) error {
+	delete(DevicesPlugins, clientID)
+
+	return nil
+}
+
+func Initialize() (map[string]error, error) {
+	Config = &configuration.Config.Provider
+
+	log.Info("initializing provider/v1")
+
+	failedPlugins, err := loadPluginProviders()
+	if err != nil {
+		return nil, err
+	}
+
+	return failedPlugins, nil
+}
+
+func CleanupLoader() error {
+	for _, devicePlugin := range DevicesPlugins {
+		if err := devicePlugin.Cleanup(); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

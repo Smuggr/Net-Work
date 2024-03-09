@@ -1,13 +1,12 @@
 package database
 
 import (
-	"network/utils/validation"
 	"network/utils/errors"
 	"network/utils/models"
+	"network/utils/validation"
 
 	"github.com/charmbracelet/log"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 const (
@@ -17,27 +16,27 @@ const (
 	DefaultAdminPermissionLevel int    = -1
 )
 
-func GetUser(db *gorm.DB, login string) *models.User {
+func GetUser(login string) *models.User {
 	var user models.User
-	if result := db.Where("login = ?", login).First(&user); result.Error != nil {
+	if result := DB.Where("login = ?", login).First(&user); result.Error != nil {
 		return nil
 	}
 
 	return &user
 }
 
-func GetLimitedUsers(db *gorm.DB, limit int) ([]models.User, error) {
+func GetLimitedUsers(limit int) ([]models.User, error) {
 	var users []models.User
-	if err := db.Limit(limit).Find(&users).Error; err != nil {
+	if err := DB.Limit(limit).Find(&users).Error; err != nil {
 		return nil, err
 	}
 
 	return users, nil
 }
 
-func GetPaginatedUsers(db *gorm.DB, page int, pageSize int) ([]models.User, error) {
+func GetPaginatedUsers(page int, pageSize int) ([]models.User, error) {
 	var users []models.User
-	if err := db.Offset((page - 1) * pageSize).Limit(pageSize).Find(&users).Error; err != nil {
+	if err := DB.Offset((page - 1) * pageSize).Limit(pageSize).Find(&users).Error; err != nil {
 		return nil, err
 	}
 
@@ -52,8 +51,8 @@ func AuthenticateUserPassword(existingUser *models.User, userPassword string) er
 	return nil
 }
 
-func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
-	var existingUser *models.User = GetUser(db, updatedUser.Login)
+func UpdateUser(updatedUser *models.User) *errors.ErrorWrapper {
+	var existingUser *models.User = GetUser(updatedUser.Login)
 	if existingUser == nil {
 		return errors.ErrUserNotFound.Format(updatedUser.Login)
 	}
@@ -83,7 +82,7 @@ func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 		existingUser.Password = string(hashedPassword)
 	}
 
-	if result := db.Save(&existingUser); result.Error != nil {
+	if result := DB.Save(&existingUser); result.Error != nil {
 		return errors.ErrUpdatingUserInDB.Format(existingUser.Login)
 	}
 
@@ -91,8 +90,8 @@ func UpdateUser(db *gorm.DB, updatedUser *models.User) *errors.ErrorWrapper {
 	return nil
 }
 
-func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
-	if existingUser := GetUser(db, newUser.Login); existingUser != nil {
+func RegisterUser(newUser *models.User) *errors.ErrorWrapper {
+	if existingUser := GetUser(newUser.Login); existingUser != nil {
 		return errors.ErrUserAlreadyExists.Format(newUser.Login)
 	}
 
@@ -114,7 +113,7 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 	}
 
 	newUser.Password = string(hashedPassword)
-	if result := db.Create(&newUser); result.Error != nil {
+	if result := DB.Create(&newUser); result.Error != nil {
 		return errors.ErrRegisteringUserInDB.Format(newUser.Login)
 	}
 
@@ -122,12 +121,12 @@ func RegisterUser(db *gorm.DB, newUser *models.User) *errors.ErrorWrapper {
 	return nil
 }
 
-func RemoveUser(db *gorm.DB, userToRemove *models.User) *errors.ErrorWrapper {
+func RemoveUser(userToRemove *models.User) *errors.ErrorWrapper {
 	if userToRemove.PermissionLevel < 0 {
 		return errors.ErrOperationNotPermitted
 	}
 
-	if result := db.Delete(&userToRemove); result.Error != nil {
+	if result := DB.Delete(&userToRemove); result.Error != nil {
 		return errors.ErrRemovingUserFromDB.Format(userToRemove.Login)
 	}
 
@@ -135,7 +134,7 @@ func RemoveUser(db *gorm.DB, userToRemove *models.User) *errors.ErrorWrapper {
 	return nil
 }
 
-func RegisterDefaultAdmin(db *gorm.DB) error {
+func RegisterDefaultAdmin() error {
 	userModel := models.User{
 		Login:           DefaultAdminLogin,
 		Username:        DefaultAdminUsername,
@@ -143,12 +142,12 @@ func RegisterDefaultAdmin(db *gorm.DB) error {
 		PermissionLevel: DefaultAdminPermissionLevel,
 	}
 
-	if existingUser := GetUser(db, DefaultAdminLogin); existingUser != nil {
-		UpdateUser(db, &userModel)
+	if existingUser := GetUser(DefaultAdminLogin); existingUser != nil {
+		UpdateUser(&userModel)
 		return nil
 	}
 
-	if err := RegisterUser(db, &userModel); err != nil {
+	if err := RegisterUser(&userModel); err != nil {
 		return err
 	}
 

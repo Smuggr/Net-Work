@@ -50,11 +50,6 @@ func Initialize() error {
 		return err
 	}
 
-	_, err := InitializeLoader()
-	if err != nil {
-		return err
-	}
-
 	// Handle the cases when one or more plugins failed to load
 
 	go func() {

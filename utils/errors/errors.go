@@ -71,7 +71,9 @@ var (
 	ErrGettingPluginProvider = NewErrorWrapper("ErrGettingPluginProvider", errors.New("error getting plugin provider for plugin %s"))
 	ErrPluginAlreadyLoaded   = NewErrorWrapper("ErrPluginAlreadyLoaded", errors.New("error plugin %s already loaded"))
 	ErrPluginConflict        = NewErrorWrapper("ErrPluginConflict", errors.New("plugin conflict, %s already exists"))
-	ErrAPIVersionMismatch 	 = NewErrorWrapper("ErrAPIVersionMismatch", errors.New("api version mismatch, plugin api version %s, expected %s"))
+	ErrAPIVersionMismatch    = NewErrorWrapper("ErrAPIVersionMismatch", errors.New("api version mismatch, plugin api version %s, expected %s"))
+	ErrRemovingDevicePlugin  = NewErrorWrapper("ErrRemovingDevicePlugin", errors.New("error removing device %s plugin %s"))
+	ErrCreatingDevicePlugin  = NewErrorWrapper("ErrCreatingDevicePlugin", errors.New("error creating device %s plugin %s"))
 
 	// Database errors
 	ErrConnectingToDB      = NewErrorWrapper("ErrConnectingToDB", errors.New("error connecting to database"))

@@ -41,7 +41,7 @@ func Initialize() error {
 		return err
 	}
 
-	if err := RegisterDefaultAdmin(db); err != nil {
+	if err := RegisterDefaultAdmin(); err != nil {
 		return err
 	}
 

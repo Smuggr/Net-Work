@@ -37,7 +37,7 @@ func AuthenticateDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	existingDevice := database.GetDevice(database.DB, device.ClientID)
+	existingDevice := database.GetDevice(device.ClientID)
 	if existingDevice == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrDeviceNotFound.Format(device.ClientID)})
 		return
@@ -67,7 +67,7 @@ func RegisterDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	if err := database.RegisterDevice(database.DB, &device); err != nil {
+	if err := database.RegisterDevice(&device); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
@@ -88,7 +88,7 @@ func UpdateDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	if err := database.UpdateDevice(database.DB, &device); err != nil {
+	if err := database.UpdateDevice(&device); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
@@ -104,13 +104,13 @@ func RemoveDeviceHandler(c *gin.Context) {
 		return
 	}
 
-	device := database.GetDevice(database.DB, clientID)
+	device := database.GetDevice(clientID)
 	if device == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrDeviceNotFound.Format(clientID)})
 		return
 	}
 
-	if err := database.RemoveDevice(database.DB, device); err != nil {
+	if err := database.RemoveDevice(device); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingDeviceFromDB.Format(clientID)})
 		return
 	}
@@ -121,7 +121,7 @@ func RemoveDeviceHandler(c *gin.Context) {
 func GetDeviceHandler(c *gin.Context) {
 	clientID := c.Param("client_id")
 
-	device := database.GetDevice(database.DB, clientID)
+	device := database.GetDevice(clientID)
 	if device == nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrDeviceNotFound.Format(clientID)})
 		return
@@ -134,7 +134,7 @@ func GetDeviceHandler(c *gin.Context) {
 }
 
 func GetAllDevicesHandler(c *gin.Context) {
-	devices, err := database.GetLimitedDevices(database.DB, -1)
+	devices, err := database.GetLimitedDevices(-1)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingDevicesFromDB})
 		return
@@ -154,7 +154,7 @@ func GetLimitedDevicesHandler(c *gin.Context) {
 		return
 	}
 
-	devices, err := database.GetLimitedDevices(database.DB, limit)
+	devices, err := database.GetLimitedDevices(limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingDevicesFromDB})
 		return
@@ -183,7 +183,7 @@ func GetPaginatedDevicesHandler(c *gin.Context) {
 		return
 	}
 
-	devices, err := database.GetPaginatedDevices(database.DB, page, pageSize)
+	devices, err := database.GetPaginatedDevices(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingDevicesFromDB})
 		return

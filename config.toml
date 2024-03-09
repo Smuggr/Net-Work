@@ -13,6 +13,8 @@ mdns_host_name = ""
 client_id = "smuggr_network"
 keep_alive_seconds = 10
 disconnect_miliseconds = 250
+
+[provider]
 plugins_directory = "build/plugins"
 
 [api]

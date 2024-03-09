@@ -37,7 +37,7 @@ func AuthenticateUserHandler(c *gin.Context) {
 		return
 	}
 
-	existingUser := database.GetUser(database.DB, user.Login)
+	existingUser := database.GetUser(user.Login)
 	if existingUser == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(user.Login)})
 		return
@@ -67,7 +67,7 @@ func RegisterUserHandler(c *gin.Context) {
 		return
 	}
 
-	if err := database.RegisterUser(database.DB, &user); err != nil {
+	if err := database.RegisterUser(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
@@ -88,7 +88,7 @@ func UpdateUserHandler(c *gin.Context) {
 		return
 	}
 
-	if err := database.UpdateUser(database.DB, &user); err != nil {
+	if err := database.UpdateUser(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
@@ -104,13 +104,13 @@ func RemoveUserHandler(c *gin.Context) {
 		return
 	}
 
-	user := database.GetUser(database.DB, login)
+	user := database.GetUser(login)
 	if user == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(login)})
 		return
 	}
 
-	if err := database.RemoveUser(database.DB, user); err != nil {
+	if err := database.RemoveUser(user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrRemovingUserFromDB.Format(login)})
 		return
 	}
@@ -121,7 +121,7 @@ func RemoveUserHandler(c *gin.Context) {
 func GetUserHandler(c *gin.Context) {
 	login := c.Param("login")
 
-	user := database.GetUser(database.DB, login)
+	user := database.GetUser(login)
 	if user == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrUserNotFound.Format(login)})
 		return
@@ -134,7 +134,7 @@ func GetUserHandler(c *gin.Context) {
 }
 
 func GetAllUsersHandler(c *gin.Context) {
-	users, err := database.GetLimitedUsers(database.DB, -1)
+	users, err := database.GetLimitedUsers(-1)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingUsersFromDB})
 		return
@@ -154,7 +154,7 @@ func GetLimitedUsersHandler(c *gin.Context) {
 		return
 	}
 
-	users, err := database.GetLimitedUsers(database.DB, limit)
+	users, err := database.GetLimitedUsers(limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingUsersFromDB})
 		return
@@ -183,7 +183,7 @@ func GetPaginatedUsersHandler(c *gin.Context) {
 		return
 	}
 
-	users, err := database.GetPaginatedUsers(database.DB, page, pageSize)
+	users, err := database.GetPaginatedUsers(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.ErrFetchingUsersFromDB})
 		return
