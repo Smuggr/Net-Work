@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"network/services/provider"
+	"network/common/provider"
 	"network/utils/errors"
 	"network/utils/messages"
 

@@ -2,7 +2,7 @@ package database
 
 import (
 	"network/common/bridger"
-	"network/services/provider"
+	"network/common/provider"
 	"network/utils/errors"
 	"network/utils/models"
 	"network/utils/validation"
@@ -165,8 +165,8 @@ func RemoveDevice(deviceToRemove *models.Device) *errors.ErrorWrapper {
 	if err := bridger.DisconnectClient(deviceToRemove.ClientID); err != nil {
 		log.Debug("failed to disconnect client", "client_id", deviceToRemove.ClientID, "error", err)
 		return errors.ErrClientNotFound.Format(deviceToRemove.ClientID)
-	}	
-	
+	}
+
 	if err := provider.RemoveDevicePlugin(deviceToRemove.ClientID); err != nil {
 		log.Debug("failed to remove device plugin", "client_id", deviceToRemove.ClientID, "error", err)
 		return errors.ErrRemovingDevicePlugin.Format(deviceToRemove.ClientID, deviceToRemove.Plugin)

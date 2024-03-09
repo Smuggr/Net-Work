@@ -8,10 +8,10 @@ import (
 	"github.com/charmbracelet/log"
 
 	"network/common/bridger"
+	"network/common/provider"
 	"network/services/api"
 	"network/services/bridge"
 	"network/services/database"
-	"network/services/provider"
 	"network/utils/configuration"
 )
 

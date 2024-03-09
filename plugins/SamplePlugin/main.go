@@ -19,7 +19,7 @@ type SamplePlugin struct {
 }
 
 func (p *SamplePlugin) Initialize() error {
-	log.Info("sample plugin initialized")
+	log.Info("initializing sample plugin")
 
 	return nil
 }
@@ -50,6 +50,12 @@ func GetMetadata() (*pluginer.PluginMetadata, error) {
 	}
 
 	return &metadata, nil
+}
+
+func OnLoaded() error {
+	log.Info("loaded sample plugin provider")
+
+	return nil
 }
 
 func NewPlugin() (pluginer.Plugin, error) {

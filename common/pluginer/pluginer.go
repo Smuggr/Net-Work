@@ -12,14 +12,15 @@ type PluginMetadata struct {
 type PluginInfo struct {
 	Directory string          `json:"directory"`
 	Metadata  *PluginMetadata `json:"metadata" gorm:"embedded"`
+	Client    string          `json:"client"`
 }
 
 type PluginProvider struct {
 	Info      *PluginInfo            `json:"info"`
 	NewPlugin func() (Plugin, error) `json:"-"`
+	OnLoaded  func() error           `json:"-"`
 }
 
-// Error channels instead?
 type Plugin interface {
 	Initialize() error
 	Execute() error

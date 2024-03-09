@@ -49,7 +49,7 @@ func lookupProviders(p *plugin.Plugin, file string, pluginProvider *pluginer.Plu
 		return err
 	}
 
-	log.Debugf("plugin symbol type %T", newPluginSymbol)
+	log.Debugf("plugin new plugin symbol type: %T", newPluginSymbol)
 
 	NewPlugin, ok := newPluginSymbol.(func() (pluginer.Plugin, error))
 	if !ok {
@@ -61,7 +61,7 @@ func lookupProviders(p *plugin.Plugin, file string, pluginProvider *pluginer.Plu
 		return err
 	}
 
-	log.Debugf("plugin symbol type %T", getMetadataSymbol)
+	log.Debugf("plugin get metadata symbol type: %T", getMetadataSymbol)
 
 	GetMetadata, ok := getMetadataSymbol.(func() (*pluginer.PluginMetadata, error))
 	if !ok {
@@ -75,8 +75,20 @@ func lookupProviders(p *plugin.Plugin, file string, pluginProvider *pluginer.Plu
 
 	log.Debug("loaded", "metadata", metadata)
 
-	pluginProvider.NewPlugin = NewPlugin
+	onLoadedSymbol, err := p.Lookup("OnLoaded")
+	if err != nil {
+		return err
+	}
 
+	log.Debugf("plugin on loaded symbol type: %T", onLoadedSymbol)
+
+	OnLoaded, ok := onLoadedSymbol.(func() error)
+	if !ok {
+		return errors.ErrLookingUpPluginSymbol.Format(file)
+	}
+
+	pluginProvider.NewPlugin = NewPlugin
+	pluginProvider.OnLoaded = OnLoaded
 	pluginProvider.Info = &pluginer.PluginInfo{
 		Directory: filepath.Dir(file),
 		Metadata:  metadata,
@@ -102,7 +114,8 @@ func loadSOFile(file string, pluginProvider *pluginer.PluginProvider) error {
 		return err
 	}
 
-	log.Debug("executing plugin", "file", file)
+	pluginProvider.OnLoaded()
+	log.Debug("loaded plugin", "file", file)
 
 	return nil
 }
