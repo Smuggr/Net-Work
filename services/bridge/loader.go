@@ -5,10 +5,11 @@ import (
 	"path/filepath"
 	"plugin"
 
-	"github.com/charmbracelet/log"
-
 	"network/common/pluginer"
+	"network/utils/constants"
 	"network/utils/errors"
+
+	"github.com/charmbracelet/log"
 )
 
 var LoadedPluginProviders map[string]*pluginer.PluginProvider
@@ -75,6 +76,51 @@ func loadSOFile(file string, pluginProvider *pluginer.PluginProvider) error {
 	return nil
 }
 
+func GetPluginProvider(pluginName string) (*pluginer.PluginProvider, error) {
+	provider, ok := LoadedPluginProviders[pluginName]
+	if !ok {
+		return nil, errors.ErrGettingPluginProvider.Format(pluginName)
+	}
+
+	return provider, nil
+}
+
+func FindPluginProviderConflicts(pluginProvider *pluginer.PluginProvider) error {
+	metadata := pluginProvider.Info.Metadata
+
+	if metadata.APIVersion != constants.APIVersion {
+		return errors.ErrAPIVersionMismatch.Format(metadata.APIVersion, constants.APIVersion)
+	}
+
+	for _, otherPluginProvider := range LoadedPluginProviders {
+		otherMetadata := otherPluginProvider.Info.Metadata
+
+		if metadata.Name == otherMetadata.Name {
+			if metadata.Version == otherMetadata.Version {
+				
+			}
+			return errors.ErrPluginConflict.Format(metadata.Name)
+		}
+	}
+
+	return nil
+}
+
+func LoadPlugin(pluginName string, pluginProvider *pluginer.PluginProvider) error {
+	log.Debug("loading plugin", "plugin", pluginName)
+
+	existingPluginProvider, _ := GetPluginProvider(pluginName)
+	if existingPluginProvider != nil {
+		return errors.ErrPluginAlreadyLoaded.Format(pluginName)
+	}
+
+	if err := loadSOFile(filepath.Join(Config.PluginsDirectory, pluginName, "plugin.so"), pluginProvider); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func InitializeLoader() (map[string]error, error) {
 	subdirs, err := os.ReadDir(Config.PluginsDirectory)
 	if err != nil {
@@ -89,7 +135,9 @@ func InitializeLoader() (map[string]error, error) {
 		if subdir.IsDir() {
 			subdirName := subdir.Name()
 
-			files, err := filepath.Glob(filepath.Join(Config.PluginsDirectory, subdirName, "*.so"))
+			log.Debug("", "subdir", subdirName)
+
+			files, err := filepath.Glob(filepath.Join(Config.PluginsDirectory, subdirName, "plugin.so"))
 			if err != nil {
 				log.Fatal(err)
 				return nil, err
@@ -99,7 +147,7 @@ func InitializeLoader() (map[string]error, error) {
 			for _, file := range files {
 				var NewPluginProvider pluginer.PluginProvider
 
-				if err := loadSOFile(file, &NewPluginProvider); err != nil {
+				if err := LoadPlugin(subdirName, &NewPluginProvider); err != nil {
 					failedPlugins[file] = err
 					log.Error("failed to load plugin", "file", file, "error", err)
 				} else {

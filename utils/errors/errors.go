@@ -68,6 +68,10 @@ var (
 	ErrFetchingDevicesFromDB = NewErrorWrapper("ErrFetchingDevicesFromDB", errors.New("error fetching devices from database"))
 	ErrDeviceNotFound        = NewErrorWrapper("ErrDeviceNotFound", errors.New("device %s not found"))
 	ErrInvalidIPAddress      = NewErrorWrapper("ErrInvalidIPAddress", errors.New("invalid ip address"))
+	ErrGettingPluginProvider = NewErrorWrapper("ErrGettingPluginProvider", errors.New("error getting plugin provider for plugin %s"))
+	ErrPluginAlreadyLoaded   = NewErrorWrapper("ErrPluginAlreadyLoaded", errors.New("error plugin %s already loaded"))
+	ErrPluginConflict        = NewErrorWrapper("ErrPluginConflict", errors.New("plugin conflict, %s already exists"))
+	ErrAPIVersionMismatch 	 = NewErrorWrapper("ErrAPIVersionMismatch", errors.New("api version mismatch, plugin api version %s, expected %s"))
 
 	// Database errors
 	ErrConnectingToDB      = NewErrorWrapper("ErrConnectingToDB", errors.New("error connecting to database"))
@@ -94,6 +98,6 @@ var (
 	ErrOperationNotPermitted = NewErrorWrapper("ErrOperationNotPermitted", errors.New("operation not permitted"))
 
 	// Uncategorized errors
-	ErrInvalidHookConfig     = NewErrorWrapper("ErrInvalidHookConfig", errors.New("invalid hook config"))
-	ErrTest                  = NewErrorWrapper("ErrTest", errors.New("error test %s, %d, %f, %t"))
+	ErrInvalidHookConfig = NewErrorWrapper("ErrInvalidHookConfig", errors.New("invalid hook config"))
+	ErrTest              = NewErrorWrapper("ErrTest", errors.New("error test %s, %d, %f, %t"))
 )
