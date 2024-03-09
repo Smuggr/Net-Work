@@ -3,7 +3,6 @@ package bridge
 import (
 	"fmt"
 
-	"network/common/bridger"
 	"network/services/bridge/hooks"
 	"network/utils/configuration"
 
@@ -48,10 +47,6 @@ func Initialize() error {
 	}
 
 	if err := InitializeMDNS(); err != nil {
-		return err
-	}
-
-	if err := bridger.Initialize(MQTTServer); err != nil {
 		return err
 	}
 

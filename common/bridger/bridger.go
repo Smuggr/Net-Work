@@ -3,11 +3,14 @@ package bridger
 import (
 	"network/utils/errors"
 
+	"github.com/charmbracelet/log"
+	"github.com/gin-gonic/gin"
 	"github.com/wind-c/comqtt/v2/mqtt"
 	"github.com/wind-c/comqtt/v2/mqtt/packets"
 )
 
 var MQTTServer *mqtt.Server
+var InteractionsGroup *gin.RouterGroup
 
 func GetClient(clientID string) (*mqtt.Client, *errors.ErrorWrapper) {
 	client, ok := MQTTServer.Clients.Get(clientID)
@@ -16,6 +19,10 @@ func GetClient(clientID string) (*mqtt.Client, *errors.ErrorWrapper) {
 	}
 
 	return client, nil
+}
+
+func GetAllClients() map[string]*mqtt.Client {
+	return MQTTServer.Clients.GetAll()
 }
 
 func DisconnectClient(clientID string) error {
@@ -29,8 +36,11 @@ func DisconnectClient(clientID string) error {
 	return nil
 }
 
-func Initialize(mqttServer *mqtt.Server) error {
+func Initialize(mqttServer *mqtt.Server, interactionsGroup *gin.RouterGroup) error {
+	log.Info("initializing bridger/v1")
+
 	MQTTServer = mqttServer
+	InteractionsGroup = interactionsGroup
 
 	return nil
 }

@@ -15,6 +15,7 @@ import (
 )
 
 var Config = &configuration.Config.API
+var DevicesInteractionsGroup *gin.RouterGroup
 
 func Initialize() chan error {
 	log.Info("initializing api/v1")
@@ -81,7 +82,9 @@ func Initialize() chan error {
 		}
 
 		devicesInteractionsGroup := apiV1Group.Group("/devices/interactions")
-		devicesInteractionsGroup.Use(UserAuthenticationMiddleware())
+		devicesInteractionsGroup.Use(DeviceAuthenticationMiddleware())
+
+		DevicesInteractionsGroup = devicesInteractionsGroup
 	}
 
 	errCh := make(chan error)

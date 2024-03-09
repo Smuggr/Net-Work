@@ -7,10 +7,11 @@ import (
 
 	"github.com/charmbracelet/log"
 
+	"network/common/bridger"
 	"network/services/api"
 	"network/services/bridge"
-	"network/services/provider"
 	"network/services/database"
+	"network/services/provider"
 	"network/utils/configuration"
 )
 
@@ -32,6 +33,10 @@ func Initialize() {
 	}()
 
 	if err := bridge.Initialize(); err != nil {
+		log.Fatal(err.Error())
+	}
+
+	if err := bridger.Initialize(bridge.MQTTServer, api.DevicesInteractionsGroup); err != nil {
 		log.Fatal(err.Error())
 	}
 
