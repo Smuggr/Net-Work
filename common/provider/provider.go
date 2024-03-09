@@ -205,16 +205,25 @@ func CreateDevicePlugin(pluginName string, clientID string) (pluginer.Plugin, er
 
 	DevicesPlugins[clientID] = plugin
 
+	if err := plugin.Initialize(clientID); err != nil {
+		return nil, err
+	}
+
 	return plugin, nil
 }
 
 func RemoveDevicePlugin(clientID string) error {
+	log.Debug("removing plugin", "client", clientID)
+
 	_, ok := DevicesPlugins[clientID]
 	if !ok {
+		log.Error("plugin not found", "client", clientID)
 		return errors.ErrRemovingDevicePlugin.Format(clientID)
 	}
 
+	log.Debug("before", "length", len(DevicesPlugins))
 	delete(DevicesPlugins, clientID)
+	log.Debug("after", "length", len(DevicesPlugins))
 
 	return nil
 }

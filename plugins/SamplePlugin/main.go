@@ -4,10 +4,11 @@ import (
 	"embed"
 	"encoding/json"
 
-	// "network/common/bridger"
+	"network/common/bridger"
 	"network/common/pluginer"
 
 	"github.com/charmbracelet/log"
+	"github.com/wind-c/comqtt/v2/mqtt"
 )
 
 //go:embed static/*
@@ -16,10 +17,20 @@ var StaticDirectory embed.FS
 // put into PluginBase struct?
 type SamplePlugin struct {
 	Metadata *pluginer.PluginMetadata
+	Client   *mqtt.Client
 }
 
-func (p *SamplePlugin) Initialize() error {
+func (p *SamplePlugin) Initialize(clientID string) error {
 	log.Info("initializing sample plugin")
+
+	client, err := bridger.GetClient(clientID)
+	if err != nil {
+		return err
+	}
+
+	p.Client = client
+
+	log.Info("sample plugin initialized", "client", clientID)
 
 	return nil
 }

@@ -2,6 +2,8 @@ package hooks
 
 import (
 	"bytes"
+	"network/common/provider"
+	"network/services/database"
 	"network/utils/errors"
 
 	"github.com/charmbracelet/log"
@@ -37,6 +39,16 @@ func (h *InitializeDeviceHook) OnSessionEstablished(cl *mqtt.Client, pk packets.
 	for _, cl := range InitDeviceHookConfig.Server.Clients.GetAll() {
 		log.Debug("already connected", "client", cl.ID)
 	}
+
+	device := database.GetDevice(cl.ID)
+	if device == nil {
+		log.Error("device not found", "client", cl.ID)
+		return
+	}
+
+	if _, err := provider.CreateDevicePlugin(device.Plugin, cl.ID); err != nil {
+		log.Error("failed to create device plugin", "client", cl.ID, "error", err)
+	}
 }
 
 // Remove device plugin from map in loader
@@ -45,6 +57,10 @@ func (h *InitializeDeviceHook) OnDisconnect(cl *mqtt.Client, err error, expire b
 		log.Info("disconnected", "client", cl.ID, "expire", expire, "error", err)
 	} else {
 		log.Info("disconnected", "client", cl.ID, "expire", expire)
+	}
+
+	if err := provider.RemoveDevicePlugin(cl.ID); err != nil {
+		log.Error("failed to remove device plugin", "client", cl.ID, "error", err)
 	}
 }
 

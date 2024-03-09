@@ -59,6 +59,12 @@ func InitializeDevices() error {
 
 	for _, device := range devices {
 		log.Debug("creating device plugin", "client_id", device.ClientID, "plugin", device.Plugin)
+
+		if _, err := bridger.GetClient(device.ClientID); err != nil {
+			log.Warn("client not found, probably offline", "client_id", device.ClientID, "error", err)
+			continue
+		}
+
 		if _, err := provider.CreateDevicePlugin(device.Plugin, device.ClientID); err != nil {
 			return err
 		}

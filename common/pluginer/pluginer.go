@@ -22,7 +22,7 @@ type PluginProvider struct {
 }
 
 type Plugin interface {
-	Initialize() error
+	Initialize(clientID string) error
 	Execute() error
 	Cleanup() error
 }
