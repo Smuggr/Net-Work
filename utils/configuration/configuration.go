@@ -57,6 +57,7 @@ func loadConfig(config *GlobalConfig) error {
 	viper.SetConfigType("toml")
 
 	if err := viper.ReadInConfig(); err != nil {
+		log.Error("reading config", "error", err.Error())
 		return errors.ErrReadingConfigFile
 	}
 
@@ -111,10 +112,12 @@ func Initialize() (*GlobalConfig, error) {
 	setupLogging()
 
 	if err := loadConfig(&Config); err != nil {
+		log.Error(err.Error())
 		return nil, err
 	}
 
 	if err := loadEnv(); err != nil {
+		log.Error(err.Error())
 		return nil, err
 	}
 

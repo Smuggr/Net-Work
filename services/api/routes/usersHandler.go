@@ -56,7 +56,7 @@ func AuthenticateUserHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": messages.MsgUserAuthenticateSuccess.Format(user.Login),
-		"token": tokenString,
+		"token":   tokenString,
 	})
 }
 

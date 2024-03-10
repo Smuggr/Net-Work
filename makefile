@@ -1,9 +1,8 @@
-# Makefile
-
 BINARY := network
 
+BACKENDDIR := ./
 BUILDDIR ?= ./build
-PLUGINDIR := ./plugins
+PLUGINDIR := $(BACKENDDIR)/plugins
 
 GO := go
 GOFLAGS := -v
@@ -18,14 +17,17 @@ PLUGINBUILD := $(patsubst $(PLUGINDIR)/%,$(BUILDDIR)/plugins/%.so,$(PLUGINPATTER
 all: clean $(BUILDDIR)/$(BINARY) plugins
 
 $(BUILDDIR)/$(BINARY):
-	$(GO) build $(GOFLAGS) -o $(BUILDDIR)/$(BINARY)
+	cd $(BACKENDDIR) && $(GO) build $(GOFLAGS) -o $(abspath $(BUILDDIR))/$(BINARY)
 
-plugins: $(PLUGINBUILD)
+plugins: clean_plugins
+	mkdir -p $(BUILDDIR)/plugins
+	$(MAKE) $(PLUGINBUILD)
 
 $(BUILDDIR)/plugins/%.so: $(PLUGINDIR)/%
 	mkdir -p $(BUILDDIR)/plugins/$*
-	
-	$(GO) build $(GOFLAGS) -tags $(PLUGINTAG) -buildmode=$(PLUGINMODE) -o $(BUILDDIR)/plugins/$*/plugin.so $</main.go
+	cd $(BACKENDDIR) && $(GO) build $(GOFLAGS) -tags $(PLUGINTAG) -buildmode=$(PLUGINMODE) -o $(abspath $(BUILDDIR))/plugins/$*/plugin.so $</main.go
 
-clean:
-	$(RM) $(BUILDDIR)/$(BINARY) $(PLUGINBUILD)
+clean: clean_plugins
+
+clean_plugins:
+	$(RM) -r $(BUILDDIR)/plugins
