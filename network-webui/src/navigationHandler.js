@@ -14,7 +14,7 @@ export let states = reactive({
   isDrawerToggled: false,
   isLoginDialogToggled: true,
   isLoggedIn: false,
-  isLoading: false,
+  isLoading: true,
 });
 
 export let currentDestination = Destinations.HOME;

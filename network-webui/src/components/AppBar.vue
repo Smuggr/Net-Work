@@ -15,7 +15,9 @@
 </template>
 
 <script>
-export default {
+import { defineComponent, ref } from 'vue';
+
+export default defineComponent({
   props: {
     title: {
       type: String,
@@ -24,7 +26,8 @@ export default {
     isLoading: {
       type: Boolean,
       default: false,
+      required: true,
     },
   },
-};
+});
 </script>

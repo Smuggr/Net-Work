@@ -1,6 +1,10 @@
+<script setup>
+const model = defineModel()
+</script>
+
 <template>
   <v-navigation-drawer
-    v-model="isVisible"
+    v-model="model"
     app
     elevation="10"
     scrim="false"
@@ -22,24 +26,6 @@
     </template>
   </v-navigation-drawer>
 </template>
-
-<script>
-export default {
-  props: {
-    value: Boolean
-  },
-  computed: {
-    isVisible: {
-      get() {
-        return this.value;
-      },
-      set(val) {
-        this.$emit('input', val);
-      }
-    }
-  }
-};
-</script>
 
 <style scoped>
 .sidebar {
