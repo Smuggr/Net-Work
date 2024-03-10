@@ -1,7 +1,5 @@
 <template>
-  <v-container
-    class="feed"
-  >
+  <v-container class="feed">
     <v-col>
       <slot />
     </v-col>

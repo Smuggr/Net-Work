@@ -1,3 +1,8 @@
+<script setup>
+import { ref } from 'vue';
+import { Destinations, handleSideBarButtonClick, states } from './navigationHandler';
+</script>
+
 <template>
   <v-app>
     <app-bar :isLoading="states.isLoading" @toggle-drawer="toggleDrawer" title="Smuggr Network" />
@@ -37,8 +42,6 @@
 </template>
 
 <script>
-import { Destinations, handleSideBarButtonClick, states } from './navigationHandler';
-
 export default {
   data() {
     return {
@@ -51,7 +54,7 @@ export default {
       this.states.isDrawerToggled = !this.states.isDrawerToggled;
     },
 
-    toggleLoginDialog() { // Corrected method name
+    toggleLoginDialog() {
       this.states.isLoginDialogToggled = !this.states.isLoginDialogToggled;
     },
     handleSideBarButtonClick,

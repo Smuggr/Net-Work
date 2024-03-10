@@ -1,19 +1,47 @@
+<script setup>
+const model = defineModel()
+</script>
+
 <template>
-  <v-dialog v-model="isVisible" max-width="500">
+  <v-dialog v-model="model" max-width="500">
     <template v-slot:default="{ isActive }">
-      <v-card title="Dialog">
-        <v-card-text>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </v-card-text>
+      <v-card title="Log in to your account">
+        <v-form @submit.prevent>
+        <v-container>
+          <v-col>
+            <v-text-field
+              v-model="username"
+              :rules="userRules"
+              label="Username"
+              prepend-icon="mdi-account" />
+            
+            <v-text-field
+              v-model="login"
+              :rules="loginRules"
+              label="Login"
+              prepend-icon="mdi-account-key" />
+
+            <v-text-field
+              v-model="password"
+              :rules="passwordRules"
+              label="Password"
+              prepend-icon="mdi-lock"
+              type="password" />
+          </v-col>
+        </v-container>
 
         <v-card-actions>
           <v-spacer></v-spacer>
 
           <v-btn
-            text="Close Dialog"
-            @click="isActive.value = false"
-          ></v-btn>
+            text="Log In"
+            type="submit"
+            @click="isActive.value = false" />
+          <v-btn
+            text="Close"
+            @click="isActive.value = false" />
         </v-card-actions>
+        </v-form>
       </v-card>
     </template>
   </v-dialog>
@@ -21,27 +49,26 @@
 
 <script>
 export default {
-  name: 'LoginDialog',
-  props: {
-    value: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  computed: {
-    isVisible: {
-      get() {
-        return this.value;
-      },
-      set(val) {
-        this.$emit('update:value', val);
-      },
-    },
-  },
-  methods: {
-    closeDialog() {
-      this.$emit('update:value', false);
-    },
+  data() {
+    return {
+      username: '',
+      login: '',
+      password: '',
+
+      usernameRules: [
+        v => !!v || 'Username is required',
+        v => (v && v.length >= 8 && v.length <= 32) || 'Username must be between 8 and 32 characters',
+      ],
+      loginRules: [
+        v => !!v || 'Login is required',
+        v => (v && v.length >= 8 && v.length <= 16 && !v.includes(' ')) || 'Login must be between 8 and 16 characters and cannot contain spaces',
+      ],
+      passwordRules: [
+        v => !!v || 'Password is required',
+        v => (v && v.length >= 8 && v.length <= 32) || 'Password must be between 8 and 32 characters',
+        v => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/.test(v) || 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+      ],
+    };
   },
 };
 </script>
