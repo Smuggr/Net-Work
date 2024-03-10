@@ -1,8 +1,31 @@
 <template>
-  <v-card title="Card title" subtitle="Subtitle" text="Amongus Susssus">
-    <v-card-actions>
-      <v-btn>Click me</v-btn>
-    </v-card-actions>
+  <v-card
+    class="post"
+    elevation="10"
+  >
+    <v-img
+      height="250"
+      src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+      cover
+    ></v-img>
+
+    <v-card-item>
+      <v-card-title>V1.0.0 Released</v-card-title>
+
+      <v-card-subtitle>
+        <span class="me-1">Smuggr</span>
+
+        <v-icon
+          icon="mdi-crown"
+          size="small"
+        ></v-icon>
+
+      </v-card-subtitle>
+    </v-card-item>
+
+    <v-card-text>
+      <div>Network V1.0.0 is now available on github!</div>
+    </v-card-text>
   </v-card>
 </template>
 
@@ -14,49 +37,13 @@ export default {
       required: true
     },
   },
-  methods: {
-    likePost() {
-      // Handle like functionality
-    },
-    commentOnPost() {
-      // Handle comment functionality
-    },
-    sharePost() {
-      // Handle share functionality
-    }
-  }
 };
 </script>
 
 <style scoped>
 .post {
-  margin-bottom: 20px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-}
-
-.avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.username {
-  font-weight: bold;
-}
-
-.actions {
-  margin-top: 10px;
-}
-
-.actions button {
-  margin-right: 10px;
+  max-width: 100%;
+  max-height: 380px;
+  margin-bottom: 64px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <app-bar :loading="isLoading" @toggle-drawer="toggleDrawer" title="Smuggr Network" />
-    
+
     <side-bar v-model="drawer">
       <template v-slot:primary>
         <side-bar-button title="Home" icon="mdi-home" />

@@ -10,10 +10,11 @@
       <slot name="primary"></slot>
     </v-list>
 
-    <template v-slot:append>
-      <v-divider inset></v-divider>
+    <v-divider />
+
+    <v-list color="transparent" class="text-center">
       <slot name="secondary"></slot>
-    </template>
+    </v-list>
   </v-navigation-drawer>
 </template>
 
@@ -34,9 +35,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.sidebar {
-  width: 100%;
-}
-</style>

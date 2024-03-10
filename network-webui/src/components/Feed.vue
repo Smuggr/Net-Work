@@ -1,5 +1,7 @@
 <template>
-  <v-container class="bg-surface-variant mb-6">
+  <v-container
+    class="feed"
+  >
     <v-col>
       <slot />
     </v-col>
@@ -16,3 +18,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.feed {
+  max-width: 50%;
+  min-width: 480px;
+}
+</style>
