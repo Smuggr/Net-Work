@@ -5,6 +5,7 @@
       :size="size"
       :prepend-icon="icon"
       variant="text"
+      rounded="xl"
       :class="{ 'justify-start': order === 'top', 'justify-end': order === 'bottom' }"
     >
       {{ title }}

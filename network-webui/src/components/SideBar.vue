@@ -2,19 +2,24 @@
   <v-navigation-drawer
     v-model="drawer"
     app
-    temporary
+    elevation="10"
+    scrim="false"
     class="sidebar"
     
   >
-    <v-list color="transparent" class="text-center">
-      <slot name="primary"></slot>
-    </v-list>
+    <template v-slot:prepend>
+      <v-list color="transparent" class="text-center">
+        <slot name="primary"></slot>
+      </v-list>
+    </template>
 
-    <v-divider />
-
-    <v-list color="transparent" class="text-center">
-      <slot name="secondary"></slot>
-    </v-list>
+    <template v-slot:append>
+      <v-divider />
+      
+      <v-list color="transparent" class="text-center">
+        <slot name="secondary"></slot>
+      </v-list>
+    </template>
   </v-navigation-drawer>
 </template>
 

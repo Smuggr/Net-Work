@@ -4,8 +4,9 @@
     <v-app-bar-title>{{ title }}</v-app-bar-title>
     
     <v-progress-linear
-        :active="loading"
-        :indeterminate=true
+        :active="isLoading"
+        :indeterminate="true"
+        location="bottom"
         color="deep-purple-accent-4"
         absolute
         bottom
@@ -19,6 +20,10 @@ export default {
     title: {
       type: String,
       required: true,
+    },
+    isLoading: {
+      type: Boolean,
+      default: false,
     },
   },
 };

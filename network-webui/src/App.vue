@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <app-bar :loading="isLoading" @toggle-drawer="toggleDrawer" title="Smuggr Network" />
+    <app-bar :isLoading="isLoading" @toggle-drawer="toggleDrawer" title="Smuggr Network" />
 
     <side-bar v-model="drawer">
       <template v-slot:primary>
@@ -39,8 +39,8 @@ export default {
   data() {
     return {
       drawer: true,
-      isLoggedIn: true,
-      isLoading: true,
+      isLoggedIn: false,
+      isLoading: false,
     };
   },
   methods: {
