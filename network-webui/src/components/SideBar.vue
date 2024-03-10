@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    v-model="drawer"
+    v-model="isVisible"
     app
     elevation="10"
     scrim="false"
@@ -29,7 +29,7 @@ export default {
     value: Boolean
   },
   computed: {
-    drawer: {
+    isVisible: {
       get() {
         return this.value;
       },
@@ -40,3 +40,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.sidebar {
+  height: 100%;
+  overflow-y: auto;
+}
+</style>

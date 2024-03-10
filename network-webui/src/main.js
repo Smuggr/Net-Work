@@ -8,6 +8,7 @@ import SideBar from './components/SideBar.vue'
 import SideBarButton from './components/SideBarButton.vue'
 import Feed from './components/Feed.vue'
 import Post from './components/Post.vue'
+import LoginDialog from './components/LoginDialog.vue'
 
 // Composables
 import { createApp } from 'vue'
@@ -19,6 +20,7 @@ app.component('side-bar-button', SideBarButton)
 
 app.component('feed', Feed)
 app.component('post', Post)
+app.component('login-dialog', LoginDialog)
 
 registerPlugins(app)
 

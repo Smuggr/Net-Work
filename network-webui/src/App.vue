@@ -1,19 +1,21 @@
 <template>
   <v-app>
-    <app-bar :isLoading="isLoading" @toggle-drawer="toggleDrawer" title="Smuggr Network" />
+    <app-bar :isLoading="states.isLoading" @toggle-drawer="toggleDrawer" title="Smuggr Network" />
 
-    <side-bar v-model="isDrawerToggled">
+    <login-dialog v-model="states.isLoginDialogToggled" />
+
+    <side-bar v-model="states.isDrawerToggled">
       <template v-slot:primary>
         <side-bar-button :destination="Destinations.HOME" title="Home" icon="mdi-home" @button-click="handleSideBarButtonClick" />
 
-        <template v-if="isLoggedIn">
+        <template v-if="states.isLoggedIn">
           <side-bar-button :destination="Destinations.DASHBOARD" title="Dashboard" icon="mdi-view-dashboard" @button-click="handleSideBarButtonClick" />
         </template>
       </template>
 
 
       <template v-slot:secondary>
-        <template v-if="isLoggedIn">
+        <template v-if="states.isLoggedIn">
           <side-bar-button :destination="Destinations.MY_ACCOUNT" size="large" title="My Account" icon="mdi-account" @button-click="handleSideBarButtonClick"/>
           <side-bar-button :destination="Destinations.LOG_OUT" size="large" title="Log Out" icon="mdi-logout" @button-click="handleSideBarButtonClick"/>
         </template>
@@ -25,7 +27,7 @@
         <side-bar-button :destination="Destinations.ABOUT" size="large" title="About" icon="mdi-information" @button-click="handleSideBarButtonClick" />
       </template>
     </side-bar>
-
+    
     <v-main>
       <feed>
         <post />
@@ -35,20 +37,22 @@
 </template>
 
 <script>
-import { Destinations, toggleDrawer as _toggleDrawer, handleSideBarButtonClick } from './navigationHandler';
+import { Destinations, handleSideBarButtonClick, states } from './navigationHandler';
 
 export default {
   data() {
     return {
-      isDrawerToggled: true,
-      isLoggedIn: false,
-      isLoading: false,
+      states,
       Destinations,
     };
   },
   methods: {
     toggleDrawer() {
-      this.isDrawerToggled = _toggleDrawer(this.isDrawerToggled);
+      this.states.isDrawerToggled = !this.states.isDrawerToggled;
+    },
+
+    toggleLoginDialog() { // Corrected method name
+      this.states.isLoginDialogToggled = !this.states.isLoginDialogToggled;
     },
     handleSideBarButtonClick,
   },

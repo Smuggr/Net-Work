@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     handleButtonClick() {
-      this.$emit('button-click', this.destination);
+      this.$emit('button-click', this);
     },
   },
 };
