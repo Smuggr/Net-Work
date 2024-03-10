@@ -1,12 +1,13 @@
 <template>
   <v-list-item>
     <v-btn
-      block
       :size="size"
       :prepend-icon="icon"
+      block
       variant="text"
       rounded="xl"
-      :class="{ 'justify-start': order === 'top', 'justify-end': order === 'bottom' }"
+      class="justify-start"
+      @click="handleButtonClick"
     >
       {{ title }}
     </v-btn>
@@ -29,10 +30,14 @@ export default {
       type: String,
       required: true,
     },
-    order: {
+    destination: {
       type: String,
-      default: 'top',
-      validator: (value) => ['top', 'bottom'].includes(value),
+      required: true,
+    },
+  },
+  methods: {
+    handleButtonClick() {
+      this.$emit('button-click', this.destination);
     },
   },
 };
