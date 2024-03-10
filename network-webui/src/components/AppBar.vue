@@ -1,7 +1,15 @@
 <template>
-  <v-app-bar scroll-behavior="hide">
+  <v-app-bar elevation="10" prominent>
     <v-app-bar-nav-icon @click.stop="$emit('toggle-drawer')"></v-app-bar-nav-icon>
-    <v-toolbar-title>{{ title }}</v-toolbar-title>
+    <v-app-bar-title>{{ title }}</v-app-bar-title>
+    
+    <v-progress-linear
+        :active="loading"
+        :indeterminate=true
+        color="deep-purple-accent-4"
+        absolute
+        bottom
+    ></v-progress-linear>
   </v-app-bar>
 </template>
 

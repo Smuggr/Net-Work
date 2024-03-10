@@ -4,6 +4,7 @@
     app
     temporary
     class="sidebar"
+    
   >
     <v-list color="transparent" class="text-center">
       <slot name="primary"></slot>
