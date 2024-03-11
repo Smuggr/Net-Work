@@ -22,3 +22,4 @@ go.work
 .env
 build/*
 day.code-workspace
+network-webui/src/components/tabs

@@ -39,17 +39,17 @@ export const Destinations = {
 
   DEVICES: {
     title: 'Devices',
-    icon: 'mds-memory',
+    icon: 'mdi-memory',
     tabName: 'devices',
   },
   USERS: {
     title: 'Users',
-    icon: 'mds-account-group',
+    icon: 'mdi-account-group',
     tabName: 'users',
   },
   PLUGINS: {
     title: 'Plugins',
-    icon: 'mds-puzzle',
+    icon: 'mdi-puzzle',
     tabName: 'plugins',
   },
 };

@@ -33,9 +33,9 @@
         <template v-slot:content>
           <dashboard-tabs :value="Tabs.DASHBOARD" :childValue="CurrentDashboardTab" @update:childValue="handleDashboardTabChange">
             <template v-slot:buttons>
-              <v-tab :value="DashboardTabs.DEVICES">{{ DashboardTabs.DEVICES.tabName }}</v-tab>
-              <v-tab :value="DashboardTabs.PLUGINS">{{ DashboardTabs.PLUGINS.tabName }}</v-tab>
-              <v-tab :value="DashboardTabs.USERS">{{ DashboardTabs.USERS.tabName }}</v-tab>
+              <dashboard-tab-button :tab="DashboardTabs.DEVICES" />
+              <dashboard-tab-button :tab="DashboardTabs.PLUGINS" />
+              <dashboard-tab-button :tab="DashboardTabs.USERS" />
             </template>
 
             <template v-slot:content>

@@ -5,6 +5,7 @@
       align-tabs="center"
       color="deeep-purple-accent-4"
       mandatory
+      stacked
     >
       <slot name="buttons" />
     </v-tabs>

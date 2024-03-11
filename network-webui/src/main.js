@@ -14,9 +14,10 @@ import LoginDialog from './components/dialogs/LoginDialog.vue'
 
 import Tabs from './components/tabs/Tabs.vue'
 import HomeTab from './components/tabs/HomeTab.vue'
-import DashboardTabs from './components/tabs/DashboardTabs.vue'
 import AboutTab from './components/tabs/AboutTab.vue'
 
+import DashboardTabs from './components/tabs/DashboardTabs.vue'
+import DashboardTabButton from './components/general/DashboardTabButton.vue'
 
 // Composables
 import { createApp } from 'vue'
@@ -34,6 +35,7 @@ app.component('home-tab', HomeTab)
 app.component('about-tab', AboutTab)
 
 app.component('dashboard-tabs', DashboardTabs)
+app.component('dashboard-tab-button', DashboardTabButton)
 
 registerPlugins(app)
 
