@@ -1,18 +1,17 @@
 <template>
-  <v-window-item :value="value">
-    <feed>
-      <post />
-    </feed>
+  <v-window-item :value="tab">
+    Balls Devices
   </v-window-item>
 </template>
+
 
 <script>
 export default {
   name: 'DevicesTab',
   props: {
-    value: {
+    tab: {
       type: Object,
-      required: true
+      required: true,
     }
   },
 }

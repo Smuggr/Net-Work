@@ -19,6 +19,10 @@ import AboutTab from './components/tabs/AboutTab.vue'
 import DashboardTabs from './components/tabs/DashboardTabs.vue'
 import DashboardTabButton from './components/general/DashboardTabButton.vue'
 
+import DevicesTab from './components/tabs/DevicesTab.vue'
+import PluginsTab from './components/tabs/PluginsTab.vue'
+import UsersTab from './components/tabs/UsersTab.vue'
+
 // Composables
 import { createApp } from 'vue'
 
@@ -36,6 +40,10 @@ app.component('about-tab', AboutTab)
 
 app.component('dashboard-tabs', DashboardTabs)
 app.component('dashboard-tab-button', DashboardTabButton)
+
+app.component('devices-tab', DevicesTab)
+app.component('plugins-tab', PluginsTab)
+app.component('users-tab', UsersTab)
 
 registerPlugins(app)
 

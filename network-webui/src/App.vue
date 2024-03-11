@@ -28,9 +28,12 @@
       </template>
     </side-bar>
     
+
     <v-main>
       <tabs :value="CurrentTab" @update:value="handleTabChange">
         <template v-slot:content>
+
+
           <dashboard-tabs :value="Tabs.DASHBOARD" :childValue="CurrentDashboardTab" @update:childValue="handleDashboardTabChange">
             <template v-slot:buttons>
               <dashboard-tab-button :tab="DashboardTabs.DEVICES" />
@@ -39,20 +42,13 @@
             </template>
 
             <template v-slot:content>
-              <v-window-item :value="DashboardTabs.DEVICES">
-                Content for tab 1
-              </v-window-item>
-
-              <v-window-item :value="DashboardTabs.PLUGINS">
-                Content for tab 2
-              </v-window-item>
-
-              <v-window-item :value="DashboardTabs.USERS">
-                Content for tab 3
-              </v-window-item>
+              <devices-tab :tab="DashboardTabs.DEVICES" />
+              <plugins-tab :tab="DashboardTabs.PLUGINS" />
+              <users-tab :tab="DashboardTabs.USERS" />
             </template>
           </dashboard-tabs>
 
+          
           <home-tab :value="Tabs.HOME"/>
           <about-tab :value="Tabs.ABOUT"/>
         </template>

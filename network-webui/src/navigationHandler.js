@@ -67,8 +67,8 @@ export const DashboardTabs = {
 
 export const states = reactive({
   isDrawerToggled: false,
-  isLoginDialogToggled: false,
-  isLoggedIn: true,
+  isLoginDialogToggled: true,
+  isLoggedIn: false,
   isLoading: false,
 });
 
