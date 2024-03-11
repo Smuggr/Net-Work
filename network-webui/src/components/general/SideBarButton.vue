@@ -2,14 +2,14 @@
   <v-list-item>
     <v-btn
       :size="size"
-      :prepend-icon="icon"
+      :prepend-icon="destination.icon"
       block
       variant="text"
       rounded="xl"
       class="justify-start"
       @click="handleButtonClick"
     >
-      {{ title }}
+      {{ destination.title }}
     </v-btn>
   </v-list-item>
 </template>
@@ -22,14 +22,6 @@ export default {
       type: String,
       default: 'x-large',
       validator: (value) => ['x-small', 'small', 'medium', 'large', 'x-large'].includes(value),
-    },
-    title: {
-      type: String,
-      required: true,
-    },
-    icon: {
-      type: String,
-      required: true,
     },
     destination: {
       type: Object,

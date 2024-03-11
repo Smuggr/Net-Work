@@ -6,25 +6,25 @@
 
     <side-bar v-model="states.isDrawerToggled">
       <template v-slot:primary>
-        <side-bar-button :destination="Destinations.HOME" title="Home" icon="mdi-home" @button-click="handleSideBarButtonClick" />
+        <side-bar-button :destination="Destinations.HOME" @button-click="handleSideBarButtonClick" />
 
         <template v-if="states.isLoggedIn">
-          <side-bar-button :destination="Destinations.DASHBOARD" title="Dashboard" icon="mdi-view-dashboard" @button-click="handleSideBarButtonClick" />
+          <side-bar-button :destination="Destinations.DASHBOARD" @button-click="handleSideBarButtonClick" />
         </template>
       </template>
 
 
       <template v-slot:secondary>
         <template v-if="states.isLoggedIn">
-          <side-bar-button :destination="Destinations.MY_ACCOUNT" size="large" title="My Account" icon="mdi-account" @button-click="handleSideBarButtonClick"/>
-          <side-bar-button :destination="Destinations.LOG_OUT" size="large" title="Log Out" icon="mdi-logout" @button-click="handleSideBarButtonClick"/>
+          <side-bar-button :destination="Destinations.MY_ACCOUNT" size="large" @button-click="handleSideBarButtonClick"/>
+          <side-bar-button :destination="Destinations.LOG_OUT" size="large" @button-click="handleSideBarButtonClick"/>
         </template>
         <template v-else>
-          <side-bar-button :destination="Destinations.LOG_IN" size="large" title="Log In" icon="mdi-login" @button-click="handleSideBarButtonClick" />
+          <side-bar-button :destination="Destinations.LOG_IN" size="large" @button-click="handleSideBarButtonClick" />
         </template>
 
-        <side-bar-button :destination="Destinations.SETTINGS" size="large" title="Settings" icon="mdi-cog" @button-click="handleSideBarButtonClick" />
-        <side-bar-button :destination="Destinations.ABOUT" size="large" title="About" icon="mdi-information" @button-click="handleSideBarButtonClick" />
+        <side-bar-button :destination="Destinations.SETTINGS" size="large" @button-click="handleSideBarButtonClick" />
+        <side-bar-button :destination="Destinations.ABOUT" size="large" @button-click="handleSideBarButtonClick" />
       </template>
     </side-bar>
     
