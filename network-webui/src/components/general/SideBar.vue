@@ -22,6 +22,12 @@
   </v-navigation-drawer>
 </template>
 
+<script>
+export default {
+  name: 'SideBar',
+}
+</script>
+
 <style scoped>
 .sidebar {
   height: 100%;

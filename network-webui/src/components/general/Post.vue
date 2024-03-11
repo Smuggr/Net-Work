@@ -29,6 +29,12 @@
   </v-card>
 </template>
 
+<script>
+export default {
+  name: 'Post',
+}
+</script>
+
 <style scoped>
 .post {
   max-width: 100%;

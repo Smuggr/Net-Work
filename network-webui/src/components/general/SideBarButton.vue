@@ -15,9 +15,8 @@
 </template>
 
 <script>
-import { Destinations } from '@/navigationHandler';
-
 export default {
+  name: 'SideBarButton',
   props: {
     size: {
       type: String,

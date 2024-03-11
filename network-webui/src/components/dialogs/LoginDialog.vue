@@ -54,6 +54,7 @@ const model = defineModel();
 import { ref } from "vue";
 
 export default {
+  name: "LoginDialog",
   setup() {
     const username = ref('');
     const login = ref('');

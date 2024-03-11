@@ -16,6 +16,7 @@
 
 <script>
 export default {
+  name: 'AppBar',
   props: {
     title: {
       type: String,

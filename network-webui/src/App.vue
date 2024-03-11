@@ -31,15 +31,9 @@
     <v-main>
       <tabs :value="CurrentTab" @update:value="handleTabChange">
         <template v-slot:content>
-          <v-window-item :value="Tabs.ABOUT">
-            about
-          </v-window-item>
-          <v-window-item :value="Tabs.HOME">
-            home
-          </v-window-item>
-          <v-window-item :value="Tabs.DASHBOARD">
-            dashboard
-          </v-window-item>
+          <home-tab :value="Tabs.HOME"/>
+          <dashboard-tab :value="Tabs.DASHBOARD"/>
+          <about-tab :value="Tabs.ABOUT"/>
         </template>
       </tabs>
     </v-main>
