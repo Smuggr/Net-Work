@@ -14,7 +14,7 @@ export let states = reactive({
   isDrawerToggled: false,
   isLoginDialogToggled: true,
   isLoggedIn: false,
-  isLoading: true,
+  isLoading: false,
 });
 
 export let currentDestination = Destinations.HOME;
@@ -24,15 +24,15 @@ const handleHomeTraversal = () => {
 };
 
 const handleDashboardTraversal = () => {
-  // Code for handling dashboard traversal
+
 };
 
 const handleMyAccountTraversal = () => {
-  // Code for handling my account traversal
+
 };
 
 const handleLogOutTraversal = () => {
-  // Code for handling log out traversal
+
 };
 
 const handleLogInTraversal = () => {
@@ -42,11 +42,11 @@ const handleLogInTraversal = () => {
 };
 
 const handleSettingsTraversal = () => {
-  // Code for handling settings traversal
+
 };
 
 const handleAboutTraversal = () => {
-  // Code for handling about traversal
+
 };
 
 const handleTraverse = {

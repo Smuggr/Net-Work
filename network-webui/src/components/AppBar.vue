@@ -15,9 +15,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
-
-export default defineComponent({
+export default {
   props: {
     title: {
       type: String,
@@ -29,5 +27,5 @@ export default defineComponent({
       required: true,
     },
   },
-});
+}
 </script>

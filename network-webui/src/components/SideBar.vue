@@ -1,10 +1,5 @@
-<script setup>
-const model = defineModel()
-</script>
-
 <template>
   <v-navigation-drawer
-    v-model="model"
     app
     elevation="10"
     scrim="false"
