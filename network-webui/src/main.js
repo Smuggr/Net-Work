@@ -14,7 +14,7 @@ import LoginDialog from './components/dialogs/LoginDialog.vue'
 
 import Tabs from './components/tabs/Tabs.vue'
 import HomeTab from './components/tabs/HomeTab.vue'
-import DashboardTab from './components/tabs/DashboardTab.vue'
+import DashboardTabs from './components/tabs/DashboardTabs.vue'
 import AboutTab from './components/tabs/AboutTab.vue'
 
 
@@ -31,8 +31,9 @@ app.component('post', Post)
 app.component('login-dialog', LoginDialog)
 app.component('tabs', Tabs)
 app.component('home-tab', HomeTab)
-app.component('dashboard-tab', DashboardTab)
 app.component('about-tab', AboutTab)
+
+app.component('dashboard-tabs', DashboardTabs)
 
 registerPlugins(app)
 

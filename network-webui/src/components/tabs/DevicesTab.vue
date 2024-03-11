@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'DashboardTab',
+  name: 'DevicesTab',
   props: {
     value: {
       type: Object,

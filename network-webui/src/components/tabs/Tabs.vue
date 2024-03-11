@@ -1,31 +1,22 @@
 <template>
-  <v-card>
-    <v-tabs
-      v-model="selectedTabName"
-      align-tabs="center"
-      color="deep-purple-accent-4"
-      elevation="0"
-      mandatory
-    >
-      <slot name="tabs" />
-    </v-tabs>
-
-    <v-window
-      v-model="selectedTabName"
-      direction="horizontal"
-      elevation="0"
-      mandatory
-    >
-      <slot name="content" />
-    </v-window>
-  </v-card>
+  <v-window
+    v-model="selectedTabName"
+    direction="horizontal"
+    elevation="0"
+    mandatory
+  >
+    <slot name="content" />
+  </v-window>
 </template>
 
 <script>
 export default {
   name: 'Tabs',
   props: {
-    value: Object,
+    value: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
     selectedTabName: {
@@ -34,10 +25,14 @@ export default {
       },
       set(newValue) {
         if (this.value && newValue !== this.value) {
-          this.$emit('update:value', { ...this.value, tabName: newValue });
+          console.log(newValue);
+          this.$emit('update:value', newValue);
         }
       }
     }
   },
+  mounted() {
+    console.log('Tabs component received value prop:', this.value);
+  }
 };
 </script>

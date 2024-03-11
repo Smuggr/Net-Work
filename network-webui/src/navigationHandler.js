@@ -36,12 +36,34 @@ export const Destinations = {
     icon: 'about-icon',
     tabName: 'about',
   },
+
+  DEVICES: {
+    title: 'Devices',
+    icon: 'mds-memory',
+    tabName: 'devices',
+  },
+  USERS: {
+    title: 'Users',
+    icon: 'mds-account-group',
+    tabName: 'users',
+  },
+  PLUGINS: {
+    title: 'Plugins',
+    icon: 'mds-puzzle',
+    tabName: 'plugins',
+  },
 };
 
 export const Tabs = {
   HOME: Destinations.HOME,
   DASHBOARD: Destinations.DASHBOARD,
   ABOUT: Destinations.ABOUT,
+}
+
+export const DashboardTabs = {
+  DEVICES: Destinations.DEVICES,
+  USERS: Destinations.USERS,
+  PLUGINS: Destinations.PLUGINS,
 }
 
 export let states = reactive({
@@ -53,6 +75,7 @@ export let states = reactive({
 
 export const CurrentDestination = ref(Destinations.HOME);
 export const CurrentTab = ref(Tabs.HOME);
+export const CurrentDashboardTab = ref(DashboardTabs.DEVICES);
 
 const handleHomeTraversal = () => {
   CurrentTab.value = Tabs.HOME;
@@ -95,11 +118,24 @@ const handleTraverse = {
 };
 
 export const handleTabChange = (newValue) => {
+  console.log(newValue, ' tab changed');
+
   if (newValue == null || !Object.values(Tabs).includes(newValue)) {
     return;
   }
 
+  console.log(newValue, ' good')
   CurrentTab.value = newValue;
+};
+
+export const handleDashboardTabChange = (newValue) => {
+  console.log(newValue, ' tab changed');
+    if (newValue == null || !Object.values(DashboardTabs).includes(newValue)) {
+    return;
+  }
+
+  console.log(newValue, ' good')
+  CurrentDashboardTab.value = newValue;
 };
 
 export const handleSideBarButtonClick = (button) => {

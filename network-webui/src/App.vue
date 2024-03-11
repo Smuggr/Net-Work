@@ -31,8 +31,29 @@
     <v-main>
       <tabs :value="CurrentTab" @update:value="handleTabChange">
         <template v-slot:content>
+          <dashboard-tabs :value="Tabs.DASHBOARD" :childValue="CurrentDashboardTab" @update:childValue="handleDashboardTabChange">
+            <template v-slot:buttons>
+              <v-tab :value="DashboardTabs.DEVICES">{{ DashboardTabs.DEVICES.tabName }}</v-tab>
+              <v-tab :value="DashboardTabs.PLUGINS">{{ DashboardTabs.PLUGINS.tabName }}</v-tab>
+              <v-tab :value="DashboardTabs.USERS">{{ DashboardTabs.USERS.tabName }}</v-tab>
+            </template>
+
+            <template v-slot:content>
+              <v-window-item :value="DashboardTabs.DEVICES">
+                Content for tab 1
+              </v-window-item>
+
+              <v-window-item :value="DashboardTabs.PLUGINS">
+                Content for tab 2
+              </v-window-item>
+
+              <v-window-item :value="DashboardTabs.USERS">
+                Content for tab 3
+              </v-window-item>
+            </template>
+          </dashboard-tabs>
+
           <home-tab :value="Tabs.HOME"/>
-          <dashboard-tab :value="Tabs.DASHBOARD"/>
           <about-tab :value="Tabs.ABOUT"/>
         </template>
       </tabs>
@@ -41,19 +62,31 @@
 </template>
 
 <script>
-import { Destinations, Tabs, CurrentDestination, CurrentTab, handleSideBarButtonClick, handleTabChange, states } from './navigationHandler';
+import {
+  Destinations,
+  Tabs,
+  DashboardTabs,
+  CurrentTab,
+  CurrentDashboardTab,
+  handleSideBarButtonClick,
+  handleDashboardTabChange,
+  handleTabChange,
+  states
+} from './navigationHandler';
 
 export default {
   methods: {
     handleSideBarButtonClick,
+    handleDashboardTabChange,
     handleTabChange,
   },
   setup() {
     return {
       Destinations,
-      CurrentDestination,
       Tabs,
+      DashboardTabs,
       CurrentTab,
+      CurrentDashboardTab,
       states,
     };
   },
