@@ -1,15 +1,35 @@
-import { reactive } from 'vue';
+import { reactive, toRefs } from 'vue';
 import { defineStore } from 'pinia';
+import { Tabs, DashboardTabs } from '@/navigationHandler';
 
-export const useAppStore = defineStore('app', () => {
-  const states = reactive({
-    isDrawerToggled: false,
+export const useAppStore = defineStore({
+	id: 'app',
+	state: () => ({
+		isDrawerToggled: true,
     isLoginDialogToggled: true,
     isLoggedIn: false,
     isLoading: false,
-  });
-
-  return {
-    states
-  }
+    currentTab: Tabs.ABOUT,
+    currentDashboardTab: DashboardTabs.DEVICES,
+	}),
+	actions: {
+		setIsDrawerToggled(value) {
+			this.isDrawerToggled = value;
+		},
+		setIsLoginDialogToggled(value) {
+			this.isLoginDialogToggled = value;
+		},
+		setIsLoggedIn(value) {
+			this.isLoggedIn = value;
+		},
+		setIsLoading(value) {
+			this.isLoading = value;
+		},
+		setCurrentTab(tab) {
+			this.currentTab = tab;
+		},
+		setCurrentDashboardTab(tab) {
+			this.currentDashboardTab = tab;
+		},
+	},
 })

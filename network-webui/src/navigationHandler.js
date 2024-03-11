@@ -1,4 +1,5 @@
 import { reactive, ref } from 'vue';
+import { useAppStore } from './stores/app';
 import { authenticateUser } from './apiHandler';
 
 export const Destinations = {
@@ -66,33 +67,32 @@ export const DashboardTabs = {
   PLUGINS: Destinations.PLUGINS,
 };
 
-export const states = reactive({
-  isDrawerToggled: false,
-  isLoginDialogToggled: true,
-  isLoggedIn: false,
-  isLoading: false,
-});
-
-export const CurrentDestination = ref(Destinations.HOME);
-export const CurrentTab = ref(Tabs.HOME);
-export const CurrentDashboardTab = ref(DashboardTabs.DEVICES);
-
 const handleHomeTraversal = () => {
-  CurrentTab.value = Tabs.HOME;
+  const store = useAppStore();
+  store.setCurrentTab(Tabs.HOME);
+
+  console.log(store);
   authenticateUser('administrator', 'Password123$');
 };
 
 const handleDashboardTraversal = () => {
-  CurrentTab.value = Tabs.DASHBOARD;
+  const store = useAppStore();
+  store.setCurrentTab(Tabs.DASHBOARD);
 };
 
 const handleLogInTraversal = () => {
-  states.isLoginDialogToggled = true;
-  states.isDrawerToggled = false;
+  const store = useAppStore();
+  console.log('balls', typeof (store.setIsLoginDialogToggled));
+
+  store.setIsLoginDialogToggled(true);
+  store.setIsDrawerToggled(false);
+
+  console.log(store.$state.isDrawerToggled);
 };
 
 const handleAboutTraversal = () => {
-  CurrentTab.value = Tabs.ABOUT;
+  const store = useAppStore();
+  store.setCurrentTab(Tabs.ABOUT);
 };
 
 const handleTraverse = {
@@ -103,22 +103,27 @@ const handleTraverse = {
 };
 
 export const handleTabChange = (newValue) => {
+  const store = useAppStore();
+
   if (newValue == null || !Object.values(Tabs).includes(newValue)) {
     return;
   }
-  CurrentTab.value = newValue;
+  
+  store.setCurrentTab(newValue);
 };
 
 export const handleDashboardTabChange = (newValue) => {
+  const store = useAppStore();
+
   if (newValue == null || !Object.values(DashboardTabs).includes(newValue)) {
     return;
   }
-  CurrentDashboardTab.value = newValue;
+
+  store.setCurrentDashboardTab(newValue);
 };
 
 export const handleSideBarButtonClick = (button) => {
   if (handleTraverse.hasOwnProperty(button.destination.tabName)) {
     handleTraverse[button.destination.tabName]();
-    CurrentDestination.value = button.destination;
   }
 };

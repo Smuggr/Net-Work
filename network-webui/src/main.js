@@ -17,14 +17,18 @@ import DevicesTab from './components/tabs/DevicesTab.vue'
 import PluginsTab from './components/tabs/PluginsTab.vue'
 import UsersTab from './components/tabs/UsersTab.vue'
 
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
 
-import { registerPlugins } from '@/plugins'
-import { createApp } from 'vue'
+import { createVuetify } from 'vuetify'
 import { createPinia } from 'pinia'
+import { createApp, h } from 'vue'
+
 import App from './App.vue'
 
-const app = createApp(App)
-const pinia = createPinia()
+const app  = createApp({
+    render: ()=>h(App)
+});
 
 app.component('app-bar', AppBar)
 app.component('side-bar', SideBar)
@@ -44,7 +48,7 @@ app.component('devices-tab', DevicesTab)
 app.component('plugins-tab', PluginsTab)
 app.component('users-tab', UsersTab)
 
-registerPlugins(app)
+app.use(createPinia())
+app.use(createVuetify())
 
-app.use(pinia)
 app.mount('#app')

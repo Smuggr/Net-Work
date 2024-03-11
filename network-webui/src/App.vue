@@ -1,21 +1,20 @@
 <template>
   <v-app>
-    <app-bar v-model:isLoading="states.isLoading" @toggle-drawer="states.isDrawerToggled = !states.isDrawerToggled;" title="Smuggr Network" />
+    <app-bar :isLoading="store.$state.isLoading" @toggle-drawer="store.setIsDrawerToggled(!store.$state.isDrawerToggled)" title="Smuggr Network" />
 
-    <login-dialog v-model="states.isLoginDialogToggled" />
+    <login-dialog v-model="store.$state.isLoginDialogToggled" />
 
-    <side-bar v-model="states.isDrawerToggled">
+    <side-bar v-model="store.$state.isDrawerToggled">
       <template v-slot:primary>
         <side-bar-button :destination="Destinations.HOME" @button-click="handleSideBarButtonClick" />
 
-        <template v-if="states.isLoggedIn">
+        <template v-if="store.$state.isLoggedIn">
           <side-bar-button :destination="Destinations.DASHBOARD" @button-click="handleSideBarButtonClick" />
         </template>
       </template>
 
-
       <template v-slot:secondary>
-        <template v-if="states.isLoggedIn">
+        <template v-if="store.$state.isLoggedIn">
           <side-bar-button :destination="Destinations.MY_ACCOUNT" size="large" @button-click="handleSideBarButtonClick"/>
           <side-bar-button :destination="Destinations.LOG_OUT" size="large" @button-click="handleSideBarButtonClick"/>
         </template>
@@ -28,13 +27,10 @@
       </template>
     </side-bar>
     
-
     <v-main>
-      <tabs :value="CurrentTab" @update:value="handleTabChange">
+      <tabs :value="store.$state.currentTab" @update:value="handleTabChange">
         <template v-slot:content>
-
-
-          <dashboard-tabs :value="Tabs.DASHBOARD" :childValue="CurrentDashboardTab" @update:childValue="handleDashboardTabChange">
+          <dashboard-tabs :value="Tabs.DASHBOARD" :childValue="store.$state.currentDashboardTab" @update:childValue="handleDashboardTabChange">
             <template v-slot:buttons>
               <dashboard-tab-button :tab="DashboardTabs.DEVICES" />
               <dashboard-tab-button :tab="DashboardTabs.PLUGINS" />
@@ -48,7 +44,6 @@
             </template>
           </dashboard-tabs>
 
-          
           <home-tab :value="Tabs.HOME"/>
           <about-tab :value="Tabs.ABOUT"/>
         </template>
@@ -57,24 +52,20 @@
   </v-app>
 </template>
 
-<!-- <script setup>
-import { useAppStore } from './stores/app';
-
-const store = useAppStore();
-</script> -->
-
 <script>
+import { ref } from 'vue';
+
 import {
-  Destinations,
-  Tabs,
-  DashboardTabs,
-  CurrentTab,
-  CurrentDashboardTab,
   handleSideBarButtonClick,
   handleDashboardTabChange,
   handleTabChange,
-  states
+
+  Destinations,
+  Tabs,
+  DashboardTabs,
 } from './navigationHandler';
+
+import { useAppStore } from './stores/app';
 
 export default {
   methods: {
@@ -83,13 +74,20 @@ export default {
     handleTabChange,
   },
   setup() {
+    const store = useAppStore();
+
     return {
       Destinations,
       Tabs,
       DashboardTabs,
-      CurrentTab,
-      CurrentDashboardTab,
-      states,
+      store,
+      
+      isLoading: store.$state.isLoading,
+      isDrawerToggled: store.$state.isDrawerToggled,
+      isLoginDialogToggled: store.$state.isLoginDialogToggled,
+      isLoggedIn: store.$state.isLoggedIn,
+      currentTab: store.$state.currentTab,
+      currentDashboardTab: store.$state.currentDashboardTabm,
     };
   },
 };
