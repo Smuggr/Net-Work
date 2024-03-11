@@ -1,14 +1,14 @@
 <template>
   <v-card>
     <v-tabs
-      v-model="selectedTab"
+      v-model="selectedTabName"
       align-tabs="center"
       color="deep-purple-accent-4"
       hide-slider
     >
       <slot name="tabs"></slot>
     </v-tabs>
-    <v-window v-model="selectedTab">
+    <v-window v-model="selectedTabName">
       <slot name="content"></slot>
     </v-window>
   </v-card>
@@ -17,20 +17,19 @@
 <script>
 export default {
   props: {
-    value: String,
+    value: Object,
   },
-  data() {
-    return {
-      selectedTab: this.value
-    };
-  },
-  watch: {
-    value(newValue) {
-      this.selectedTab = newValue;
-    },
-    selectedTab(newTab) {
-      this.$emit('update:value', newTab);
-    },
+  computed: {
+    selectedTabName: {
+      get() {
+        return this.value;
+      },
+      set(newValue) {
+        if (this.value && newValue !== this.value) {
+          this.$emit('update:value', { ...this.value, tabName: newValue });
+        }
+      }
+    }
   },
 };
 </script>

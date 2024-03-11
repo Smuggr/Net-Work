@@ -29,15 +29,15 @@
     </side-bar>
     
     <v-main>
-      <tabs :value="CurrentTabName" @update:value="handleTabChange">
+      <tabs :value="CurrentTab" @update:value="handleTabChange">
         <template v-slot:content>
-          <v-window-item :value="'about'">
+          <v-window-item :value="Tabs.ABOUT">
             about
           </v-window-item>
-          <v-window-item :value="'home'">
+          <v-window-item :value="Tabs.HOME">
             home
           </v-window-item>
-          <v-window-item :value="'dashboard'">
+          <v-window-item :value="Tabs.DASHBOARD">
             dashboard
           </v-window-item>
         </template>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { Destinations, CurrentDestination, CurrentTabName, handleSideBarButtonClick, handleTabChange, states } from './navigationHandler';
+import { Destinations, Tabs, CurrentDestination, CurrentTab, handleSideBarButtonClick, handleTabChange, states } from './navigationHandler';
 
 export default {
   methods: {
@@ -58,7 +58,8 @@ export default {
     return {
       Destinations,
       CurrentDestination,
-      CurrentTabName,
+      Tabs,
+      CurrentTab,
       states,
     };
   },

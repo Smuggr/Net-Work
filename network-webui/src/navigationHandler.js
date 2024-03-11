@@ -38,6 +38,12 @@ export const Destinations = {
   },
 };
 
+export const Tabs = {
+  HOME: Destinations.HOME,
+  DASHBOARD: Destinations.DASHBOARD,
+  ABOUT: Destinations.ABOUT,
+}
+
 export let states = reactive({
   isDrawerToggled: false,
   isLoginDialogToggled: false,
@@ -46,16 +52,14 @@ export let states = reactive({
 });
 
 export const CurrentDestination = ref(Destinations.HOME);
-export const CurrentTabName = ref(Destinations.HOME.tabName);
+export const CurrentTab = ref(Tabs.HOME);
 
 const handleHomeTraversal = () => {
-  CurrentDestination.value = Destinations.HOME;
-  CurrentTabName.value = CurrentDestination.value.tabName;
+  CurrentTab.value = Tabs.HOME;
 };
 
 const handleDashboardTraversal = () => {
-  CurrentDestination.value = Destinations.DASHBOARD;
-  CurrentTabName.value = CurrentDestination.value.tabName;
+  CurrentTab.value = Tabs.DASHBOARD;
 };
 
 const handleMyAccountTraversal = () => {
@@ -77,8 +81,7 @@ const handleSettingsTraversal = () => {
 };
 
 const handleAboutTraversal = () => {
-  CurrentDestination.value = Destinations.ABOUT;
-  CurrentTabName.value = CurrentDestination.value.tabName;
+  CurrentTab.value = Tabs.ABOUT;
 };
 
 const handleTraverse = {
@@ -92,7 +95,11 @@ const handleTraverse = {
 };
 
 export const handleTabChange = (newValue) => {
-  CurrentTabName.value = newValue;
+  if (newValue == null || !Object.values(Tabs).includes(newValue)) {
+    return;
+  }
+
+  CurrentTab.value = newValue;
 };
 
 export const handleSideBarButtonClick = (button) => {
@@ -102,6 +109,7 @@ export const handleSideBarButtonClick = (button) => {
     console.log('traversing to ', button.destination.tabName);
     handleTraverse[button.destination.tabName]();
 
+    console.log(button.destination);
     CurrentDestination.value = button.destination;
   } else {
     console.log(button.destination, ' destination not found');
