@@ -1,9 +1,3 @@
-// Plugins
-import { registerPlugins } from '@/plugins'
-
-// Components
-import App from './App.vue'
-
 import AppBar from './components/general/AppBar.vue'
 import SideBar from './components/general/SideBar.vue'
 import SideBarButton from './components/general/SideBarButton.vue'
@@ -23,10 +17,15 @@ import DevicesTab from './components/tabs/DevicesTab.vue'
 import PluginsTab from './components/tabs/PluginsTab.vue'
 import UsersTab from './components/tabs/UsersTab.vue'
 
-// Composables
+
+import { registerPlugins } from '@/plugins'
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
 
 const app = createApp(App)
+const pinia = createPinia()
+
 app.component('app-bar', AppBar)
 app.component('side-bar', SideBar)
 app.component('side-bar-button', SideBarButton)
@@ -47,4 +46,5 @@ app.component('users-tab', UsersTab)
 
 registerPlugins(app)
 
+app.use(pinia)
 app.mount('#app')

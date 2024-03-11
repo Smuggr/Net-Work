@@ -11,6 +11,22 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+func AllowCORSOrigin(ip string) bool {
+    localRanges := []string{
+        "127.0.0.1",
+        "localhost",
+        "192.168.0.0/16",
+    }
+
+    for _, rangeIP := range localRanges {
+        if rangeIP == ip {
+            return true
+        }
+    }
+
+    return false
+}
+
 func UserAuthenticationMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")

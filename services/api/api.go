@@ -29,6 +29,7 @@ func Initialize() chan error {
 
 	r.Use(cors.New(cors.Config{
 		AllowOriginFunc: func(origin string) bool {
+			log.Debug(origin)
 			return true
 		},
 		AllowCredentials: true,
@@ -52,7 +53,8 @@ func Initialize() chan error {
 
 		noAuthUserGroup := apiV1Group.Group("/user")
 		{
-			noAuthUserGroup.GET("/authenticate", routes.AuthenticateUserHandler)
+			noAuthUserGroup.POST("/authenticate", routes.AuthenticateUserHandler)
+			noAuthUserGroup.POST("/validateToken", routes.ValidateUserTokenHandler)
 		}
 
 		usersGroup := apiV1Group.Group("/users")
@@ -66,7 +68,7 @@ func Initialize() chan error {
 		deviceGroup := apiV1Group.Group("/device")
 		deviceGroup.Use(UserAuthenticationMiddleware())
 		{
-			deviceGroup.GET("/authenticate", routes.AuthenticateDeviceHandler)
+			deviceGroup.POST("/authenticate", routes.AuthenticateDeviceHandler)
 			deviceGroup.GET("/:client_id", routes.GetDeviceHandler)
 			deviceGroup.POST("/register", routes.RegisterDeviceHandler)
 			deviceGroup.PUT("/update", routes.UpdateDeviceHandler)

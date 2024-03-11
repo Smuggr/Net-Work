@@ -6,14 +6,6 @@
           <v-container>
             <v-col>
               <v-text-field
-                v-model="username"
-                :rules="usernameRules"
-                label="Username"
-                prepend-icon="mdi-account" />
-              
-              <br/>
-
-              <v-text-field
                 v-model="login"
                 :rules="loginRules"
                 label="Login"
@@ -48,18 +40,10 @@
 
 <script>
 import { ref } from "vue";
-import axios from "axios";
+import { authenticateUser } from "@/apiHandler";
 
-const model = ref(false);
-
-const username = ref('');
 const login = ref('');
 const password = ref('');
-
-const usernameRules = [
-  v => !!v || 'Username is required',
-  v => (v && v.length >= 8 && v.length <= 32) || 'Username must be between 8 and 32 characters',
-];
 
 const loginRules = [
   v => !!v || 'Login is required',
@@ -73,47 +57,38 @@ const passwordRules = [
 ];
 
 const cancelForm = () => {
-  username.value = ''; // Clear the username field
-  login.value = ''; // Clear the login field
-  password.value = ''; // Clear the password field
+  login.value = '';
+  password.value = '';
 };
 
 const submitForm = async () => {
-  const credentials = {
-    username: username.value,
-    login: login.value,
-    password: password.value
-  };
-
-  try {
-    const response = await axios.get('YOUR_API_ENDPOINT', { params: credentials });
-    console.log('Response:', response.data);
-  } catch (error) {
-    console.error('Error:', error);
-  }
+  authenticateUser(login.value, password.value)
+    .then(response => {
+      console.log(response);
+    })
+    .catch(error => {
+      console.log(error);
+    });
 };
 
 export default {
   name: "LoginDialog",
   setup() {
     return {
-      model,
-      username,
       login,
       password,
-      usernameRules,
       loginRules,
       passwordRules,
       cancelForm,
       submitForm
     };
   },
-  emits: ['form-on-submit'], // Declare the emitted event
+  emits: ['form-on-submit'],
   methods: {
     onSubmit() {
       console.log('submitting form');
       this.$emit('form-on-submit');
-      submitForm(); // Call the submitForm function
+      submitForm();
     },
   },
 };

@@ -12,6 +12,7 @@ import (
 	"network/utils/messages"
 	"network/utils/models"
 
+	"github.com/charmbracelet/log"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -33,6 +34,7 @@ func createUserToken(login string) (string, *errors.ErrorWrapper) {
 func AuthenticateUserHandler(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
+		log.Debug(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidRequestPayload})
 		return
 	}
@@ -58,6 +60,52 @@ func AuthenticateUserHandler(c *gin.Context) {
 		"message": messages.MsgUserAuthenticateSuccess.Format(user.Login),
 		"token":   tokenString,
 	})
+}
+func ValidateUserTokenHandler(c *gin.Context) {
+	var requestBody struct {
+		Login string `json:"login"`
+		Token string `json:"token"`
+	}
+
+	if err := c.BindJSON(&requestBody); err != nil {
+		log.Debug("error parsing request body: " + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	login := requestBody.Login
+	tokenString := requestBody.Token
+
+	log.Debug("parsing token")
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			log.Debug("invalid signing method")
+			return nil, errors.ErrSigningToken
+		}
+
+		return []byte(os.Getenv("SECRET_TOKEN")), nil
+	})
+
+	if err != nil {
+		log.Debug("error parsing token: " + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidToken})
+		return
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		if claims["login"].(string) != login {
+			log.Debug("token does not match login")
+			c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidToken})
+			return
+		}
+
+		log.Debug("token validated successfully")
+		c.JSON(http.StatusOK, gin.H{"message": messages.MsgUserAuthenticateSuccess.Format(login)})
+		return
+	}
+
+	log.Debug("invalid token")
+	c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidToken})
 }
 
 func RegisterUserHandler(c *gin.Context) {

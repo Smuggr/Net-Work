@@ -1,4 +1,5 @@
-import { reactive, ref } from "vue";
+import { reactive, ref } from 'vue';
+import { authenticateUser } from './apiHandler';
 
 export const Destinations = {
   HOME: {
@@ -78,6 +79,7 @@ export const CurrentDashboardTab = ref(DashboardTabs.DEVICES);
 
 const handleHomeTraversal = () => {
   CurrentTab.value = Tabs.HOME;
+  authenticateUser('administrator', 'Password123$');
 };
 
 const handleDashboardTraversal = () => {
