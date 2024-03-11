@@ -1,30 +1,59 @@
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 
 export const Destinations = {
-  HOME: 'home',
-  DASHBOARD: 'dashboard',
-  MY_ACCOUNT: 'my-account',
-  LOG_OUT: 'log-out',
-  LOG_IN: 'log-in',
-  SETTINGS: 'settings',
-  ABOUT: 'about',
+  HOME: {
+    title: 'Home',
+    icon: 'home-icon',
+    tabName: 'home',
+  },
+  DASHBOARD: {
+    title: 'Dashboard',
+    icon: 'dashboard-icon',
+    tabName: 'dashboard',
+  },
+  MY_ACCOUNT: {
+    title: 'My Account',
+    icon: 'account-icon',
+    tabName: 'account',
+  },
+  LOG_OUT: {
+    title: 'Log Out',
+    icon: 'logout-icon',
+    tabName: 'log-out',
+  },
+  LOG_IN: {
+    title: 'Log In',
+    icon: 'login-icon',
+    tabName: 'log-in',
+  },
+  SETTINGS: {
+    title: 'Settings',
+    icon: 'settings-icon',
+    tabName: 'settings',
+  },
+  ABOUT: {
+    title: 'About',
+    icon: 'about-icon',
+    tabName: 'about',
+  },
 };
 
 export let states = reactive({
   isDrawerToggled: false,
-  isLoginDialogToggled: true,
-  isLoggedIn: false,
+  isLoginDialogToggled: false,
+  isLoggedIn: true,
   isLoading: false,
 });
 
-export let currentDestination = Destinations.HOME;
+export const CurrentDestination = ref(Destinations.HOME);
+export const CurrentTabIndex = ref(3);
 
 const handleHomeTraversal = () => {
-
+  CurrentDestination.value = Destinations.HOME;
 };
 
 const handleDashboardTraversal = () => {
-
+  CurrentDestination.value = Destinations.DASHBOARD;
 };
 
 const handleMyAccountTraversal = () => {
@@ -46,25 +75,31 @@ const handleSettingsTraversal = () => {
 };
 
 const handleAboutTraversal = () => {
-
+  CurrentDestination.value = Destinations.ABOUT;
 };
 
 const handleTraverse = {
-  [Destinations.HOME]: handleHomeTraversal,
-  [Destinations.DASHBOARD]: handleDashboardTraversal,
-  [Destinations.MY_ACCOUNT]: handleMyAccountTraversal,
-  [Destinations.LOG_OUT]: handleLogOutTraversal,
-  [Destinations.LOG_IN]: handleLogInTraversal,
-  [Destinations.SETTINGS]: handleSettingsTraversal,
-  [Destinations.ABOUT]: handleAboutTraversal,
+  [Destinations.HOME.tabName]: handleHomeTraversal,
+  [Destinations.DASHBOARD.tabName]: handleDashboardTraversal,
+  [Destinations.MY_ACCOUNT.tabName]: handleMyAccountTraversal,
+  [Destinations.LOG_OUT.tabName]: handleLogOutTraversal,
+  [Destinations.LOG_IN.tabName]: handleLogInTraversal,
+  [Destinations.SETTINGS.tabName]: handleSettingsTraversal,
+  [Destinations.ABOUT.tabName]: handleAboutTraversal,
+};
+
+export const handleTabChange = (newValue) => {
+  CurrentDestination.value = newValue;
 };
 
 export const handleSideBarButtonClick = (button) => {
   console.log(button.title + ' button clicked');
 
-  if (handleTraverse.hasOwnProperty(button.destination)) {
-    console.log('traversing to ', button.destination);
-    handleTraverse[button.destination]();
+  if (handleTraverse.hasOwnProperty(button.destination.tabName)) {
+    console.log('traversing to ', button.destination.tabName);
+    handleTraverse[button.destination.tabName]();
+
+    CurrentDestination.value = button.destination;
   } else {
     console.log(button.destination, ' destination not found');
   }

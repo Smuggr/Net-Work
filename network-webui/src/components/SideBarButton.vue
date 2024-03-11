@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { Destinations } from '@/navigationHandler';
+
 export default {
   props: {
     size: {
@@ -31,7 +33,7 @@ export default {
       required: true,
     },
     destination: {
-      type: String,
+      type: Object,
       required: true,
     },
   },

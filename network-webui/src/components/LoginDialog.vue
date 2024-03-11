@@ -1,3 +1,7 @@
+<script setup>
+const model = defineModel();
+</script>
+
 <template>
   <v-dialog v-model="model" max-width="500px">
     <template v-slot:default="{ isActive }">
@@ -106,8 +110,6 @@ export default {
       this.username = this.defaultUsername;
       this.login = this.defaultLogin;
       this.password = this.defaultPassword;
-
-      this.$emit('form-cancelled');
     }
   },
 };

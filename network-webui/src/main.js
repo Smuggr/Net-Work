@@ -9,6 +9,7 @@ import SideBarButton from './components/SideBarButton.vue'
 import Feed from './components/Feed.vue'
 import Post from './components/Post.vue'
 import LoginDialog from './components/LoginDialog.vue'
+import Tabs from './components/Tabs.vue'
 
 // Composables
 import { createApp } from 'vue'
@@ -21,6 +22,7 @@ app.component('side-bar-button', SideBarButton)
 app.component('feed', Feed)
 app.component('post', Post)
 app.component('login-dialog', LoginDialog)
+app.component('tabs', Tabs)
 
 registerPlugins(app)
 

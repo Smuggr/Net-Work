@@ -29,25 +29,34 @@
     </side-bar>
     
     <v-main>
-      <feed>
-        <post />
-      </feed>
+      <tabs :value="CurrentTabIndex" :tabs="tabs" @update:value="handleTabChange">
+        
+      </tabs>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import { Destinations, handleSideBarButtonClick, states } from './navigationHandler';
+import { Destinations, CurrentDestination, CurrentTabIndex, handleSideBarButtonClick, handleTabChange, states } from './navigationHandler';
 
 export default {
   methods: {
     handleSideBarButtonClick,
+    handleTabChange,
   },
-
-  data() {
+  setup() {
+    const tabs = [
+      { id: 1, content: 'balls' },
+      { id: 2, content: 'balls2' },
+      { id: 3, content: 'balls3' }
+    ];
+    
     return {
       Destinations,
-      states
+      CurrentDestination,
+      CurrentTabIndex,
+      states,
+      tabs
     };
   },
 };
