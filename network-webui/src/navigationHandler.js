@@ -46,14 +46,16 @@ export let states = reactive({
 });
 
 export const CurrentDestination = ref(Destinations.HOME);
-export const CurrentTabIndex = ref(3);
+export const CurrentTabName = ref(Destinations.HOME.tabName);
 
 const handleHomeTraversal = () => {
   CurrentDestination.value = Destinations.HOME;
+  CurrentTabName.value = CurrentDestination.value.tabName;
 };
 
 const handleDashboardTraversal = () => {
   CurrentDestination.value = Destinations.DASHBOARD;
+  CurrentTabName.value = CurrentDestination.value.tabName;
 };
 
 const handleMyAccountTraversal = () => {
@@ -76,6 +78,7 @@ const handleSettingsTraversal = () => {
 
 const handleAboutTraversal = () => {
   CurrentDestination.value = Destinations.ABOUT;
+  CurrentTabName.value = CurrentDestination.value.tabName;
 };
 
 const handleTraverse = {
@@ -89,7 +92,7 @@ const handleTraverse = {
 };
 
 export const handleTabChange = (newValue) => {
-  CurrentDestination.value = newValue;
+  CurrentTabName.value = newValue;
 };
 
 export const handleSideBarButtonClick = (button) => {

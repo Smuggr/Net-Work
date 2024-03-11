@@ -1,18 +1,15 @@
 <template>
   <v-card>
     <v-tabs
-      :value="selectedTab"
-      @update:value="updateSelectedTab"
+      v-model="selectedTab"
       align-tabs="center"
       color="deep-purple-accent-4"
       hide-slider
     >
-      <v-tab v-for="tab in tabs" :key="tab.id" :value="tab.id">{{ tab.name }}</v-tab>
+      <slot name="tabs"></slot>
     </v-tabs>
     <v-window v-model="selectedTab">
-      <v-window-item v-for="tab in tabs" :key="tab.id" :value="tab.id">
-        {{ tab.content }}
-      </v-window-item>
+      <slot name="content"></slot>
     </v-window>
   </v-card>
 </template>
@@ -20,19 +17,20 @@
 <script>
 export default {
   props: {
-    value: Number, // Change to match your prop name and type
-    tabs: Array // Assuming you have an array of tabs with 'id' and 'name' properties
+    value: String,
   },
   data() {
     return {
-      selectedTab: this.value // Initialize selectedTab with the prop value
+      selectedTab: this.value
     };
   },
-  methods: {
-    updateSelectedTab(newValue) {
+  watch: {
+    value(newValue) {
       this.selectedTab = newValue;
-      this.$emit('update:value', newValue); // Emit event to update prop value
-    }
-  }
+    },
+    selectedTab(newTab) {
+      this.$emit('update:value', newTab);
+    },
+  },
 };
 </script>

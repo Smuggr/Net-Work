@@ -29,15 +29,25 @@
     </side-bar>
     
     <v-main>
-      <tabs :value="CurrentTabIndex" :tabs="tabs" @update:value="handleTabChange">
-        
+      <tabs :value="CurrentTabName" @update:value="handleTabChange">
+        <template v-slot:content>
+          <v-window-item :value="'about'">
+            about
+          </v-window-item>
+          <v-window-item :value="'home'">
+            home
+          </v-window-item>
+          <v-window-item :value="'dashboard'">
+            dashboard
+          </v-window-item>
+        </template>
       </tabs>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import { Destinations, CurrentDestination, CurrentTabIndex, handleSideBarButtonClick, handleTabChange, states } from './navigationHandler';
+import { Destinations, CurrentDestination, CurrentTabName, handleSideBarButtonClick, handleTabChange, states } from './navigationHandler';
 
 export default {
   methods: {
@@ -45,18 +55,11 @@ export default {
     handleTabChange,
   },
   setup() {
-    const tabs = [
-      { id: 1, content: 'balls' },
-      { id: 2, content: 'balls2' },
-      { id: 3, content: 'balls3' }
-    ];
-    
     return {
       Destinations,
       CurrentDestination,
-      CurrentTabIndex,
+      CurrentTabName,
       states,
-      tabs
     };
   },
 };
