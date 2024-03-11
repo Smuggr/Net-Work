@@ -37,11 +37,12 @@ export default {
   computed: {
     selectedSubTabName: {
       get() {
+        console.log('getting dashboard tab name ', this.value);
         return this.childValue;
       },
       set(newValue) {
         if (this.childValue && newValue !== this.childValue) {
-          console.log(newValue);
+          console.log('updating dashboard tab name ', newValue);
           this.$emit('update:childValue', newValue );
         }
       },

@@ -21,11 +21,12 @@ export default {
   computed: {
     selectedTabName: {
       get() {
+        console.log('getting tab name ', this.value);
         return this.value;
       },
       set(newValue) {
         if (this.value && newValue !== this.value) {
-          console.log(newValue);
+          console.log('updating tab name ', newValue);
           this.$emit('update:value', newValue);
         }
       }

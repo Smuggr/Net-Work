@@ -53,8 +53,6 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-
 import {
   handleSideBarButtonClick,
   handleDashboardTabChange,
@@ -81,13 +79,6 @@ export default {
       Tabs,
       DashboardTabs,
       store,
-      
-      isLoading: store.$state.isLoading,
-      isDrawerToggled: store.$state.isDrawerToggled,
-      isLoginDialogToggled: store.$state.isLoginDialogToggled,
-      isLoggedIn: store.$state.isLoggedIn,
-      currentTab: store.$state.currentTab,
-      currentDashboardTab: store.$state.currentDashboardTabm,
     };
   },
 };
