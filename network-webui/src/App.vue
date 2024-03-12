@@ -1,21 +1,21 @@
 <template>
   <v-app>
-    <app-bar :isLoading="store.$state.isLoading" @toggle-drawer="store.setIsDrawerToggled(!store.$state.isDrawerToggled)" title="Smuggr Network" />
+    <app-bar :isLoading="appStore.$state.isLoading" @toggle-drawer="appStore.setIsDrawerToggled(!appStore.$state.isDrawerToggled)" title="Smuggr Network" />
 
-    <login-dialog v-model="store.$state.isLoginDialogToggled" />
+    <login-dialog v-model="appStore.$state.isLoginDialogToggled" />
 
-    <side-bar v-model="store.$state.isDrawerToggled">
+    <side-bar v-model="appStore.$state.isDrawerToggled">
       <template v-slot:primary>
         <side-bar-button :destination="Destinations.HOME" @button-click="handleSideBarButtonClick" />
 
-        <template v-if="store.$state.isLoggedIn">
+        <template v-if="appStore.$state.isLoggedIn">
           <side-bar-button :destination="Destinations.DASHBOARD" @button-click="handleSideBarButtonClick" />
         </template>
       </template>
 
       <template v-slot:secondary>
-        <template v-if="store.$state.isLoggedIn">
-          <side-bar-button :destination="Destinations.MY_ACCOUNT" size="large" @button-click="handleSideBarButtonClick"/>
+        <template v-if="appStore.$state.isLoggedIn">
+          <side-bar-button :destination="Destinations.MY_PROFILE" size="large" @button-click="handleSideBarButtonClick"/>
           <side-bar-button :destination="Destinations.LOG_OUT" size="large" @button-click="handleSideBarButtonClick"/>
         </template>
         <template v-else>
@@ -28,9 +28,9 @@
     </side-bar>
     
     <v-main>
-      <tabs :value="store.$state.currentTab" @update:value="handleTabChange">
+      <tabs :value="appStore.$state.currentTab" @update:value="handleTabChange">
         <template v-slot:content>
-          <dashboard-tabs :value="Tabs.DASHBOARD" :childValue="store.$state.currentDashboardTab" @update:childValue="handleDashboardTabChange">
+          <dashboard-tabs :value="Tabs.DASHBOARD" :childValue="appStore.$state.currentDashboardTab" @update:childValue="handleDashboardTabChange">
             <template v-slot:buttons>
               <dashboard-tab-button :tab="DashboardTabs.DEVICES" />
               <dashboard-tab-button :tab="DashboardTabs.PLUGINS" />
@@ -46,6 +46,8 @@
 
           <home-tab :value="Tabs.HOME"/>
           <about-tab :value="Tabs.ABOUT"/>
+          <my-profile-tab :value="Tabs.MY_PROFILE" />
+          <settings-tab :value="Tabs.SETTINGS" />
         </template>
       </tabs>
     </v-main>
@@ -72,13 +74,13 @@ export default {
     handleTabChange,
   },
   setup() {
-    const store = useAppStore();
+    const appStore = useAppStore();
 
     return {
       Destinations,
       Tabs,
       DashboardTabs,
-      store,
+      appStore,
     };
   },
 };

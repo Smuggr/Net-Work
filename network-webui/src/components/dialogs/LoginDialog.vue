@@ -43,7 +43,7 @@
 
 <script>
 import { ref, reactive, computed } from "vue";
-import { authenticateUser } from "@/apiHandler";
+import { authenticateUser, registerUser } from "@/apiHandler";
 import { useAppStore } from "@/stores/app";
 
 export default {

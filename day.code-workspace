@@ -2,6 +2,10 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"name": "ScheduleKeepr",
+			"path": "../ScheduleKeepr"
 		}
 	],
 	"settings": {

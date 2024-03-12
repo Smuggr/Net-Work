@@ -5,7 +5,7 @@
   >
     <v-img
       height="250"
-      src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+      src="@/assets/image.png"
       cover
     ></v-img>
 

@@ -9,6 +9,8 @@ import LoginDialog from './components/dialogs/LoginDialog.vue'
 import Tabs from './components/tabs/Tabs.vue'
 import HomeTab from './components/tabs/HomeTab.vue'
 import AboutTab from './components/tabs/AboutTab.vue'
+import MyProfileTab from './components/tabs/MyProfileTab.vue'
+import SettingsTab from './components/tabs/SettingsTab.vue'
 
 import DashboardTabs from './components/tabs/DashboardTabs.vue'
 import DashboardTabButton from './components/general/DashboardTabButton.vue'
@@ -40,6 +42,7 @@ app.component('login-dialog', LoginDialog)
 app.component('tabs', Tabs)
 app.component('home-tab', HomeTab)
 app.component('about-tab', AboutTab)
+app.component('my-profile-tab', MyProfileTab)
 
 app.component('dashboard-tabs', DashboardTabs)
 app.component('dashboard-tab-button', DashboardTabButton)
@@ -47,6 +50,8 @@ app.component('dashboard-tab-button', DashboardTabButton)
 app.component('devices-tab', DevicesTab)
 app.component('plugins-tab', PluginsTab)
 app.component('users-tab', UsersTab)
+app.component('settings-tab', SettingsTab)
+
 
 app.use(createPinia())
 app.use(createVuetify({

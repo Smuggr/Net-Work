@@ -1,6 +1,8 @@
 import { useAppStore } from './stores/app';
 import { useAuthStore } from './stores/auth';
 
+import { getDevices } from './apiHandler';
+
 export const Destinations = {
   HOME: {
     title: 'Home',
@@ -12,10 +14,10 @@ export const Destinations = {
     icon: 'mdi-view-dashboard',
     tabName: 'dashboard',
   },
-  MY_ACCOUNT: {
-    title: 'My Account',
+  MY_PROFILE: {
+    title: 'My Profile',
     icon: 'mdi-account',
-    tabName: 'account',
+    tabName: 'my-profile',
   },
   LOG_OUT: {
     title: 'Log Out',
@@ -57,6 +59,8 @@ export const Destinations = {
 export const Tabs = {
   HOME: Destinations.HOME,
   DASHBOARD: Destinations.DASHBOARD,
+  MY_PROFILE: Destinations.MY_PROFILE,
+  SETTINGS: Destinations.SETTINGS,
   ABOUT: Destinations.ABOUT,
 };
 
@@ -69,6 +73,7 @@ export const DashboardTabs = {
 const handleHomeTraversal = () => {
   const appStore = useAppStore();
   appStore.setCurrentTab(Tabs.HOME);
+  getDevices();
 };
 
 const handleDashboardTraversal = () => {
@@ -95,6 +100,16 @@ const handleLogOutTraversal = () => {
   authStore.clearJWTToken();
 };
 
+const handleMyProfileTraversal = () => {
+  const appStore = useAppStore();
+  appStore.setCurrentTab(Tabs.MY_PROFILE);
+}
+
+const handleSettingsTraversal = () => {
+  const appStore = useAppStore();
+  appStore.setCurrentTab(Tabs.SETTINGS);
+};
+
 const handleAboutTraversal = () => {
   const appStore = useAppStore();
   appStore.setCurrentTab(Tabs.ABOUT);
@@ -105,6 +120,8 @@ const handleTraverse = {
   [Destinations.DASHBOARD.tabName]: handleDashboardTraversal,
   [Destinations.LOG_IN.tabName]: handleLogInTraversal,
   [Destinations.LOG_OUT.tabName]: handleLogOutTraversal,
+  [Destinations.MY_PROFILE.tabName]: handleMyProfileTraversal,
+  [Destinations.SETTINGS.tabName]: handleSettingsTraversal,
   [Destinations.ABOUT.tabName]: handleAboutTraversal,
 };
 
