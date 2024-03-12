@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from './stores/auth';
+import { useAppStore } from './stores/app';
 import config from './config.json';
 
 const api = axios.create({
@@ -25,15 +26,30 @@ const authenticateUser = async (login, password) => {
 	};
 
 	try {
+		const appStore = useAppStore();
+		const authStore = useAuthStore();
+
+		appStore.setIsLoading(true);
+
 		const response = await api.request(options);
-		console.log('authentication successful:', response.data);
+		console.log('authentication successful ', response.data);
 		
 		const jwtToken = response.data.token;
-		useAuthStore().setJWTToken(jwtToken);
+		console.log('token ', jwtToken);
+
+		authStore.setJWTToken(jwtToken);
+		appStore.setIsLoggedIn(true);
+		
+		setTimeout(() => {
+			appStore.setIsLoading(false);
+			appStore.setIsLoginDialogToggled(false);
+		}, 1000);
 		
 		return true;
 	} catch (error) {
 		console.error('authentication failed:', error);
+		
+		appStore.setIsLoading(false);
 		return false;
 	}
 };

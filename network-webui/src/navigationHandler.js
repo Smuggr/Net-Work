@@ -1,6 +1,5 @@
-import { reactive, ref } from 'vue';
 import { useAppStore } from './stores/app';
-import { authenticateUser } from './apiHandler';
+import { useAuthStore } from './stores/auth';
 
 export const Destinations = {
   HOME: {
@@ -68,58 +67,65 @@ export const DashboardTabs = {
 };
 
 const handleHomeTraversal = () => {
-  const store = useAppStore();
-  store.setCurrentTab(Tabs.HOME);
-
-  console.log(store);
-  authenticateUser('administrator', 'Password123$');
+  const appStore = useAppStore();
+  appStore.setCurrentTab(Tabs.HOME);
 };
 
 const handleDashboardTraversal = () => {
-  const store = useAppStore();
-  store.setCurrentTab(Tabs.DASHBOARD);
+  const appStore = useAppStore();
+  appStore.setCurrentTab(Tabs.DASHBOARD);
 };
 
 const handleLogInTraversal = () => {
-  const store = useAppStore();
-  console.log('balls', typeof (store.setIsLoginDialogToggled));
+  const appStore = useAppStore();
 
-  store.setIsLoginDialogToggled(true);
-  store.setIsDrawerToggled(false);
+  appStore.setIsLoginDialogToggled(true);
+  appStore.setIsDrawerToggled(false);
+};
 
-  console.log(store.$state.isDrawerToggled);
+const handleLogOutTraversal = () => {
+  const appStore = useAppStore();
+  const authStore = useAuthStore();
+
+  appStore.setIsLoggedIn(false);
+  appStore.setIsLoginDialogToggled(false);
+  appStore.setIsDrawerToggled(false);
+  appStore.setCurrentTab(Tabs.HOME);
+
+  authStore.clearJWTToken();
 };
 
 const handleAboutTraversal = () => {
-  const store = useAppStore();
-  store.setCurrentTab(Tabs.ABOUT);
+  const appStore = useAppStore();
+  appStore.setCurrentTab(Tabs.ABOUT);
 };
 
 const handleTraverse = {
   [Destinations.HOME.tabName]: handleHomeTraversal,
   [Destinations.DASHBOARD.tabName]: handleDashboardTraversal,
   [Destinations.LOG_IN.tabName]: handleLogInTraversal,
+  [Destinations.LOG_OUT.tabName]: handleLogOutTraversal,
   [Destinations.ABOUT.tabName]: handleAboutTraversal,
 };
 
 export const handleTabChange = (newValue) => {
-  const store = useAppStore();
+  const appStore = useAppStore();
 
   if (newValue == null || !Object.values(Tabs).includes(newValue)) {
     return;
   }
   
-  store.setCurrentTab(newValue);
+  appStore.setCurrentTab(newValue);
 };
 
 export const handleDashboardTabChange = (newValue) => {
-  const store = useAppStore();
+  const appStore = useAppStore();
 
   if (newValue == null || !Object.values(DashboardTabs).includes(newValue)) {
     return;
   }
 
-  store.setCurrentDashboardTab(newValue);
+  appStore.setCurrentDashboardTab(newValue);
 };
 
 export const handleSideBarButtonClick = (button) => {

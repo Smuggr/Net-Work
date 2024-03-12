@@ -4,7 +4,7 @@ export const useAuthStore = defineStore({
 	id: "auth",
 	state: () => ({
 		isAuthenticated: false,
-		jwtToken: "",
+		jwtToken: '',
 	}),
 	actions: {
 		setJWTToken(token) {
@@ -12,7 +12,7 @@ export const useAuthStore = defineStore({
 			this.isAuthenticated = true;
 		},
 		clearJWTToken() {
-			this.jwtToken = "";
+			this.jwtToken = '';
 			this.isAuthenticated = false;
 		},
 	},
