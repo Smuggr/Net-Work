@@ -10,6 +10,13 @@
             <v-icon class="rtc-icon">mdi-clock</v-icon>
             <span class="rtc-time">{{ rtcTime }}</span>
           </div>
+          
+          <br/>
+
+          <div class="gpio-container">
+            <v-icon class="gpio-icon">{{ gpioIconClass }}</v-icon>
+            <span class="gpio-status">{{ gpioStatus }}</span>
+          </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -21,9 +28,10 @@
   </v-window-item>
 </template>
 
+
 <script>
-import { ref, onMounted } from 'vue';
-import { getDevices, removeDevices, registerDevice, toggleDevice, getRtcTime } from '@/apiHandler';
+import { ref, onMounted, computed } from 'vue';
+import { getDevices, removeDevices, registerDevice, toggleDevice, getRtcTime, getGpioStatus } from '@/apiHandler';
 
 export default {
   name: 'DevicesTab',
@@ -34,9 +42,8 @@ export default {
     }
   },
   setup() {
-    const items = ref([]);
-    const selected = ref([]);
     const rtcTime = ref(''); // Define rtcTime as a ref object
+    const gpioStatus = ref(''); // Define gpioStatus as a ref object
 
     const loadDevices = async () => {
       try {
@@ -92,20 +99,31 @@ export default {
       }
     };
 
+    const updateGpioStatus = async () => {
+      try {
+        const status = await getGpioStatus();
+        gpioStatus.value = status; // Assign the value to gpioStatus.value
+      } catch (error) {
+        console.error('Error fetching GPIO status:', error);
+      }
+    };
+
     onMounted(() => {
       //loadDevices();
       setInterval(updateRtcTime, 1000);
+      setInterval(updateGpioStatus, 1000);
+    });
+
+    const gpioIconClass = computed(() => {
+      return gpioStatus.value === '1' ? 'mdi-led-on' : 'mdi-led-off';
     });
 
     return {
-      items,
-      selected,
       rtcTime,
-      removeDevices,
-      refreshDevices,
-      addDevice,
+      gpioStatus,
       turnOff,
-      turnOn
+      turnOn,
+      gpioIconClass,
     };
   },
 }
@@ -118,12 +136,15 @@ export default {
   margin-bottom: 64px;
 }
 
+.gpio-container,
 .rtc-container {
   display: flex;
   align-items: center; /* Center vertically */
 }
 
+.gpio-icon,
 .rtc-icon {
   margin-right: 8px; /* Adjust margin on the right */
 }
+
 </style>

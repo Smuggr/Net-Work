@@ -207,6 +207,28 @@ const getRtcTime = async () => {
 	}
 };
 
+const getGpioStatus = async () => {
+	const url = '/gpio_status';
+	const options = {
+		method: 'GET',
+		url: url,
+		headers: {
+			'content-type': 'application/json',
+		}
+	};
+	try {
+		const response = await deviceApi.request(options);
+		const gpioStatus = response.data.gpio_status;
+		console.log('Getting gpio status successful:', gpioStatus);
+
+		return gpioStatus;
+	} catch (error) {
+		console.error('Getting gpio status failed:', error);
+
+		return null;
+	}
+};
+
 export {
 	authenticateUser,
 	registerUser,
@@ -215,5 +237,6 @@ export {
 	removeDevice,
 	removeDevices,
 	toggleDevice,
-	getRtcTime
+	getRtcTime,
+	getGpioStatus
 };
