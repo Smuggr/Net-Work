@@ -25,10 +25,10 @@ const authenticateUser = async (login, password) => {
 		data: data
 	};
 
-	try {
-		const appStore = useAppStore();
-		const authStore = useAuthStore();
+	const appStore = useAppStore();
+	const authStore = useAuthStore();
 
+	try {
 		appStore.setIsLoading(true);
 
 		const response = await api.request(options);
@@ -48,7 +48,7 @@ const authenticateUser = async (login, password) => {
 		return true;
 	} catch (error) {
 		console.error('authentication failed:', error);
-		
+
 		appStore.setIsLoading(false);
 		return false;
 	}

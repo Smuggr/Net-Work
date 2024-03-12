@@ -49,6 +49,10 @@ app.component('plugins-tab', PluginsTab)
 app.component('users-tab', UsersTab)
 
 app.use(createPinia())
-app.use(createVuetify())
+app.use(createVuetify({
+    theme: {
+        defaultTheme: 'dark',
+    }
+}))
 
 app.mount('#app')

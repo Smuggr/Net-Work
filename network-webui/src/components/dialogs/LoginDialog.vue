@@ -9,7 +9,8 @@
                 v-model="login"
                 :rules="loginRules"
                 label="Login"
-                prepend-icon="mdi-account-key" />
+                prepend-icon="mdi-account-key"
+                @focus="clearErrors" />
 
               <br/>
               
@@ -18,7 +19,8 @@
                 :rules="passwordRules"
                 label="Password"
                 prepend-icon="mdi-lock"
-                type="password" />
+                type="password"
+                @focus="clearErrors" />
             </v-col>
           </v-container>
 
@@ -27,6 +29,7 @@
 
             <v-btn
               text="Log In"
+              :disabled="hasErrors"
               type="submit" />
             <v-btn
               text="Close"
@@ -39,57 +42,91 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, reactive, computed } from "vue";
 import { authenticateUser } from "@/apiHandler";
-
-const login = ref('');
-const password = ref('');
-
-const loginRules = [
-  v => !!v || 'Login is required',
-  v => (v && v.length >= 8 && v.length <= 16 && !v.includes(' ')) || 'Login must be between 8 and 16 characters',
-];
-
-const passwordRules = [
-  v => !!v || 'Password is required',
-  v => (v && v.length >= 8 && v.length <= 32) || 'Password must be between 8 and 32 characters',
-  v => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/.test(v) || 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-];
-
-const cancelForm = () => {
-  login.value = '';
-  password.value = '';
-};
-
-const submitForm = async () => {
-  authenticateUser(login.value, password.value)
-    .then(response => {
-      console.log(response);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
+import { useAppStore } from "@/stores/app";
 
 export default {
   name: "LoginDialog",
   setup() {
+    const login = ref('');
+    const password = ref('');
+
+    const loginRules = reactive([
+      v => !!v || 'Login is required',
+      v => (v && v.length >= 8 && v.length <= 16 && !v.includes(' ')) || 'Login must be between 8 and 16 characters',
+    ]);
+
+    const passwordRules = reactive([
+      v => !!v || 'Password is required',
+      v => (v && v.length >= 8 && v.length <= 32) || 'Password must be between 8 and 32 characters',
+      v => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/.test(v) || 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+    ]);
+
+    const clearErrors = () => {
+      loginRules.splice(2);
+      passwordRules.splice(3);
+    };
+
+    const cancelForm = () => {
+      login.value = '';
+      password.value = '';
+    };
+
+    const hasErrors = computed(() => {
+      return loginRules.some(rule => !rule(login.value)) || passwordRules.some(rule => !rule(password.value));
+    });
+
+    const submitForm = async () => {
+      const appStore = useAppStore();
+
+      const loginFailed = () => {
+        appStore.setIsLoading(true);
+
+        setTimeout(() => {
+          console.log('login failed');
+          const invalidLoginRule = v => false || 'Invalid login or password';
+
+          loginRules.unshift(invalidLoginRule);
+          passwordRules.unshift(invalidLoginRule);
+          
+          appStore.setIsLoading(false);
+        }, 2000);
+      };
+
+      authenticateUser(login.value, password.value)
+        .then(response => {
+          console.log(response);
+
+          if (response === true) {
+            console.log('login successful');
+          } else {
+            loginFailed();
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          loginFailed();
+        });
+    };
+
+    const onSubmit = () => {
+      console.log('submitting form');
+      if (!hasErrors.value) {
+        submitForm();
+      }
+    };
+
     return {
       login,
       password,
       loginRules,
       passwordRules,
       cancelForm,
-      submitForm
+      onSubmit,
+      clearErrors,
+      hasErrors
     };
-  },
-  emits: ['form-on-submit'],
-  methods: {
-    onSubmit() {
-      console.log('submitting form');
-      this.$emit('form-on-submit');
-      submitForm();
-    },
   },
 };
 </script>
