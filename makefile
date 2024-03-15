@@ -1,4 +1,4 @@
-BINARY := network
+BINARY := net-work
 
 BACKENDDIR := ./
 BUILDDIR ?= ./build
@@ -27,7 +27,8 @@ $(BUILDDIR)/plugins/%.so: $(PLUGINDIR)/%
 	mkdir -p $(BUILDDIR)/plugins/$*
 	cd $(BACKENDDIR) && $(GO) build $(GOFLAGS) -tags $(PLUGINTAG) -buildmode=$(PLUGINMODE) -o $(abspath $(BUILDDIR))/plugins/$*/plugin.so $</main.go
 
-clean: clean_plugins
+clean:
+	$(RM) -r $(BUILDDIR)
 
 clean_plugins:
 	$(RM) -r $(BUILDDIR)/plugins

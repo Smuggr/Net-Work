@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"network/utils/errors"
+	"os"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
@@ -21,8 +22,6 @@ type BridgeConfig struct {
 	MDNSDomain              string `mapstructure:"mdns_domain"`
 	MDNSHostName            string `mapstructure:"mdns_host_name"`
 	ClientId                string `mapstructure:"client_id"`
-	KeepAliveSeconds        uint   `mapstructure:"keep_alive_seconds"`
-	DisconnectMiliseconds   uint   `mapstructure:"disconnect_miliseconds"`
 }
 
 type ProviderConfig struct {
@@ -53,8 +52,8 @@ func loadEnv() error {
 }
 
 func loadConfig(config *GlobalConfig) error {
-	viper.SetConfigFile("config.toml")
-	viper.SetConfigType("toml")
+	viper.SetConfigFile(os.Getenv("CONFIG_FILE"))
+	viper.SetConfigType(os.Getenv("CONFIG_TYPE"))
 
 	if err := viper.ReadInConfig(); err != nil {
 		log.Error("reading config", "error", err.Error())
@@ -65,6 +64,8 @@ func loadConfig(config *GlobalConfig) error {
 	if err != nil {
 		return errors.ErrFormattingConfigFile
 	}
+
+	log.Info("config loaded", "file", viper.ConfigFileUsed())
 
 	return nil
 }
@@ -111,12 +112,12 @@ func setupLogging() {
 func Initialize() (*GlobalConfig, error) {
 	setupLogging()
 
-	if err := loadConfig(&Config); err != nil {
+	if err := loadEnv(); err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}
 
-	if err := loadEnv(); err != nil {
+	if err := loadConfig(&Config); err != nil {
 		log.Error(err.Error())
 		return nil, err
 	}

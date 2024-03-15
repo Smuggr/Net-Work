@@ -9,6 +9,18 @@
 		}
 	],
 	"settings": {
-		"vue3snippets.enable-compile-vue-file-on-did-save-code": false
+		"vue3snippets.enable-compile-vue-file-on-did-save-code": false,
+		"python.languageServer": "Pylance",
+		"python.analysis.diagnosticSeverityOverrides": {
+			"reportMissingModuleSource": "none",
+			"reportShadowedImports": "none"
+		},
+		"python.analysis.extraPaths": [
+			"venv/lib64/python3.10/site-packages/OPi",
+			"/home/karol/.vscode/extensions/joedevivo.vscode-circuitpython-0.2.0-linux-x64/stubs",
+			"/home/karol/.config/Code/User/globalStorage/joedevivo.vscode-circuitpython/bundle/20240307/adafruit-circuitpython-bundle-py-20240307/lib",
+			"venv/lib/python3.10/site-packages/OPi"
+		],
+		"circuitpython.board.version": null
 	}
 }
