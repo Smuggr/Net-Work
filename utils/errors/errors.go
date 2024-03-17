@@ -68,13 +68,13 @@ var (
 	ErrFetchingDevicesFromDB        = NewErrorWrapper("ErrFetchingDevicesFromDB", errors.New("error fetching devices from database"))
 	ErrDeviceNotFound               = NewErrorWrapper("ErrDeviceNotFound", errors.New("device %s not found"))
 	ErrInvalidIPAddress             = NewErrorWrapper("ErrInvalidIPAddress", errors.New("invalid ip address"))
-	ErrGettingPluginProvider        = NewErrorWrapper("ErrGettingPluginProvider", errors.New("error getting plugin provider for plugin %s"))
 	ErrPluginProviderAlreadyLoaded  = NewErrorWrapper("ErrPluginProviderAlreadyLoaded", errors.New("error plugin provider %s already loaded"))
 	ErrPluginProviderConflict       = NewErrorWrapper("ErrPluginProviderConflict", errors.New("plugin provider conflict, %s already exists"))
 	ErrAPIVersionMismatch           = NewErrorWrapper("ErrAPIVersionMismatch", errors.New("api version mismatch, plugin api version %s, expected %s"))
 	ErrRemovingDevicePlugin         = NewErrorWrapper("ErrRemovingDevicePlugin", errors.New("error removing device %s plugin %s"))
 	ErrCreatingDevicePlugin         = NewErrorWrapper("ErrCreatingDevicePlugin", errors.New("error creating device %s plugin %s"))
 	ErrClientNotFound               = NewErrorWrapper("ErrClientNotFound", errors.New("client %s not found"))
+	ErrDevicePluginNotFound         = NewErrorWrapper("ErrDevicePluginNotFound", errors.New("device %s plugin not found"))
 
 	// Database errors
 	ErrConnectingToDB               = NewErrorWrapper("ErrConnectingToDB", errors.New("error connecting to database"))

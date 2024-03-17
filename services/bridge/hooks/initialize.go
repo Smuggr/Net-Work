@@ -3,6 +3,7 @@ package hooks
 import (
 	"bytes"
 	"network/common/provider"
+	"network/common/bridger"
 	"network/services/database"
 	"network/utils/errors"
 
@@ -32,7 +33,6 @@ func (h *InitializeDeviceHook) Provides(b byte) bool {
 	}, []byte{b})
 }
 
-// Create device plugin in loader
 func (h *InitializeDeviceHook) OnSessionEstablished(cl *mqtt.Client, pk packets.Packet) {
 	log.Info("session established", "client", cl.ID)
 
@@ -48,6 +48,8 @@ func (h *InitializeDeviceHook) OnSessionEstablished(cl *mqtt.Client, pk packets.
 
 	if _, err := provider.CreateDevicePlugin(device.Plugin, cl.ID); err != nil {
 		log.Error("failed to create device plugin", "client", cl.ID, "error", err)
+		bridger.DisconnectClient(cl.ID)
+		return
 	}
 }
 

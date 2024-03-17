@@ -27,6 +27,11 @@ const (
 	minSpecial   = 1
 )
 
+var (
+	reservedClientIDs = []string{"inline"}
+	reservedLogins    = []string{"administrator"}
+)
+
 func lengthInRange(s string, minLength, maxLength int) bool {
 	length := utf8.RuneCountInString(s)
 	return length >= minLength && length <= maxLength
@@ -46,6 +51,12 @@ func containsCategory(s string, category func(rune) bool, n int) bool {
 }
 
 func ValidateClientID(clientID string) *errors.ErrorWrapper {
+	for _, reservedClientID := range reservedClientIDs {
+		if clientID == reservedClientID {
+			return errors.ErrDeviceAlreadyExists.Format(clientID)
+		}
+	}
+
 	if len(clientID) < minClientIDLength || len(clientID) > maxClientIDLength {
 		return errors.ErrLengthNotInRange.Format(minClientIDLength, maxClientIDLength)
 	}
@@ -59,6 +70,12 @@ func ValidateClientID(clientID string) *errors.ErrorWrapper {
 }
 
 func ValidateLogin(login string) *errors.ErrorWrapper {
+	for _, reservedLogin := range reservedLogins {
+		if login == reservedLogin {
+			return errors.ErrUserAlreadyExists.Format(login)
+		}
+	}
+
 	if !lengthInRange(login, minLoginLength, maxLoginLength) {
 		return errors.ErrLengthNotInRange.Format(minLoginLength, maxLoginLength)
 	}

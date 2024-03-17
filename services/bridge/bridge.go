@@ -16,18 +16,7 @@ var Config *configuration.BridgeConfig
 var MQTTServer *mqtt.Server
 var MDNSServer *mdns.Server
 
-func Initialize() error {
-	log.Info("initializing bridge/v1")
-
-	Config = &configuration.Config.Bridge
-
-	MQTTServer = mqtt.New(&mqtt.Options{
-		InlineClient: true,
-	})
-
-	tcp := listeners.NewTCP("t1", ":"+fmt.Sprint(Config.BrokerPort), nil)
-	_ = MQTTServer.AddListener(tcp)
-
+func registerHooks() error {
 	if err := MQTTServer.AddHook(new(hooks.AuthenticationHook), &hooks.AuthenticationHookConfig{
 		Server: MQTTServer,
 	}); err != nil {
@@ -45,6 +34,23 @@ func Initialize() error {
 	}); err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func Initialize() error {
+	log.Info("initializing bridge/v1")
+
+	Config = &configuration.Config.Bridge
+
+	MQTTServer = mqtt.New(&mqtt.Options{
+		InlineClient: true,
+	})
+
+	tcp := listeners.NewTCP("t1", ":"+fmt.Sprint(Config.BrokerPort), nil)
+	_ = MQTTServer.AddListener(tcp)
+
+	registerHooks()
 
 	if err := InitializeMDNS(); err != nil {
 		return err

@@ -1,0 +1,8 @@
+{
+	"api_version": "1.0.0",
+	"version": "1.0.0",
+	"name": "Schedule-Keepr",
+	"author": "Smuggr",
+	"source": "https://github.com/Smuggr/Schedule-Keepr",
+	"description": "Plugin providing logic for Schedule-Keepr V1.0 boards"
+}

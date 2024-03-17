@@ -41,27 +41,25 @@ func findPluginProviderConflicts(pluginProvider *pluginer.PluginProvider) error 
 	return nil
 }
 
-func lookupProviders(p *plugin.Plugin, file string, pluginProvider *pluginer.PluginProvider) error {
+func lookupProviders(pluginSymbol *plugin.Plugin, file string, pluginProvider *pluginer.PluginProvider) error {
 	log.Debug("looking up provider", "file", file)
 
-	newPluginSymbol, err := p.Lookup("NewPlugin")
+	newPluginSymbol, err := pluginSymbol.Lookup("NewPlugin")
+	log.Debugf("plugin new plugin symbol type: %T", newPluginSymbol)
 	if err != nil {
 		return err
 	}
 
-	log.Debugf("plugin new plugin symbol type: %T", newPluginSymbol)
-
-	NewPlugin, ok := newPluginSymbol.(func() (pluginer.Plugin, error))
+	NewPlugin, ok := newPluginSymbol.(func(string) (pluginer.Plugin, error))
 	if !ok {
 		return errors.ErrLookingUpPluginSymbol.Format(file)
 	}
 
-	getMetadataSymbol, err := p.Lookup("GetMetadata")
+	getMetadataSymbol, err := pluginSymbol.Lookup("GetMetadata")
+	log.Debugf("plugin get metadata symbol type: %T", getMetadataSymbol)
 	if err != nil {
 		return err
 	}
-
-	log.Debugf("plugin get metadata symbol type: %T", getMetadataSymbol)
 
 	GetMetadata, ok := getMetadataSymbol.(func() (*pluginer.PluginMetadata, error))
 	if !ok {
@@ -75,20 +73,27 @@ func lookupProviders(p *plugin.Plugin, file string, pluginProvider *pluginer.Plu
 
 	log.Debug("loaded", "metadata", metadata)
 
-	onLoadedSymbol, err := p.Lookup("OnLoaded")
+	getCallbacksSymbol, err := pluginSymbol.Lookup("GetCallbacks")
+	log.Debugf("plugin get callbacks symbol type: %T", getCallbacksSymbol)
+
 	if err != nil {
 		return err
 	}
 
-	log.Debugf("plugin on loaded symbol type: %T", onLoadedSymbol)
-
-	OnLoaded, ok := onLoadedSymbol.(func() error)
+	GetCallbacks, ok := getCallbacksSymbol.(func() (pluginer.PluginCallbacks, error))
 	if !ok {
 		return errors.ErrLookingUpPluginSymbol.Format(file)
 	}
 
+	callbacks, err := GetCallbacks()
+	if err != nil {
+		return err
+	}
+
+	log.Debug("loaded", "callbacks", callbacks)
+
 	pluginProvider.NewPlugin = NewPlugin
-	pluginProvider.OnLoaded = OnLoaded
+	pluginProvider.Callbacks = callbacks
 	pluginProvider.Info = &pluginer.PluginInfo{
 		Directory: filepath.Dir(file),
 		Metadata:  metadata,
@@ -104,17 +109,18 @@ func lookupProviders(p *plugin.Plugin, file string, pluginProvider *pluginer.Plu
 func loadSOFile(file string, pluginProvider *pluginer.PluginProvider) error {
 	log.Debug("loading plugin", "file", file)
 
-	p, err := plugin.Open(file)
+	pluginSymbol, err := plugin.Open(file)
 	if err != nil {
 		return err
 	}
 
 	log.Debug("opened plugin", "file", file)
-	if err := lookupProviders(p, file, pluginProvider); err != nil {
+	if err := lookupProviders(pluginSymbol, file, pluginProvider); err != nil {
 		return err
 	}
 
-	pluginProvider.OnLoaded()
+	pluginProvider.Callbacks.OnLoaded()
+
 	log.Debug("loaded plugin", "file", file)
 
 	return nil
@@ -169,7 +175,7 @@ func loadPluginProviders() (map[string]error, error) {
 func GetPluginProvider(pluginName string) (*pluginer.PluginProvider, error) {
 	provider, ok := LoadedPluginProviders[pluginName]
 	if !ok {
-		return nil, errors.ErrGettingPluginProvider.Format(pluginName)
+		return nil, errors.ErrPluginProviderNotFound.Format(pluginName)
 	}
 
 	return provider, nil
@@ -190,6 +196,15 @@ func LoadPluginProvider(pluginName string, pluginProvider *pluginer.PluginProvid
 	return nil
 }
 
+func GetDevicePlugin(clientID string) (pluginer.Plugin, error) {
+	plugin, ok := DevicesPlugins[clientID]
+	if !ok {
+		return nil, errors.ErrDevicePluginNotFound.Format(clientID)
+	}
+
+	return plugin, nil
+}
+
 func CreateDevicePlugin(pluginName string, clientID string) (pluginer.Plugin, error) {
 	log.Debug("creating plugin", "plugin", pluginName, "client", clientID)
 
@@ -198,16 +213,16 @@ func CreateDevicePlugin(pluginName string, clientID string) (pluginer.Plugin, er
 		return nil, err
 	}
 
-	plugin, err := pluginProvider.NewPlugin()
+	if _, err := GetDevicePlugin(clientID); err == nil {
+		return nil, err
+	}
+
+	plugin, err := pluginProvider.NewPlugin(clientID)
 	if err != nil {
 		return nil, err
 	}
 
 	DevicesPlugins[clientID] = plugin
-
-	if err := plugin.Initialize(clientID); err != nil {
-		return nil, err
-	}
 
 	return plugin, nil
 }
@@ -215,8 +230,8 @@ func CreateDevicePlugin(pluginName string, clientID string) (pluginer.Plugin, er
 func RemoveDevicePlugin(clientID string) error {
 	log.Debug("removing plugin", "client", clientID)
 
-	plugin, ok := DevicesPlugins[clientID]
-	if !ok {
+	plugin, err := GetDevicePlugin(clientID)
+	if err != nil {
 		log.Error("plugin not found", "client", clientID)
 		return errors.ErrRemovingDevicePlugin.Format(clientID)
 	}
@@ -245,7 +260,19 @@ func Initialize() (map[string]error, error) {
 
 func Cleanup() error {
 	for _, devicePlugin := range DevicesPlugins {
+		log.Debug("cleaning up device plugin", "plugin", devicePlugin)
+
 		if err := devicePlugin.Cleanup(); err != nil {
+			log.Error("error cleaning up device plugin", "plugin", devicePlugin, "error", err.Error())
+			return err
+		}
+	}
+
+	for _, pluginProvider := range LoadedPluginProviders {
+		log.Debug("cleaning up plugin provider", "plugin", pluginProvider)
+
+		if err := pluginProvider.Callbacks.OnCleaningUp(); err != nil {
+			log.Error("error cleaning up plugin provider", "plugin", pluginProvider, "error", err.Error())
 			return err
 		}
 	}

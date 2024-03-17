@@ -51,6 +51,21 @@ func GetPaginatedDevices(page int, pageSize int) ([]models.Device, error) {
 	return devices, nil
 }
 
+func InitializeDevice(device *models.Device) error {
+	log.Debug("creating device plugin", "client_id", device.ClientID, "plugin", device.Plugin)
+
+	if _, err := bridger.GetClient(device.ClientID); err != nil {
+		log.Warn("client not found, probably offline", "client_id", device.ClientID, "error", err)
+		return err
+	}
+
+	if _, err := provider.CreateDevicePlugin(device.Plugin, device.ClientID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func InitializeDevices() error {
 	devices, err := GetLimitedDevices(-1)
 	if err != nil {
@@ -58,15 +73,8 @@ func InitializeDevices() error {
 	}
 
 	for _, device := range devices {
-		log.Debug("creating device plugin", "client_id", device.ClientID, "plugin", device.Plugin)
-
-		if _, err := bridger.GetClient(device.ClientID); err != nil {
-			log.Warn("client not found, probably offline", "client_id", device.ClientID, "error", err)
+		if err := InitializeDevice(&device); err != nil {
 			continue
-		}
-
-		if _, err := provider.CreateDevicePlugin(device.Plugin, device.ClientID); err != nil {
-			return err
 		}
 	}
 
@@ -157,8 +165,8 @@ func RegisterDevice(newDevice *models.Device) *errors.ErrorWrapper {
 		return errors.ErrRegisteringDeviceInDB.Format(newDevice.ClientID)
 	}
 
-	if _, err = provider.CreateDevicePlugin(newDevice.Plugin, newDevice.ClientID); err != nil {
-		log.Debug("failed to create device plugin", "client_id", newDevice.ClientID, "error", err)
+	if err = InitializeDevice(newDevice); err != nil {
+		log.Debug("failed to initialize device", "client", newDevice.ClientID, "error", err)
 		return errors.ErrCreatingDevicePlugin.Format(newDevice.ClientID, newDevice.Plugin)
 	}
 

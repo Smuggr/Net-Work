@@ -12,17 +12,20 @@ type PluginMetadata struct {
 type PluginInfo struct {
 	Directory string          `json:"directory"`
 	Metadata  *PluginMetadata `json:"metadata" gorm:"embedded"`
-	Client    string          `json:"client"`
+}
+
+type PluginCallbacks interface {
+	OnLoaded()     error
+	OnCleaningUp() error
 }
 
 type PluginProvider struct {
-	Info      *PluginInfo            `json:"info"`
-	NewPlugin func() (Plugin, error) `json:"-"`
-	OnLoaded  func() error           `json:"-"`
+	Info      *PluginInfo                  `json:"info"`
+	NewPlugin func(string) (Plugin, error) `json:"-"`
+	Callbacks PluginCallbacks              `json:"-"`
 }
 
 type Plugin interface {
-	Initialize(clientID string) error
 	Execute() error
 	Cleanup() error
 }
