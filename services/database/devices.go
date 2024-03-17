@@ -83,7 +83,7 @@ func InitializeDevices() error {
 
 func AuthenticateDevicePassword(existingDevice *models.Device, devicePassword string) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(existingDevice.Password), []byte(devicePassword)); err != nil {
-		log.Debug("failed to authenticate device password", "client_id", existingDevice.ClientID, "error", err)
+		log.Warn("failed to authenticate device password", "client_id", existingDevice.ClientID, "error", err)
 		return err
 	}
 
@@ -93,7 +93,7 @@ func AuthenticateDevicePassword(existingDevice *models.Device, devicePassword st
 func UpdateDevice(updatedDevice *models.Device) *errors.ErrorWrapper {
 	var existingDevice *models.Device = GetDevice(updatedDevice.ClientID)
 	if existingDevice == nil {
-		log.Debug("device not found", "client_id", updatedDevice.ClientID)
+		log.Warn("device not found", "client_id", updatedDevice.ClientID)
 		return errors.ErrDeviceNotFound.Format(updatedDevice.Username)
 	}
 
@@ -112,7 +112,7 @@ func UpdateDevice(updatedDevice *models.Device) *errors.ErrorWrapper {
 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(updatedDevice.Password), bcrypt.DefaultCost)
 		if err != nil {
-			log.Debug("failed to hash password", "error", err)
+			log.Error("failed to hash password", "error", err)
 			return errors.ErrHashingPassword
 		}
 
@@ -120,7 +120,7 @@ func UpdateDevice(updatedDevice *models.Device) *errors.ErrorWrapper {
 	}
 
 	if result := DB.Save(&existingDevice); result.Error != nil {
-		log.Debug("failed to update device in db", "client_id", existingDevice.ClientID, "error", result.Error)
+		log.Error("failed to update device in db", "client_id", existingDevice.ClientID, "error", result.Error)
 		return errors.ErrUpdatingDeviceInDB.Format(existingDevice.ClientID)
 	}
 
@@ -155,19 +155,18 @@ func RegisterDevice(newDevice *models.Device) *errors.ErrorWrapper {
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newDevice.Password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Debug("failed to hash password", "error", err)
+		log.Error("failed to hash password", "error", err)
 		return errors.ErrHashingPassword
 	}
 
 	newDevice.Password = string(hashedPassword)
 	if result := DB.Create(&newDevice); result.Error != nil {
-		log.Debug("failed to register device in db", "client_id", newDevice.ClientID, "error", result.Error)
+		log.Error("failed to register device in db", "client_id", newDevice.ClientID, "error", result.Error)
 		return errors.ErrRegisteringDeviceInDB.Format(newDevice.ClientID)
 	}
 
 	if err = InitializeDevice(newDevice); err != nil {
-		log.Debug("failed to initialize device", "client", newDevice.ClientID, "error", err)
-		return errors.ErrCreatingDevicePlugin.Format(newDevice.ClientID, newDevice.Plugin)
+		log.Warn("failed to initialize device", "client", newDevice.ClientID, "error", err)
 	}
 
 	log.Infof("device %s registered successfully", newDevice.ClientID)
@@ -177,17 +176,15 @@ func RegisterDevice(newDevice *models.Device) *errors.ErrorWrapper {
 // Delete config file from disk and remove the plugin instance in loader device plugins, disconnect client from broker
 func RemoveDevice(deviceToRemove *models.Device) *errors.ErrorWrapper {
 	if err := bridger.DisconnectClient(deviceToRemove.ClientID); err != nil {
-		log.Debug("failed to disconnect client", "client_id", deviceToRemove.ClientID, "error", err)
-		return errors.ErrClientNotFound.Format(deviceToRemove.ClientID)
+		log.Warn("failed to disconnect client", "client_id", deviceToRemove.ClientID, "error", err)
 	}
 
 	if err := provider.RemoveDevicePlugin(deviceToRemove.ClientID); err != nil {
-		log.Debug("failed to remove device plugin", "client_id", deviceToRemove.ClientID, "error", err)
-		return errors.ErrRemovingDevicePlugin.Format(deviceToRemove.ClientID, deviceToRemove.Plugin)
+		log.Error("failed to remove device plugin", "client_id", deviceToRemove.ClientID, "error", err)
 	}
 
 	if result := DB.Unscoped().Delete(&deviceToRemove); result.Error != nil {
-		log.Debug("failed to remove device from db", "client_id", deviceToRemove.ClientID, "error", result.Error)
+		log.Error("failed to remove device from db", "client_id", deviceToRemove.ClientID, "error", result.Error)
 		return errors.ErrRemovingDeviceFromDB.Format(deviceToRemove.ClientID)
 	}
 

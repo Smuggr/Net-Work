@@ -83,14 +83,14 @@ func DeviceAuthenticationMiddleware() gin.HandlerFunc {
 		}
 
 		claims := token.Claims.(jwt.MapClaims)
-		client_id, ok := claims["client_id"].(string)
+		clientID, ok := claims["client_id"].(string)
 		if !ok {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": errors.ErrInvalidTokenFormat})
 			c.Abort()
 			return
 		}
 
-		c.Set("client_id", client_id)
+		c.Set("client_id", clientID)
 		c.Next()
 	}
 }

@@ -48,7 +48,7 @@ func GetPaginatedUsers(page int, pageSize int) ([]models.User, error) {
 
 func AuthenticateUserPassword(existingUser *models.User, userPassword string) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(userPassword)); err != nil {
-		log.Debug("failed to authenticate user password", "error", err)
+		log.Warn("failed to authenticate user password", "error", err)
 		return err
 	}
 
@@ -58,7 +58,7 @@ func AuthenticateUserPassword(existingUser *models.User, userPassword string) er
 func UpdateUser(updatedUser *models.User) *errors.ErrorWrapper {
 	var existingUser *models.User = GetUser(updatedUser.Login)
 	if existingUser == nil {
-		log.Debug("user not found", "login", updatedUser.Login)
+		log.Warn("user not found", "login", updatedUser.Login)
 		return errors.ErrUserNotFound.Format(updatedUser.Login)
 	}
 
@@ -81,7 +81,7 @@ func UpdateUser(updatedUser *models.User) *errors.ErrorWrapper {
 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(updatedUser.Password), bcrypt.DefaultCost)
 		if err != nil {
-			log.Debug("failed to hash password", "error", err)
+			log.Error("failed to hash password", "error", err)
 			return errors.ErrHashingPassword
 		}
 
@@ -89,7 +89,7 @@ func UpdateUser(updatedUser *models.User) *errors.ErrorWrapper {
 	}
 
 	if result := DB.Save(&existingUser); result.Error != nil {
-		log.Debug("failed to update user in db", "error", result.Error)
+		log.Error("failed to update user in db", "error", result.Error)
 		return errors.ErrUpdatingUserInDB.Format(existingUser.Login)
 	}
 
@@ -116,13 +116,13 @@ func RegisterUser(newUser *models.User) *errors.ErrorWrapper {
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Debug("failed to hash password", "error", err)
+		log.Error("failed to hash password", "error", err)
 		return errors.ErrHashingPassword
 	}
 
 	newUser.Password = string(hashedPassword)
 	if result := DB.Create(&newUser); result.Error != nil {
-		log.Debug("failed to register user in db", "error", result.Error)
+		log.Error("failed to register user in db", "error", result.Error)
 		return errors.ErrRegisteringUserInDB.Format(newUser.Login)
 	}
 
@@ -132,12 +132,12 @@ func RegisterUser(newUser *models.User) *errors.ErrorWrapper {
 
 func RemoveUser(userToRemove *models.User) *errors.ErrorWrapper {
 	if userToRemove.PermissionLevel < 0 {
-		log.Debug("operation not permitted", "user", userToRemove.Login)
+		log.Warn("operation not permitted", "user", userToRemove.Login)
 		return errors.ErrOperationNotPermitted
 	}
 
 	if result := DB.Unscoped().Delete(&userToRemove); result.Error != nil {
-		log.Debug("failed to remove user from db", "error", result.Error)
+		log.Error("failed to remove user from db", "error", result.Error)
 		return errors.ErrRemovingUserFromDB.Format(userToRemove.Login)
 	}
 
@@ -159,7 +159,7 @@ func RegisterDefaultAdmin() error {
 	}
 
 	if err := RegisterUser(&userModel); err != nil {
-		log.Debug("failed to register default admin", "error", err)
+		log.Error("failed to register default admin", "error", err)
 		return err
 	}
 

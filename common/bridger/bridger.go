@@ -9,6 +9,12 @@ import (
 	"github.com/wind-c/comqtt/v2/mqtt/packets"
 )
 
+// Indexed by directory
+type BridgerRoute struct {
+	Method    string
+	Callback  func(c *gin.Context)
+}
+
 var MQTTServer *mqtt.Server
 var InteractionsGroup *gin.RouterGroup
 
@@ -36,11 +42,25 @@ func DisconnectClient(clientID string) error {
 	return nil
 }
 
+func InteractionsGETHandler(c *gin.Context) {
+
+}
+
+func InteractionsPOSTHandler(c *gin.Context) {
+
+}
+
 func Initialize(mqttServer *mqtt.Server, interactionsGroup *gin.RouterGroup) error {
 	log.Info("initializing bridger/v1")
 
 	MQTTServer = mqttServer
 	InteractionsGroup = interactionsGroup
+
+	return nil
+}
+
+func Cleanup() error {
+	log.Info("cleaning up bridger/v1")
 
 	return nil
 }

@@ -19,7 +19,7 @@ var Config *configuration.ProviderConfig
 var LoadedPluginProviders map[string]*pluginer.PluginProvider
 
 // Indexed by ClientID
-var DevicesPlugins map[string]pluginer.Plugin
+var DevicesPlugins map[string]*pluginer.Plugin
 
 func findPluginProviderConflicts(pluginProvider *pluginer.PluginProvider) error {
 	metadata := pluginProvider.Info.Metadata
@@ -50,7 +50,7 @@ func lookupProviders(pluginSymbol *plugin.Plugin, file string, pluginProvider *p
 		return err
 	}
 
-	NewPlugin, ok := newPluginSymbol.(func(string) (pluginer.Plugin, error))
+	NewPlugin, ok := newPluginSymbol.(func(string) (*pluginer.Plugin, error))
 	if !ok {
 		return errors.ErrLookingUpPluginSymbol.Format(file)
 	}
@@ -133,7 +133,7 @@ func loadPluginProviders() (map[string]error, error) {
 	}
 
 	LoadedPluginProviders = make(map[string]*pluginer.PluginProvider)
-	DevicesPlugins = make(map[string]pluginer.Plugin)
+	DevicesPlugins = make(map[string]*pluginer.Plugin)
 
 	failedPlugins := make(map[string]error)
 
@@ -196,7 +196,7 @@ func LoadPluginProvider(pluginName string, pluginProvider *pluginer.PluginProvid
 	return nil
 }
 
-func GetDevicePlugin(clientID string) (pluginer.Plugin, error) {
+func GetDevicePlugin(clientID string) (*pluginer.Plugin, error) {
 	plugin, ok := DevicesPlugins[clientID]
 	if !ok {
 		return nil, errors.ErrDevicePluginNotFound.Format(clientID)
@@ -205,7 +205,7 @@ func GetDevicePlugin(clientID string) (pluginer.Plugin, error) {
 	return plugin, nil
 }
 
-func CreateDevicePlugin(pluginName string, clientID string) (pluginer.Plugin, error) {
+func CreateDevicePlugin(pluginName string, clientID string) (*pluginer.Plugin, error) {
 	log.Debug("creating plugin", "plugin", pluginName, "client", clientID)
 
 	pluginProvider, err := GetPluginProvider(pluginName)

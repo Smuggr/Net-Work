@@ -4,6 +4,7 @@ import (
 	"os"
 	"strconv"
 
+	"network/common/bridger"
 	"network/services/api/routes"
 	"network/utils/configuration"
 
@@ -92,8 +93,13 @@ func Initialize() chan error {
 			devicesGroup.GET("/paginated", routes.GetPaginatedDevicesHandler)
 		}
 
-		devicesInteractionsGroup := apiV1Group.Group("/devices/interactions")
-		devicesInteractionsGroup.Use(DeviceAuthenticationMiddleware())
+		devicesInteractionsGroup := apiV1Group.Group("/devices/interactions/:client_id")
+		// devicesInteractionsGroup.Use(DeviceAuthenticationMiddleware())
+		devicesInteractionsGroup.Use(bridger.RouteEnabledMiddleware())
+		{
+			devicesInteractionsGroup.GET(":directory", bridger.InteractionsGETHandler)
+			devicesInteractionsGroup.POST(":directory", bridger.InteractionsPOSTHandler)
+		}
 
 		DevicesInteractionsGroup = devicesInteractionsGroup
 	}

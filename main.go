@@ -71,6 +71,10 @@ func Cleanup() {
 	if err := provider.Cleanup(); err != nil {
 		log.Error(err.Error())
 	}
+
+	if err := bridger.Cleanup(); err != nil {
+		log.Error(err.Error())
+	}
 }
 
 func WaitForTermination() {

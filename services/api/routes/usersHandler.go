@@ -68,7 +68,7 @@ func ValidateUserTokenHandler(c *gin.Context) {
 	}
 
 	if err := c.BindJSON(&requestBody); err != nil {
-		log.Debug("error parsing request body: " + err.Error())
+		log.Error("error parsing request body: " + err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
@@ -79,7 +79,7 @@ func ValidateUserTokenHandler(c *gin.Context) {
 	log.Debug("parsing token")
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			log.Debug("invalid signing method")
+			log.Error("invalid signing method")
 			return nil, errors.ErrSigningToken
 		}
 
@@ -87,14 +87,14 @@ func ValidateUserTokenHandler(c *gin.Context) {
 	})
 
 	if err != nil {
-		log.Debug("error parsing token: " + err.Error())
+		log.Error("error parsing token: " + err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidToken})
 		return
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		if claims["login"].(string) != login {
-			log.Debug("token does not match login")
+			log.Warn("token does not match login")
 			c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidToken})
 			return
 		}
@@ -104,7 +104,7 @@ func ValidateUserTokenHandler(c *gin.Context) {
 		return
 	}
 
-	log.Debug("invalid token")
+	log.Warn("invalid token")
 	c.JSON(http.StatusBadRequest, gin.H{"error": errors.ErrInvalidToken})
 }
 

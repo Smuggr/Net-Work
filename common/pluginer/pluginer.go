@@ -1,5 +1,9 @@
 package pluginer
 
+import (
+	"github.com/wind-c/comqtt/v2/mqtt"
+)
+
 type PluginMetadata struct {
 	APIVersion  string `json:"api_version"`
 	Version     string `json:"version"`
@@ -15,17 +19,23 @@ type PluginInfo struct {
 }
 
 type PluginCallbacks interface {
-	OnLoaded()     error
+	OnLoaded() error
 	OnCleaningUp() error
 }
 
 type PluginProvider struct {
 	Info      *PluginInfo                  `json:"info"`
-	NewPlugin func(string) (Plugin, error) `json:"-"`
+	NewPlugin func(string) (*Plugin, error) `json:"-"`
 	Callbacks PluginCallbacks              `json:"-"`
 }
 
-type Plugin interface {
+type PluginMethods interface {
 	Execute() error
 	Cleanup() error
+}
+
+type Plugin struct {
+	PluginMethods
+	Client *mqtt.Client
+	Routes map[string]interface{}
 }
