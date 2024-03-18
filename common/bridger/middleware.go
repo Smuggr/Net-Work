@@ -31,7 +31,7 @@ func RouteEnabledMiddleware() gin.HandlerFunc {
             return
         }
 
-		log.Debug(devicePlugin)
+		log.Debug(devicePlugin.Routes)
 
 		c.Set("client_id", clientID)
 		c.Set("directory", directory)

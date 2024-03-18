@@ -15,16 +15,18 @@ import (
 //go:embed static/*
 var StaticDirectory embed.FS
 
-type Callbacks struct{}
-type PluginMethods struct{}
+var Plugin *pluginer.Plugin
 
-func (p *PluginMethods) Execute() error {
+type Callbacks struct{}
+type Methods struct{}
+
+func (p *Methods) Execute() error {
 	log.Info("plugin Schedule-Keepr executed")
 
 	return nil
 }
 
-func (p *PluginMethods) Cleanup() error {
+func (p *Methods) Cleanup() error {
 	log.Info("plugin Schedule-Keepr cleaned up")
 
 	return nil
@@ -88,8 +90,10 @@ func NewPlugin(clientID string) (*pluginer.Plugin, error) {
 
 	log.Info("plugin Schedule-Keepr initialized", "client", clientID, "routes", routes)
 
-	return &pluginer.Plugin{
-		Client: client,
-		Routes: routes,
-	}, nil
+	Plugin = &pluginer.Plugin{}
+	Plugin.Methods = &Methods{}
+	Plugin.Client = client
+	Plugin.Routes = routes
+
+	return Plugin, nil
 }

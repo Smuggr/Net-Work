@@ -35,7 +35,7 @@ type PluginMethods interface {
 }
 
 type Plugin struct {
-	PluginMethods
-	Client *mqtt.Client
-	Routes map[string]interface{}
+	Methods PluginMethods
+	Client  *mqtt.Client
+	Routes  map[string]interface{}
 }

@@ -236,9 +236,10 @@ func RemoveDevicePlugin(clientID string) error {
 		return errors.ErrRemovingDevicePlugin.Format(clientID)
 	}
 
-	plugin.Cleanup()
-
+	log.Debug(plugin)
 	log.Debug("before", "length", len(DevicesPlugins))
+	plugin.Methods.Cleanup()
+	
 	delete(DevicesPlugins, clientID)
 	log.Debug("after", "length", len(DevicesPlugins))
 
@@ -262,7 +263,7 @@ func Cleanup() error {
 	for _, devicePlugin := range DevicesPlugins {
 		log.Debug("cleaning up device plugin", "plugin", devicePlugin)
 
-		if err := devicePlugin.Cleanup(); err != nil {
+		if err := devicePlugin.Methods.Cleanup(); err != nil {
 			log.Error("error cleaning up device plugin", "plugin", devicePlugin, "error", err.Error())
 			return err
 		}
