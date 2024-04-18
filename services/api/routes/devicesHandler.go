@@ -16,9 +16,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func createDeviceToken(client_id string) (string, *errors.ErrorWrapper) {
+func createDeviceToken(clientID string) (string, *errors.ErrorWrapper) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"client_id": client_id,
+		"client_id": clientID,
 		"exp":       time.Now().Add(time.Duration(configuration.Config.API.JWTLifespanMinutes) * time.Minute).Unix(),
 	})
 

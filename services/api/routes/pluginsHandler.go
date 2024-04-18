@@ -11,6 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// TO-DO: Change plugin provider info to metadata
+
 func GetPluginProviderInfoHandler(c *gin.Context) {
 	pluginName := c.Param("plugin_name")
 
@@ -20,24 +22,22 @@ func GetPluginProviderInfoHandler(c *gin.Context) {
 		return
 	}
 
-	info := *pluginProvider.Info
-
 	c.JSON(http.StatusOK, gin.H{
 		"message":  messages.MsgPluginProviderInfoFetchSuccess.Format(pluginName),
-		"provider": info,
+		"metadata": *pluginProvider.Metadata,
 	})
 }
 
 func GetAllPluginProvidersInfoHandler(c *gin.Context) {
-	providers := make(map[string]interface{})
+	providersMetadata := make(map[string]interface{})
 	for pluginName, pluginProvider := range provider.LoadedPluginProviders {
-		info := *pluginProvider.Info
-		providers[pluginName] = info
+		metadata := *pluginProvider.Metadata
+		providersMetadata[pluginName] = metadata
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message":   messages.MsgPluginProvidersInfoFetchSuccess.Format(len(providers)),
-		"providers": providers,
+		"message":   messages.MsgPluginProvidersInfoFetchSuccess.Format(len(providersMetadata)),
+		"metadatas": providersMetadata,
 	})
 }
 
@@ -49,21 +49,22 @@ func GetLimitedPluginProvidersInfoHandler(c *gin.Context) {
 		return
 	}
 
-	providers := make(map[string]interface{})
+	providersMetadata := make(map[string]interface{})
 	count := 0
 	for pluginName, pluginProvider := range provider.LoadedPluginProviders {
 		if count >= limit {
 			break
 		}
-		info := *pluginProvider.Info
-		providers[pluginName] = info
+
+		metadata := *pluginProvider.Metadata
+		providersMetadata[pluginName] = metadata
 		count++
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message":   messages.MsgPluginProvidersInfoFetchSuccess.Format(len(providers)),
+		"message":   messages.MsgPluginProvidersInfoFetchSuccess.Format(len(providersMetadata)),
 		"limit":     limit,
-		"providers": providers,
+		"metadatas": providersMetadata,
 	})
 }
 
@@ -83,20 +84,20 @@ func GetPaginatedPluginProvidersInfoHandler(c *gin.Context) {
 		return
 	}
 
-	providers := make(map[string]interface{})
+	providersMetadata := make(map[string]interface{})
 	count := 0
 	for pluginName, pluginProvider := range provider.LoadedPluginProviders {
 		if count >= (page-1)*pageSize && count < page*pageSize {
-			info := *pluginProvider.Info
-			providers[pluginName] = info
+			metadata := *pluginProvider.Metadata
+			providersMetadata[pluginName] = metadata
 		}
 		count++
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message":   messages.MsgPluginProvidersInfoFetchSuccess.Format(len(providers)),
+		"message":   messages.MsgPluginProvidersInfoFetchSuccess.Format(len(providersMetadata)),
 		"page":      page,
 		"pageSize":  pageSize,
-		"providers": providers,
+		"metadatas": providersMetadata,
 	})
 }

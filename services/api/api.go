@@ -40,6 +40,8 @@ func Initialize() chan error {
 
 	r.SetTrustedProxies([]string{})
 
+	InitializeSwagger(r)
+
 	apiV1Group := r.Group("/api/v1")
 	apiV1Group.Use(tollbooth_gin.LimitHandler(l))
 	{
@@ -92,13 +94,13 @@ func Initialize() chan error {
 			devicesGroup.GET("/limited", routes.GetLimitedDevicesHandler)
 			devicesGroup.GET("/paginated", routes.GetPaginatedDevicesHandler)
 		}
-
+		
 		devicesInteractionsGroup := apiV1Group.Group("/devices/interactions/:client_id")
 		// devicesInteractionsGroup.Use(DeviceAuthenticationMiddleware())
 		devicesInteractionsGroup.Use(bridger.RouteEnabledMiddleware())
 		{
-			devicesInteractionsGroup.GET(":directory", bridger.InteractionsGETHandler)
-			devicesInteractionsGroup.POST(":directory", bridger.InteractionsPOSTHandler)
+			devicesInteractionsGroup.GET("/*directory", bridger.InteractionsHandler)
+			devicesInteractionsGroup.POST("/*directory", bridger.InteractionsHandler)
 		}
 
 		DevicesInteractionsGroup = devicesInteractionsGroup

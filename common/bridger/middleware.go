@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"network/common/provider"
+	// "network/common/pluginer"
 	"network/utils/errors"
 
 	"github.com/charmbracelet/log"
@@ -14,27 +15,36 @@ func RouteEnabledMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		clientID := c.Param("client_id")
 		directory := c.Param("directory")
-		
-		_, err := GetClient(clientID)
+
+		client, err := GetClient(clientID)
 		if err != nil {
-            c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrClientNotFound.Format(clientID)})
-            c.Abort()
-            return
-        }
+			log.Warn("client not found", "client", clientID)
 
-		log.Debug("route enabled middleware", "clientID", clientID, "directory", directory)
+			c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrClientNotFound.Format(clientID)})
+			c.Abort()
+			return
+		}
 
-		devicePlugin, _err := provider.GetDevicePlugin(clientID)
+		plugin, _err := provider.GetDevicePlugin(clientID)
 		if _err != nil {
+			log.Warn("plugin not found", "client", clientID)
+
 			c.JSON(http.StatusNotFound, gin.H{"error": errors.ErrDevicePluginNotFound.Format(clientID)})
-            c.Abort()
-            return
-        }
+			c.Abort()
+			return
+		}
 
-		log.Debug(devicePlugin.Routes)
+		group := plugin.Router.GetGroup(directory)
+		if group == nil {
+			log.Warn("group not found", "client", clientID, "directory", directory)
 
-		c.Set("client_id", clientID)
-		c.Set("directory", directory)
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+
+		c.Set("plugin", plugin)
+		c.Set("group", group)
+		c.Set("client", client)
 
 		c.Next()
 	}

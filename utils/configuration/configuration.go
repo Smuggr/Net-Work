@@ -1,8 +1,9 @@
 package configuration
 
 import (
-	"network/utils/errors"
 	"os"
+
+	"network/utils/errors"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"

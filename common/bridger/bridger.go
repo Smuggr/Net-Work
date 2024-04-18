@@ -1,6 +1,7 @@
 package bridger
 
 import (
+	"network/common/pluginer"
 	"network/utils/errors"
 
 	"github.com/charmbracelet/log"
@@ -8,12 +9,6 @@ import (
 	"github.com/wind-c/comqtt/v2/mqtt"
 	"github.com/wind-c/comqtt/v2/mqtt/packets"
 )
-
-// Indexed by directory
-type BridgerRoute struct {
-	Method    string
-	Callback  func(c *gin.Context)
-}
 
 var MQTTServer *mqtt.Server
 var InteractionsGroup *gin.RouterGroup
@@ -42,12 +37,9 @@ func DisconnectClient(clientID string) error {
 	return nil
 }
 
-func InteractionsGETHandler(c *gin.Context) {
-
-}
-
-func InteractionsPOSTHandler(c *gin.Context) {
-
+func InteractionsHandler(c *gin.Context) {
+	group, _ := c.Get("group")
+	group.(*pluginer.RouterGroup).Execute(c.Request.Method, c)
 }
 
 func Initialize(mqttServer *mqtt.Server, interactionsGroup *gin.RouterGroup) error {

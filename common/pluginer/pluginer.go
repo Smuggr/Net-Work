@@ -13,29 +13,27 @@ type PluginMetadata struct {
 	Source      string `json:"source"`
 }
 
-type PluginInfo struct {
-	Directory string          `json:"directory"`
-	Metadata  *PluginMetadata `json:"metadata" gorm:"embedded"`
+type PluginCallbacks struct {
+	OnLoaded     func(*PluginProvider) error
+	OnCleaningUp func(*PluginProvider) error
 }
 
-type PluginCallbacks interface {
-	OnLoaded() error
-	OnCleaningUp() error
-}
+type PluginFactory func(string) (*Plugin, error)
 
 type PluginProvider struct {
-	Info      *PluginInfo                  `json:"info"`
-	NewPlugin func(string) (*Plugin, error) `json:"-"`
-	Callbacks PluginCallbacks              `json:"-"`
+	Metadata  *PluginMetadata `json:"metadata" gorm:"embedded"`
+	Callbacks PluginCallbacks `json:"-"`
+	Factory   PluginFactory   `json:"-"`
 }
 
-type PluginMethods interface {
-	Execute() error
-	Cleanup() error
+type PluginMethods struct {
+	Execute func(*Plugin) error
+	Cleanup func(*Plugin) error
 }
 
 type Plugin struct {
-	Methods PluginMethods
-	Client  *mqtt.Client
-	Routes  map[string]interface{}
+	Methods  *PluginMethods
+	Client   *mqtt.Client
+	Router   *Router
+	Metadata *PluginMetadata
 }

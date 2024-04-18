@@ -42,8 +42,8 @@ export default {
     }
   },
   setup() {
-    const rtcTime = ref(''); // Define rtcTime as a ref object
-    const gpioStatus = ref(''); // Define gpioStatus as a ref object
+    const rtcTime = ref('');
+    const gpioStatus = ref('');
 
     const loadDevices = async () => {
       try {
@@ -61,7 +61,6 @@ export default {
     const removeDevices = async () => {
       try {
         await removeSelectedDevices(selected.value);
-        // After removal, refresh the devices list
         await loadDevices();
       } catch (error) {
         console.error('Error removing devices:', error);
@@ -74,8 +73,7 @@ export default {
 
     const addDevice = async () => {
       try {
-        await addNewDevice(); // You can pass any necessary parameters here
-        // After addition, refresh the devices list
+        await addNewDevice();
         await loadDevices();
       } catch (error) {
         console.error('Error adding device:', error);
@@ -93,7 +91,7 @@ export default {
     const updateRtcTime = async () => {
       try {
         const time = await getRtcTime();
-        rtcTime.value = time; // Assign the value to rtcTime.value
+        rtcTime.value = time;
       } catch (error) {
         console.error('Error fetching RTC time:', error);
       }
@@ -102,14 +100,13 @@ export default {
     const updateGpioStatus = async () => {
       try {
         const status = await getGpioStatus();
-        gpioStatus.value = status; // Assign the value to gpioStatus.value
+        gpioStatus.value = status;
       } catch (error) {
         console.error('Error fetching GPIO status:', error);
       }
     };
 
     onMounted(() => {
-      //loadDevices();
       setInterval(updateRtcTime, 1000);
       setInterval(updateGpioStatus, 1000);
     });
@@ -139,12 +136,12 @@ export default {
 .gpio-container,
 .rtc-container {
   display: flex;
-  align-items: center; /* Center vertically */
+  align-items: center;
 }
 
 .gpio-icon,
 .rtc-icon {
-  margin-right: 8px; /* Adjust margin on the right */
+  margin-right: 8px;
 }
 
 </style>

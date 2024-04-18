@@ -1,5 +1,4 @@
 BINARY := net-work
-
 BACKENDDIR := ./
 BUILDDIR ?= ./build
 PLUGINDIR := $(BACKENDDIR)/plugins
@@ -12,12 +11,15 @@ PLUGINMODE := plugin
 PLUGINPATTERN := $(wildcard $(PLUGINDIR)/*)
 PLUGINBUILD := $(patsubst $(PLUGINDIR)/%,$(BUILDDIR)/plugins/%.so,$(PLUGINPATTERN))
 
-.PHONY: all clean
+.PHONY: all build run clean clean_plugins
 
-all: clean $(BUILDDIR)/$(BINARY) plugins
+all: clean build plugins run
 
-$(BUILDDIR)/$(BINARY):
+build:
 	cd $(BACKENDDIR) && $(GO) build $(GOFLAGS) -o $(abspath $(BUILDDIR))/$(BINARY)
+
+run:
+	$(BUILDDIR)/$(BINARY)
 
 plugins: clean_plugins
 	mkdir -p $(BUILDDIR)/plugins

@@ -2,7 +2,7 @@
   <v-app-bar elevation="10" prominent>
     <v-app-bar-nav-icon @click.stop="$emit('toggle-drawer')"></v-app-bar-nav-icon>
     <v-app-bar-title>{{ title }}</v-app-bar-title>
-    
+
     <v-progress-linear
         :active="isLoading"
         :indeterminate="true"
@@ -28,5 +28,5 @@ export default {
       required: true,
     },
   },
-}
+};
 </script>

@@ -5,4 +5,5 @@ const (
 	APIVersion       = "1.0.0"
 
 	PluginSOFileName = "plugin.so"
+	PluginsLogLevel  = -8
 )

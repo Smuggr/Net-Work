@@ -3,48 +3,18 @@ package main
 import (
 	"embed"
 	"encoding/json"
-	"net/http"
 
-	"network/common/bridger"
+	// "network/common/bridger"
 	"network/common/pluginer"
+	"network/smugwork"
 
 	"github.com/charmbracelet/log"
-	"github.com/gin-gonic/gin"
 )
 
 //go:embed static/*
 var StaticDirectory embed.FS
 
-var Plugin *pluginer.Plugin
-
-type Callbacks struct{}
-type Methods struct{}
-
-func (p *Methods) Execute() error {
-	log.Info("plugin Schedule-Keepr executed")
-
-	return nil
-}
-
-func (p *Methods) Cleanup() error {
-	log.Info("plugin Schedule-Keepr cleaned up")
-
-	return nil
-}
-
-func (p *Callbacks) OnLoaded() error {
-	log.Info("loaded sample plugin provider Schedule-Keepr")
-
-	return nil
-}
-
-func (p *Callbacks) OnCleaningUp() error {
-	log.Info("cleaning up plugin provider Schedule-Keepr")
-
-	return nil
-}
-
-func GetMetadata() (*pluginer.PluginMetadata, error) {
+func getMetadata() (*pluginer.PluginMetadata, error) {
 	metadataFile, err := StaticDirectory.Open("static/metadata.json")
 	if err != nil {
 		return nil, err
@@ -60,40 +30,82 @@ func GetMetadata() (*pluginer.PluginMetadata, error) {
 	return &metadata, nil
 }
 
-func GetCallbacks() (pluginer.PluginCallbacks, error) {
-	return &Callbacks{}, nil
+func Execute(plugin *pluginer.Plugin) error {
+	log.Info("plugin Schedule-Keepr executed")
+
+	r := plugin.Router
+
+	gettersGroup := r.Group("getters", pluginer.HandlersChain{
+		"GET": { func(ctx *pluginer.Context) {
+			ctx.JSON(200, "fab!")
+		},},
+	})
+	{
+		barGettersGroup := gettersGroup.Group("bar", nil)
+		{
+			group := barGettersGroup.GET("fab", func(ctx *pluginer.Context) {
+				ctx.JSON(200, "fab!")
+			})
+
+			group.GET("fem", func(ctx *pluginer.Context) {
+				ctx.JSON(200, "fem!")
+			})
+
+			barGettersGroup.GET("fam", func(ctx *pluginer.Context) {
+				ctx.JSON(200, "fam!")
+			})
+		}
+
+		farGettersGroup := gettersGroup.Group(":far", nil)
+		{
+			farGettersGroup.GET("fob", func(ctx *pluginer.Context) {
+				ctx.JSON(200, "fob!")
+			})
+		}
+	}
+
+	return nil
+}
+
+func Cleanup(plugin *pluginer.Plugin) error {
+	log.Info("plugin Schedule-Keepr cleaned up")
+
+	return nil
+}
+
+func OnLoaded(pluginProvider *pluginer.PluginProvider) error {
+	log.Info("loaded sample plugin provider Schedule-Keepr callback")
+
+	return nil
+}
+
+func OnCleaningUp(pluginProvider *pluginer.PluginProvider) error {
+	log.Info("cleaning up plugin provider Schedule-Keepr callback")
+
+	return nil
 }
 
 func NewPlugin(clientID string) (*pluginer.Plugin, error) {
 	log.Info("initializing plugin Schedule-Keepr")
 
-	// Tautological condition? WTF
-	client, err := bridger.GetClient(clientID)
+	return smugwork.InitializePlugin(clientID, &pluginer.PluginMethods{
+		Execute: Execute,
+		Cleanup: Cleanup,
+	})
+}
+
+func NewPluginProvider() (*pluginer.PluginProvider, error) {
+	log.Info("initializing plugin provider for Schedule-Keepr")
+
+	var newPluginFactory pluginer.PluginFactory = NewPlugin
+
+	metadata, err := getMetadata()
 	if err != nil {
 		return nil, err
 	}
 
-	var routes = make(map[string]interface{})
-	routes["hello"] = bridger.BridgerRoute{Method: http.MethodGet, Callback: func(c *gin.Context) {
-		log.Info("hello from Schedule-Keepr")
-		c.JSON(http.StatusNotFound, gin.H{"amongus": "sussy bbaka"})
-	}}
-
-	routes["getters"] = make(map[string]interface{})
-	routes["getters"].(map[string]interface{})["greet"] = bridger.BridgerRoute{
-		Method: http.MethodGet,
-		Callback: func(c *gin.Context) {
-			log.Info("hello from Schedule-Keepr")
-			c.JSON(http.StatusNotFound, gin.H{"amongus": "sussy bbaka"})
-		},
-	}
-
-	log.Info("plugin Schedule-Keepr initialized", "client", clientID, "routes", routes)
-
-	Plugin = &pluginer.Plugin{}
-	Plugin.Methods = &Methods{}
-	Plugin.Client = client
-	Plugin.Routes = routes
-
-	return Plugin, nil
+	return smugwork.InitializePluginProvider(newPluginFactory, metadata, pluginer.PluginCallbacks{
+		OnLoaded:     OnLoaded,
+		OnCleaningUp: OnCleaningUp,
+	})
 }

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <app-bar :isLoading="appStore.$state.isLoading" @toggle-drawer="appStore.setIsDrawerToggled(!appStore.$state.isDrawerToggled)" title="Smuggr Network" />
+    <app-bar :isLoading="appStore.$state.isLoading" @toggle-drawer="appStore.setIsDrawerToggled(!appStore.$state.isDrawerToggled)" title="Smuggr Net-Work" />
 
     <login-dialog v-model="appStore.$state.isLoginDialogToggled" />
 
