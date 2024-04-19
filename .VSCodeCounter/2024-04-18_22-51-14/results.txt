@@ -1,0 +1,140 @@
+Date : 2024-04-18 22:51:14
+Directory : /home/karol/Desktop/Smuggr/Software/Net-Work
+Total : 70 files,  6166 codes, 35 comments, 888 blanks, all 7089 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| Go                 |         32 |      2,303 |         29 |        634 |      2,966 |
+| JSON               |          6 |      1,921 |          0 |          7 |      1,928 |
+| Vue                |         17 |        721 |          0 |        103 |        824 |
+| JavaScript         |          6 |        471 |          5 |         90 |        566 |
+| SVG                |          2 |        290 |          1 |          3 |        294 |
+| Go Checksum File   |          1 |        257 |          0 |          1 |        258 |
+| Go Module File     |          1 |         90 |          0 |          5 |         95 |
+| Markdown           |          2 |         54 |          0 |         29 |         83 |
+| Makefile           |          1 |         26 |          0 |         11 |         37 |
+| JSON with Comments |          1 |         20 |          0 |          1 |         21 |
+| HTML               |          1 |         13 |          0 |          4 |         17 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                           | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                              |         70 |      6,166 |         35 |        888 |      7,089 |
+| . (Files)                                                                                      |          8 |        529 |          1 |         63 |        593 |
+| common                                                                                         |          6 |        491 |          5 |        150 |        646 |
+| common/bridger                                                                                 |          3 |        126 |          0 |         39 |        165 |
+| common/pluginer                                                                                |          2 |        156 |          1 |         42 |        199 |
+| common/provider                                                                                |          1 |        209 |          4 |         69 |        282 |
+| plugins                                                                                        |          3 |         93 |          2 |         28 |        123 |
+| plugins/Schedule-Keepr                                                                         |          3 |         93 |          2 |         28 |        123 |
+| plugins/Schedule-Keepr (Files)                                                                 |          1 |         83 |          2 |         27 |        112 |
+| plugins/Schedule-Keepr/static                                                                  |          2 |         10 |          0 |          1 |         11 |
+| services                                                                                       |         14 |      1,205 |          6 |        311 |      1,522 |
+| services/api                                                                                   |          6 |        632 |          4 |        142 |        778 |
+| services/api (Files)                                                                           |          3 |        184 |          3 |         41 |        228 |
+| services/api/routes                                                                            |          3 |        448 |          1 |        101 |        550 |
+| services/bridge                                                                                |          5 |        238 |          1 |         76 |        315 |
+| services/bridge (Files)                                                                        |          2 |         79 |          0 |         26 |        105 |
+| services/bridge/hooks                                                                          |          3 |        159 |          1 |         50 |        210 |
+| services/database                                                                              |          3 |        335 |          1 |         93 |        429 |
+| smugwork                                                                                       |          1 |         26 |          2 |         10 |         38 |
+| utils                                                                                          |          7 |        371 |         13 |         95 |        479 |
+| utils/actions                                                                                  |          1 |          1 |          0 |          2 |          3 |
+| utils/configuration                                                                            |          1 |         99 |          0 |         29 |        128 |
+| utils/constants                                                                                |          1 |          7 |          0 |          3 |         10 |
+| utils/errors                                                                                   |          1 |         82 |          9 |         18 |        109 |
+| utils/messages                                                                                 |          1 |         54 |          4 |         13 |         71 |
+| utils/models                                                                                   |          1 |         24 |          0 |          5 |         29 |
+| utils/validation                                                                               |          1 |        104 |          0 |         25 |        129 |
+| web                                                                                            |         31 |      3,451 |          6 |        231 |      3,688 |
+| web (Files)                                                                                    |          6 |      2,007 |          4 |         38 |      2,049 |
+| web/src                                                                                        |         25 |      1,444 |          2 |        193 |      1,639 |
+| web/src (Files)                                                                                |          5 |        451 |          1 |         99 |        551 |
+| web/src/assets                                                                                 |          2 |        290 |          1 |          3 |        294 |
+| web/src/components                                                                             |         16 |        647 |          0 |         89 |        736 |
+| web/src/components/dialogs                                                                     |          1 |        112 |          0 |         21 |        133 |
+| web/src/components/general                                                                     |          6 |        168 |          0 |         19 |        187 |
+| web/src/components/tabs                                                                        |          9 |        367 |          0 |         49 |        416 |
+| web/src/stores                                                                                 |          2 |         56 |          0 |          2 |         58 |
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                       | language           | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| /home/karol/Desktop/Smuggr/Software/Net-Work/README.md                                         | Markdown           |          2 |          0 |          1 |          3 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/common/bridger/bridger.go                         | Go                 |         48 |          0 |         16 |         64 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/common/bridger/middleware.go                      | Go                 |         38 |          0 |         13 |         51 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/common/bridger/tester.go                          | Go                 |         40 |          0 |         10 |         50 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/common/pluginer/pluginer.go                       | Go                 |         32 |          0 |          8 |         40 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/common/pluginer/router.go                         | Go                 |        124 |          1 |         34 |        159 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/common/provider/provider.go                       | Go                 |        209 |          4 |         69 |        282 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/config.json                                       | JSON               |         27 |          0 |          4 |         31 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/go.mod                                            | Go Module File     |         90 |          0 |          5 |         95 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/go.sum                                            | Go Checksum File   |        257 |          0 |          1 |        258 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/main.go                                           | Go                 |         73 |          1 |         20 |         94 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/makefile                                          | Makefile           |         26 |          0 |         11 |         37 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/mdns_discovery_test.go                            | Go                 |         23 |          0 |          8 |         31 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/messages_errors_test.go                           | Go                 |         31 |          0 |         13 |         44 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/plugins/Schedule-Keepr/main.go                    | Go                 |         83 |          2 |         27 |        112 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/plugins/Schedule-Keepr/static/config.json         | JSON               |          2 |          0 |          1 |          3 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/plugins/Schedule-Keepr/static/metadata.json       | JSON               |          8 |          0 |          0 |          8 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/api/api.go                               | Go                 |         97 |          1 |         23 |        121 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/api/middleware.go                        | Go                 |         78 |          2 |         16 |         96 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/api/routes/devicesHandler.go             | Go                 |        162 |          0 |         37 |        199 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/api/routes/pluginsHandler.go             | Go                 |         84 |          1 |         19 |        104 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/api/routes/usersHandler.go               | Go                 |        202 |          0 |         45 |        247 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/api/swagger.go                           | Go                 |          9 |          0 |          2 |         11 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/bridge/bridge.go                         | Go                 |         63 |          0 |         21 |         84 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/bridge/broadcast.go                      | Go                 |         16 |          0 |          5 |         21 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/bridge/hooks/authenticate.go             | Go                 |         55 |          0 |         18 |         73 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/bridge/hooks/authorizate.go              | Go                 |         42 |          0 |         15 |         57 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/bridge/hooks/initialize.go               | Go                 |         62 |          1 |         17 |         80 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/database/database.go                     | Go                 |         50 |          0 |         17 |         67 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/database/devices.go                      | Go                 |        152 |          1 |         41 |        194 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/services/database/users.go                        | Go                 |        133 |          0 |         35 |        168 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/smugwork/smugwork.go                              | Go                 |         26 |          2 |         10 |         38 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/utils/actions/actions.go                          | Go                 |          1 |          0 |          2 |          3 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/utils/configuration/configuration.go              | Go                 |         99 |          0 |         29 |        128 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/utils/constants/constants.go                      | Go                 |          7 |          0 |          3 |         10 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/utils/errors/errors.go                            | Go                 |         82 |          9 |         18 |        109 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/utils/messages/messages.go                        | Go                 |         54 |          4 |         13 |         71 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/utils/models/models.go                            | Go                 |         24 |          0 |          5 |         29 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/utils/validation/validation.go                    | Go                 |        104 |          0 |         25 |        129 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/README.md                                     | Markdown           |         52 |          0 |         28 |         80 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/index.html                                    | HTML               |         13 |          0 |          4 |         17 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/jsconfig.json                                 | JSON with Comments |         20 |          0 |          1 |         21 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/package-lock.json                             | JSON               |      1,852 |          0 |          1 |      1,853 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/package.json                                  | JSON               |         29 |          0 |          1 |         30 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/App.vue                                   | Vue                |         74 |          0 |         14 |         88 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/apiHandler.js                             | JavaScript         |        196 |          1 |         46 |        243 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/assets/Net-Work.svg                       | SVG                |        284 |          1 |          2 |        287 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/assets/logo.svg                           | SVG                |          6 |          0 |          1 |          7 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/dialogs/LoginDialog.vue        | Vue                |        112 |          0 |         21 |        133 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/general/AppBar.vue             | Vue                |         30 |          0 |          3 |         33 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/general/DashboardTabButton.vue | Vue                |         16 |          0 |          1 |         17 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/general/Feed.vue               | Vue                |         18 |          0 |          2 |         20 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/general/Post.vue               | Vue                |         37 |          0 |          7 |         44 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/general/SideBar.vue            | Vue                |         31 |          0 |          5 |         36 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/general/SideBarButton.vue      | Vue                |         36 |          0 |          1 |         37 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/tabs/AboutTab.vue              | Vue                |         29 |          0 |          3 |         32 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/tabs/DashboardTabs.vue         | Vue                |         53 |          0 |          2 |         55 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/tabs/DevicesTab.vue            | Vue                |        127 |          0 |         21 |        148 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/tabs/HomeTab.vue               | Vue                |         18 |          0 |          2 |         20 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/tabs/MyProfileTab.vue          | Vue                |         56 |          0 |          8 |         64 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/tabs/PluginsTab.vue            | Vue                |         15 |          0 |          4 |         19 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/tabs/SettingsTab.vue           | Vue                |         16 |          0 |          4 |         20 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/tabs/Tabs.vue                  | Vue                |         38 |          0 |          1 |         39 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/components/tabs/UsersTab.vue              | Vue                |         15 |          0 |          4 |         19 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/config.json                               | JSON               |          3 |          0 |          0 |          3 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/main.js                                   | JavaScript         |         48 |          0 |         16 |         64 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/navigationHandler.js                      | JavaScript         |        130 |          0 |         23 |        153 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/stores/app.js                             | JavaScript         |         38 |          0 |          1 |         39 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/src/stores/auth.js                            | JavaScript         |         18 |          0 |          1 |         19 |
+| /home/karol/Desktop/Smuggr/Software/Net-Work/web/vite.config.mjs                               | JavaScript         |         41 |          4 |          3 |         48 |
+| Total                                                                                          |                    |      6,166 |         35 |        888 |      7,089 |
++------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

@@ -6,10 +6,10 @@ export const useAppStore = defineStore({
 	id: 'app',
 	state: () => ({
 		isDrawerToggled: true,
-		isLoginDialogToggled: true,
-		isLoggedIn: false,
+		isLoginDialogToggled: false,
+		isLoggedIn: true,
 		isLoading: false,
-		currentTab: Tabs.ABOUT,
+		currentTab: Tabs.DASHBOARD,
 		currentDashboardTab: DashboardTabs.DEVICES,
 		currentUser: reactive({
 			login: 'administrator',

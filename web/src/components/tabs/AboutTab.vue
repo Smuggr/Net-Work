@@ -1,5 +1,5 @@
 <template>
-  <v-window-item :value="value">
+  <v-window-item :value="tab">
     <br/>
     <div class="text-center">
       <h1>Source Code</h1>
@@ -22,7 +22,7 @@
 export default {
   name: 'AboutTab',
   props: {
-    value: {
+    tab: {
       type: Object,
       required: true
     }

@@ -1,6 +1,7 @@
 package bridger
 
 import (
+	"net/http"
 	"network/common/pluginer"
 	"network/utils/errors"
 
@@ -38,7 +39,12 @@ func DisconnectClient(clientID string) error {
 }
 
 func InteractionsHandler(c *gin.Context) {
-	group, _ := c.Get("group")
+	group, exists := c.Get("group")
+	if !exists {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
 	group.(*pluginer.RouterGroup).Execute(c.Request.Method, c)
 }
 

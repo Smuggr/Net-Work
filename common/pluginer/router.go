@@ -134,6 +134,7 @@ func (group *RouterGroup) Execute(httpMethod string, context *Context) {
 		}
 	} else {
 		log.Warn("no handlers found for the specified HTTP method")
+		context.AbortWithStatus(http.StatusNotFound)
 	}
 }
 

@@ -1,39 +1,45 @@
 <template>
-  <v-dialog max-width="500px">
+  <v-dialog max-width="500px" persistent>
     <template v-slot:default="{ isActive }">
       <v-card title="Log in to your account">
+        <v-progress-linear
+          :active="isLoading"
+          :indeterminate="true"
+          location="top"
+          color="deep-purple-accent-4"
+          absolute
+          bottom
+        ></v-progress-linear>
+
         <v-form @submit.prevent="onSubmit">
           <v-container>
             <v-col>
               <v-text-field
                 v-model="login"
-                :rules="loginRules"
+                :error-messages="loginErrorMessages"
                 label="Login"
                 prepend-icon="mdi-account-key"
-                @focus="clearErrors" />
+                clearable
+              />
 
-              <br/>
-              
+              <br />
+
               <v-text-field
                 v-model="password"
-                :rules="passwordRules"
+                :error-messages="passwordErrorMessages"
                 label="Password"
                 prepend-icon="mdi-lock"
                 type="password"
-                @focus="clearErrors" />
+                clearable
+              />
             </v-col>
           </v-container>
 
           <v-card-actions>
             <v-spacer />
 
-            <v-btn
-              text="Log In"
-              :disabled="hasErrors"
-              type="submit" />
-            <v-btn
-              text="Close"
-              @click="isActive.value = false; cancelForm();" />
+            <v-btn text="Log In" type="submit" />
+            <v-btn text="Close" @click="isActive.value = false;" />
           </v-card-actions>
         </v-form>
       </v-card>
@@ -42,90 +48,94 @@
 </template>
 
 <script>
-import { ref, reactive, computed } from "vue";
-import { authenticateUser, registerUser } from "@/apiHandler";
+import { ref, reactive, computed, watch } from "vue";
+import { authenticateUser } from "@/apiHandler";
 import { useAppStore } from "@/stores/app";
 
 export default {
   name: "LoginDialog",
   setup() {
-    const login = ref('');
-    const password = ref('');
+    const appStore = useAppStore();
 
-    const loginRules = reactive([
-      v => !!v || 'Login is required',
-      v => (v && v.length >= 8 && v.length <= 16 && !v.includes(' ')) || 'Login must be between 8 and 16 characters',
-    ]);
+    const login = ref("");
+    const password = ref("");
 
-    const passwordRules = reactive([
-      v => !!v || 'Password is required',
-      v => (v && v.length >= 8 && v.length <= 32) || 'Password must be between 8 and 32 characters',
-      v => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/.test(v) || 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-    ]);
+    const isLoading = ref(false);
+
+    const loginErrorMessages = ref("");
+    const passwordErrorMessages = ref("");
+
+    const invalidCredentialsMessage = 'Invalid login or password';
 
     const clearErrors = () => {
-      loginRules.splice(2);
-      passwordRules.splice(3);
+      loginErrorMessages.value = "";
+      passwordErrorMessages.value = "";
     };
 
-    const cancelForm = () => {
-      login.value = '';
-      password.value = '';
+    const clearForm = () => {
+      login.value = "";
+      password.value = "";
+      clearErrors();
     };
 
-    const hasErrors = computed(() => {
-      return loginRules.some(rule => !rule(login.value)) || passwordRules.some(rule => !rule(password.value));
-    });
+    const hasErrors = computed(() => !!loginErrorMessages.value || !!passwordErrorMessages.value);
 
     const submitForm = async () => {
-      const appStore = useAppStore();
+      isLoading.value = true;
 
       const loginFailed = () => {
-        appStore.setIsLoading(true);
-
         setTimeout(() => {
-          console.log('login failed');
-          const invalidLoginRule = v => false || 'Invalid login or password';
+          console.log("login failed");
 
-          loginRules.unshift(invalidLoginRule);
-          passwordRules.unshift(invalidLoginRule);
-          
-          appStore.setIsLoading(false);
+          loginErrorMessages.value = invalidCredentialsMessage;
+          passwordErrorMessages.value = invalidCredentialsMessage;
+
+          isLoading.value = false;
         }, 2000);
       };
 
-      authenticateUser(login.value, password.value)
-        .then(response => {
-          console.log(response);
+      try {
+        const response = await authenticateUser(login.value, password.value);
+        console.log(response);
 
-          if (response === true) {
-            console.log('login successful');
-          } else {
-            loginFailed();
-          }
-        })
-        .catch(error => {
-          console.log(error);
+        if (response === true) {
+          console.log("login successful");
+          isLoading.value = false;
+        } else {
           loginFailed();
-        });
+        }
+      } catch (error) {
+        console.log(error);
+        loginFailed();
+      }
     };
 
     const onSubmit = () => {
-      console.log('submitting form');
-      if (!hasErrors.value) {
-        submitForm();
-      }
+      console.log("submitting form");
+      submitForm();
+      clearErrors();
     };
+
+    watch([login, password], () => {
+      hasErrors.value;
+    });
+
+    watch(
+      () => appStore.$state.isLoginDialogToggled,
+      (newValue, oldValue) => {
+        clearErrors();
+        clearForm();
+      }
+    );
 
     return {
       login,
       password,
-      loginRules,
-      passwordRules,
-      cancelForm,
+      isLoading,
+      loginErrorMessages,
+      passwordErrorMessages,
+      hasErrors,
       onSubmit,
-      clearErrors,
-      hasErrors
     };
   },
 };

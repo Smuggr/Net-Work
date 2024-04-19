@@ -14,7 +14,7 @@ export default {
 
 <style scoped>
 .feed {
-  max-width: 40%;
+  max-width: 70%;
   min-width: 480px;
 }
 </style>
