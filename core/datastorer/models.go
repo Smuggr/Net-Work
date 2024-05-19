@@ -18,7 +18,6 @@ func (User) TableName() string {
 
 type Device struct {
 	gorm.Model
-	Username string `json:"username" gorm:"unique; not null"`
 	ClientID string `json:"client_id" gorm:"unique; not null"`
 	Password string `json:"password" gorm:"not null"`
 	Plugin   string `json:"plugin" gorm:"not null"`

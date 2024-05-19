@@ -7,13 +7,11 @@ import (
 	"smuggr/net-work/core/datastorer"
 )
 
-var MyLogger = logger.DefaultLogger
+var Logger = logger.DefaultLogger
 
 func main() {
 	logger.Initialize()
 	configurator.Initialize()
 
-	if err := datastorer.Initialize(); err != nil && err.IsError() {
-		datastorer.MyLogger.Log(err)
-	}
+	datastorer.Logger.Log(datastorer.Initialize())
 }

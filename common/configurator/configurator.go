@@ -9,38 +9,37 @@ import (
 	"github.com/spf13/viper"
 )
 
-var MyLogger = logger.NewCustomLogger("conf")
+var Logger = logger.NewCustomLogger("conf")
 var Config GlobalConfig
 
 func loadEnv() *logger.MessageWrapper {
 	err := godotenv.Load()
 	if err != nil {
-		return logger.ErrReadingEnvFile
+		return logger.ErrReadingResource.Format("", logger.ResourceEnv)
 	}
 
-	return logger.MsgEnvFileLoaded
+	return logger.MsgResourceLoaded.Format(".env", logger.ResourceEnv)
 }
 
 func loadConfig(config *GlobalConfig) *logger.MessageWrapper {
 	if err := viper.ReadInConfig(); err != nil {
-		MyLogger.Error("reading config", "error", err.Error())
-		return logger.ErrReadingConfigFile
+		return logger.ErrReadingResource.Format("", logger.ResourceConfig)
 	}
 
 	err := viper.Unmarshal(config)
 	if err != nil {
-		return logger.ErrFormattingConfigFile
+		return logger.ErrFormattingResource.Format(logger.ResourceConfig)
 	}
 
-	return logger.MsgConfigFileLoaded.Format(viper.ConfigFileUsed())
+	return logger.MsgResourceLoaded.Format(viper.ConfigFileUsed(), logger.ResourceConfig)
 }
 
 func Initialize() {
-	MyLogger.Info("initializing configurator")
-	MyLogger.Log(loadEnv())
+	Logger.Info("initializing configurator")
+	Logger.Log(loadEnv())
 
 	viper.AddConfigPath(os.Getenv("CONFIG_PATH"))
 	viper.SetConfigType(os.Getenv("CONFIG_TYPE"))
 
-	MyLogger.Log(loadConfig(&Config))
+	Logger.Log(loadConfig(&Config))
 }

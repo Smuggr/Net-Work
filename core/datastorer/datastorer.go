@@ -11,7 +11,7 @@ import (
 )
 
 var Config *configurator.DatastorerConfig
-var MyLogger = logger.NewCustomLogger("data")
+var Logger = logger.NewCustomLogger("data")
 
 var DB *gorm.DB
 
@@ -25,7 +25,7 @@ func GetDSN() string {
 }
 
 func Initialize() *logger.MessageWrapper {
-	MyLogger.Info("initializing datastorer")
+	Logger.Info("initializing datastorer")
 
 	Config = &configurator.Config.Datastorer
 
@@ -48,7 +48,7 @@ func Initialize() *logger.MessageWrapper {
 }
 
 func Cleanup() *logger.MessageWrapper {
-	MyLogger.Info("closing database connection")
+	Logger.Info("closing database connection")
 
 	sqlDB, err := DB.DB()
 	if err != nil {
