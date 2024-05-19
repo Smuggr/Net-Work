@@ -1,0 +1,25 @@
+{
+	"datastorer": {},
+
+	"bridger": {
+		"broker_host": "tcp://localhost",
+		"broker_port": "1883",
+		"mdns_service_instance_name": "Smuggr Net-Work",
+		"mdns_domain": "",
+		"mdns_host_name": "",
+		"client_id": "smuggr_net-work"
+	},
+
+	"pluginer": {
+		"plugins_directory": "build/plugins"
+	},
+
+	"api": {
+		"port": 8000,
+		"jwt_lifespan_minutes": 1440,
+		"trusted_cors": [
+			"http://localhost:3000",
+			"http://localhost:8000"
+		]
+	}
+}
