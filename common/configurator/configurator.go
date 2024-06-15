@@ -3,7 +3,7 @@ package configurator
 import (
 	"os"
 
-	"smuggr/net-work/common/logger"
+	"smuggr.xyz/net-work/common/logger"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"

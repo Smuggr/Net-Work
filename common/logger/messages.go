@@ -27,6 +27,8 @@ var (
 // Uncategorizated messages
 var (
 	MsgResourceLoaded = NewMessageWrapper("MsgResourceLoaded", "resource %s (%s) loaded", InfoLevel)
+	MsgInitializing   = NewMessageWrapper("MsgInitializing", "initializing", InfoLevel)
+	MsgCleaningUp     = NewMessageWrapper("MsgCleaningUp", "cleaning up", InfoLevel)
 	MsgInitialized    = NewMessageWrapper("MsgInitialized", "initialized", InfoLevel)
 	MsgCleanedUp      = NewMessageWrapper("MsgCleanedUp", "cleaned up", InfoLevel)
 )
@@ -63,6 +65,8 @@ var (
 	ErrFetchingResourceFromDB  = NewMessageWrapper("ErrFetchingResourceFromDB", "error fetching resource %s (%s) from database", ErrorLevel)
 	ErrUpdatingResourceInDB    = NewMessageWrapper("ErrUpdatingResourceInDB", "error updating resource %s (%s) in database", ErrorLevel)
 	ErrRemovingResourceFromDB  = NewMessageWrapper("ErrRemovingResourceFromDB", "error removing resource %s (%s) from database", ErrorLevel)
+
+	ErrInitializingResource    = NewMessageWrapper("ErrInitializingResource", "error initializing resource %s (%s)", ErrorLevel)
 )
 
 // Validation errors
@@ -86,9 +90,11 @@ var (
 
 // General errors
 var (
-	ErrHashingPassword       = NewMessageWrapper("ErrHashingPassword", "error hashing password", ErrorLevel)
-	ErrInvalidRequestPayload = NewMessageWrapper("ErrInvalidRequestPayload", "invalid request payload", ErrorLevel)
-	ErrOperationNotPermitted = NewMessageWrapper("ErrOperationNotPermitted", "operation not permitted", ErrorLevel)
+	ErrHashingPassword        = NewMessageWrapper("ErrHashingPassword", "error hashing password", ErrorLevel)
+	ErrAuthenticatingResource = NewMessageWrapper("ErrAuthenticatingResource", "error authenticating resource %s (%s)", ErrorLevel)
+	ErrInvalidRequestPayload  = NewMessageWrapper("ErrInvalidRequestPayload", "invalid request payload", ErrorLevel)
+	ErrOperationNotPermitted  = NewMessageWrapper("ErrOperationNotPermitted", "operation not permitted", ErrorLevel)
+	ErrUnexpected 		      = NewMessageWrapper("ErrUnexpected", "unexpected error: %s", ErrorLevel)
 )
 
 // Uncategorized errors

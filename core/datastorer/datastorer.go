@@ -3,11 +3,18 @@ package datastorer
 import (
 	"os"
 
-	"smuggr/net-work/common/configurator"
-	"smuggr/net-work/common/logger"
+	"smuggr.xyz/net-work/common/configurator"
+	"smuggr.xyz/net-work/common/logger"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+)
+
+const (
+	DefaultAdminLogin           string = "administrator"
+	DefaultAdminPassword        string = "Password123$"
+	DefaultAdminUsername        string = "Administrator"
+	DefaultAdminPermissionLevel int    = -1
 )
 
 var Config *configurator.DatastorerConfig
@@ -40,9 +47,9 @@ func Initialize() *logger.MessageWrapper {
 		return logger.ErrInitializing.Format(err.Error())
 	}
 
-	// if err := RegisterDefaultAdmin(); err != nil {
-	// 	return err
-	// }
+	if err := RegisterDefaultAdmin(); err != nil {
+		return err
+	}
 
 	return logger.MsgInitialized
 }
